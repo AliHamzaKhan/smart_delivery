@@ -15,6 +15,7 @@ class NewOrderRunningScreen extends StatelessWidget {
       : super(key: key);
   OrderController orderController;
   var height = Get.height;
+  Map<String, dynamic> itemsImageData = {};
 
   @override
   Widget build(BuildContext context) {
@@ -142,66 +143,39 @@ class NewOrderRunningScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      // Row(
-                      //   children: [
-                      //     Text('1', style: TextStyle(color: alterColor, fontSize: 15, fontWeight: FontWeight.bold),),
-                      //
-                      //   ],
-                      // ),
-                      // Expanded(
-                      //   child: SingleChildScrollView(
-                      //       scrollDirection: Axis.vertical,
-                      //     child: DataTable(
-                      //         columns: [
-                      //       DataColumn(
-                      //         label: Expanded(child: Text('ID')),
-                      //       ),
-                      //       DataColumn(
-                      //         label: Expanded(child: Text('Name')),
-                      //       ),
-                      //       DataColumn(
-                      //         label: Expanded(child: Text('Unit')),
-                      //       ),
-                      //       DataColumn(
-                      //         label: Expanded(child: Text('Quantity')),
-                      //       ),
-                      //       DataColumn(
-                      //         label: Expanded(child: Text('Image')),
-                      //       ),
-                      //     ],
-                      //         rows: List.generate(
-                      //             50,
-                      //             (index) => DataRow(
-                      //
-                      //                 cells: [
-                      //                   DataCell(Expanded(child: Text('Image'))),
-                      //                   DataCell(Expanded(child: Text('Image'))),
-                      //                   DataCell(Expanded(child: Text('Image'))),
-                      //                   DataCell(Expanded(child: Text('Image'))),
-                      //                   DataCell(Container(
-                      //                     color: alterColor,
-                      //                   ))
-                      //                 ]))),
-                      //   ),
-                      // ),
-                      !orderController.isDeliveryItemLoaded.value ?
-                      tableHeader() : SizedBox(),
-                      !orderController.isDeliveryItemLoaded.value ?
-                      Expanded(
-                          child: ListView.builder(
-                              itemCount: 5,
-                              itemBuilder: (context, index) {
-                                return ItemDesign(
-                                  item: ItemData(
-                                      deliveryid: orderController.deliveryItems[index].deliveryid,
-                                      itemId: orderController.deliveryItems[index].itemId,
-                                      itemName: orderController.deliveryItems[index].itemName,
-                                      itemUnit: orderController.deliveryItems[index].itemUnit,
-                                      qty: orderController.deliveryItems[index].qty),
-                                  orderController: orderController,
-
-                                );
-                              })) : SizedBox(),
+                      !orderController.isDeliveryItemLoaded.value
+                          ? tableHeader()
+                          : SizedBox(),
+                      !orderController.isDeliveryItemLoaded.value
+                          ? Expanded(
+                              child: ListView.builder(
+                                  itemCount: 5,
+                                  itemBuilder: (context, index) {
+                                    return ItemDesign(
+                                      item: ItemData(
+                                          deliveryid: orderController
+                                              .deliveryItems[index].deliveryid,
+                                          itemId: orderController
+                                              .deliveryItems[index].itemId,
+                                          itemName: orderController
+                                              .deliveryItems[index].itemName,
+                                          itemUnit: orderController
+                                              .deliveryItems[index].itemUnit,
+                                          qty: orderController
+                                              .deliveryItems[index].qty),
+                                      orderController: orderController,
+                                      onImageSelect: (file) {
+                                        if (file != null) {
+                                          orderController.itemsImageData[orderController
+                                              .deliveryItems[index].deliveryid
+                                              .toString()] = [file];
+                                          print(file);
+                                          print(orderController.itemsImageData.length);
+                                        }
+                                      },
+                                    );
+                                  }))
+                          : SizedBox(),
                     ],
                   ),
                 )),
@@ -233,9 +207,10 @@ class NewOrderRunningScreen extends StatelessWidget {
     );
   }
 
-  getDeliveryItems(){
-    if(orderController.currentOrder.value != null){
-      orderController.getDeliveryItem( deliveryid:orderController.currentOrder.value!.deliveryid!);
+  getDeliveryItems() {
+    if (orderController.currentOrder.value != null) {
+      orderController.getDeliveryItem(
+          deliveryid: orderController.currentOrder.value!.deliveryid!);
     }
   }
 

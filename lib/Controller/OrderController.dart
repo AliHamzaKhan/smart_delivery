@@ -36,6 +36,7 @@ class OrderController extends GetxController {
   final currentOrderItem = Rxn<DeliveryItem>();
   var isDeliveryItemLoaded = false.obs;
   RxList<ItemData> deliveryItems = <ItemData>[].obs;
+  Map<String, dynamic> itemsImageData = {};
 
   getDeliveryItem({required int deliveryid}) async{
     try{

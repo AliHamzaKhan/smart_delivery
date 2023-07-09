@@ -7,12 +7,13 @@ import 'package:smart_delivery/Constant/Colors.dart';
 import '../Model/DeliveryItem.dart';
 
 class ItemDesign extends StatelessWidget {
-  ItemDesign({Key? key, this.item, this.image, this.orderController})
+  ItemDesign({Key? key, this.item, this.image, this.orderController, this.onImageSelect})
       : super(key: key);
   ItemData? item;
   var image;
   var height = Get.height;
   var orderController;
+  var onImageSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +70,8 @@ class ItemDesign extends StatelessWidget {
               )),
           GestureDetector(
             onTap: () async {
-              image = (await getFromCamera());
+              image = await getFromCamera();
+              onImageSelect(image);
             },
             child: Container(
               width: height * 0.050,
