@@ -15,13 +15,14 @@ class NewOrderRunningScreen extends StatelessWidget {
       : super(key: key);
   OrderController orderController;
   var height = Get.height;
-  Map<String, dynamic> itemsImageData = {};
 
   @override
   Widget build(BuildContext context) {
     getDeliveryItems();
     return WillPopScope(
       onWillPop: () async {
+        orderController.itemsImageData.clear();
+        orderController.itemsQuantityData.clear();
         await orderController.refreshOrder();
         return true;
       },
@@ -68,7 +69,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                             horizontal: height * 0.020,
                             vertical: height * 0.020),
                         margin: EdgeInsets.symmetric(
-                            horizontal: height * 0.010,
+                            horizontal: height * 0.005,
                             vertical: height * 0.010),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -166,43 +167,60 @@ class NewOrderRunningScreen extends StatelessWidget {
                                       orderController: orderController,
                                       onImageSelect: (file) {
                                         if (file != null) {
-                                          orderController.itemsImageData[orderController
-                                              .deliveryItems[index].deliveryid
-                                              .toString()] = [file];
+                                          orderController.itemsImageData[orderController.deliveryItems[index].
+                                          itemId!] = file;
                                           print(file);
                                           print(orderController.itemsImageData.length);
+                                          print(orderController.deliveryItems[index].itemId.toString());
                                         }
                                       },
+                                      onQuantitySelected: (){},
                                     );
                                   }))
                           : SizedBox(),
+                      !orderController.isDeliveryItemLoaded.value ?
+                        GestureDetector(
+                          onTap: () async{
+                              await  orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(vertical: height * 0.010),
+                            margin: EdgeInsets.symmetric(vertical: height * 0.005, horizontal: height * 0.020),
+                            decoration: BoxDecoration(
+                              color: alterColor,
+                              borderRadius: BorderRadius.circular(height * 0.010)
+                            ),
+                            alignment: Alignment.center,
+                            child: Text("Upload Items", style: TextStyle(color: appbackgroundColor, fontSize: 18, fontWeight: FontWeight.bold),),
+                          ),
+                        ) : SizedBox()
                     ],
                   ),
                 )),
         ),
-        bottomNavigationBar: Container(
+        bottomNavigationBar: Obx(()=>Container(
           height: height * 0.10,
           child: orderController.isStatusLoaded.value
               ? SizedBox(
-                  height: height * 0.030,
-                  child: Padding(
-                    padding: EdgeInsets.all(height * 0.020),
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        color: alterColor,
-                      ),
-                    ),
-                  ),
-                )
-              : Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: height * 0.020,
-                  ),
-                  margin: EdgeInsets.symmetric(horizontal: height * 0.010),
-                  child: checkValue(
-                      orderController.getCurrentOrder().statusid, context),
+            height: height * 0.030,
+            child: Padding(
+              padding: EdgeInsets.all(height * 0.020),
+              child: Center(
+                child: CircularProgressIndicator(
+                  color: alterColor,
                 ),
-        ),
+              ),
+            ),
+          )
+              : Container(
+            padding: EdgeInsets.symmetric(
+              horizontal: height * 0.020,
+            ),
+            margin: EdgeInsets.symmetric(horizontal: height * 0.010),
+            child: checkValue(
+                orderController.getCurrentOrder().statusid, context),
+          ),
+        )),
       ),
     );
   }

@@ -93,6 +93,27 @@ class MyApi {
     return response.body;
   }
 
+  uploadItem({deliveryId, image, itemId}) async {
+    // var a = utf8.encode(input);
+    // var url =
+    //     "${BASE_URL}method=uploadsignature&imagedata=$signature&deliveryid=$deliveryId";
+    print("upload image");
+
+    var form = Map<String, dynamic>();
+    form["itemid"] = '$itemId';
+    form["deliveryid"] = '$deliveryId';
+    form["imagedata"] = "data:image/png;base64," + image;
+
+    var response = await http.post(
+      Uri.parse(BASE_URL + 'method=uploaditemphoto'),
+      body: form,
+      // headers: {'Content-Type': 'application/json'},
+    );
+    print(response.body);
+
+    return response.body;
+  }
+
   uploadSignatureMultiPort({deliveryId, signature}) async {
     var request = http.MultipartRequest(
         "POST", Uri.parse(BASE_URL + "method=uploadsignature"));

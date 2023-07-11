@@ -32,14 +32,15 @@ class OrderController extends GetxController {
 
   final currentOrder = Rxn<Rows>();
 
-
   final currentOrderItem = Rxn<DeliveryItem>();
   var isDeliveryItemLoaded = false.obs;
   RxList<ItemData> deliveryItems = <ItemData>[].obs;
-  Map<String, dynamic> itemsImageData = {};
+  final Map<int, dynamic> itemsImageData = {};
+  final Map<int, dynamic> itemsQuantityData = {};
 
-  getDeliveryItem({required int deliveryid}) async{
-    try{
+
+  getDeliveryItem({required int deliveryid}) async {
+    try {
       isDeliveryItemLoaded(true);
       var response = await MyApi().getDeliveryItems(deliveryid);
       var result = jsonDecode(response);
@@ -47,11 +48,9 @@ class OrderController extends GetxController {
       DeliveryItem deliveryItem = DeliveryItem.fromJson(result);
       deliveryItems.assignAll(deliveryItem.itemData!);
       print(deliveryItem.itemData!.length);
-    }
-    catch(e){
+    } catch (e) {
       print(e);
-    }
-    finally{
+    } finally {
       isDeliveryItemLoaded(false);
     }
     // return deliveryItems;
@@ -247,6 +246,40 @@ class OrderController extends GetxController {
   //   }
   // }
 
+  uploadItems({required deliveryId}) async {
+    if(itemsQuantityData.isEmpty){}
+    if (itemsImageData.isEmpty) {
+      print(itemsImageData.length);
+      print('no items');
+    } else {
+      itemsImageData.forEach((key, value) async{
+        print("key");
+        print(key);
+        print("value");
+        print(value);
+        try{
+          var convert = await value.readAsBytesSync();
+          var response = await MyApi().uploadItem(
+              deliveryId: deliveryId, image: await base64String(convert), itemId: key);
+          var data = jsonDecode(response);
+          print(data["status"]);
+        }
+        catch(e){
+          print(e);
+        }
+        finally{
+
+        }
+      });
+      // for (int i = 0; i < itemsImageData.length; i++) {
+      //   var convert = await itemsImageData.values.elementAt(i).readAsBytesSync();
+      //   var response = await MyApi().uploadItem(
+      //       deliveryId: deliveryId, image: await base64String(convert), itemId: );
+      //   var data = jsonDecode(response);
+      //   print(data["status"]);
+      // }
+    }
+  }
   uploadImage({deliveryId, image}) async {
     var convert = await image.readAsBytesSync();
     try {
@@ -256,6 +289,7 @@ class OrderController extends GetxController {
       var data = jsonDecode(response);
       print(data["status"]);
     } catch (e) {
+      print(e);
     } finally {
       isStatusLoaded(false);
       update();

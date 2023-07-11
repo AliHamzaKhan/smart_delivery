@@ -6,94 +6,100 @@ import 'package:image_picker/image_picker.dart';
 import 'package:smart_delivery/Constant/Colors.dart';
 import '../Model/DeliveryItem.dart';
 
-class ItemDesign extends StatelessWidget {
-  ItemDesign({Key? key, this.item, this.image, this.orderController, this.onImageSelect})
+class ItemDesign extends StatefulWidget {
+  ItemDesign({Key? key, this.item, this.image, this.orderController, this.onImageSelect, this.onQuantitySelected})
       : super(key: key);
   ItemData? item;
-  var image;
-  var height = Get.height;
+  File? image;
   var orderController;
   var onImageSelect;
+  var onQuantitySelected;
+
+  @override
+  State<ItemDesign> createState() => _ItemDesignState();
+}
+
+class _ItemDesignState extends State<ItemDesign> {
+  var height = Get.height;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: Get.width,
-      padding: EdgeInsets.symmetric(vertical: 7, horizontal: 10),
-      margin: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.symmetric(vertical: height * 0.007, horizontal: height * 0.010),
+      margin: EdgeInsets.symmetric(horizontal: height * 0.005),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(10),
+            bottomLeft: Radius.circular(height * 0.010),
+            bottomRight: Radius.circular(height * 0.010),
           ),
           color: subBackgroundColor),
       child: Row(
         children: [
-          Text(
-            "${item!.itemId ?? ''}",
-            style: TextStyle(
-                color: alterColor, fontWeight: FontWeight.bold, fontSize: 18),
-            textAlign: TextAlign.center,
-          ),
           SizedBox(
-            width: 10,
+            width: height * 0.005,
           ),
           Expanded(
               flex: 3,
               child: Text(
-                item!.itemName ?? "",
+                widget.item!.itemName ?? "",
                 style: TextStyle(
                     color: textColor,
                     fontWeight: FontWeight.w300,
-                    fontSize: 15),
+                    fontSize: height * 0.015),
                 textAlign: TextAlign.start,
               )),
           Expanded(
               flex: 1,
               child: Text(
-                item!.itemUnit ?? "",
+                widget.item!.itemUnit ?? "",
                 style: TextStyle(
                     color: textColor,
                     fontWeight: FontWeight.w300,
-                    fontSize: 15),
+                    fontSize: height * 0.015),
                 textAlign: TextAlign.center,
               )),
           Expanded(
               flex: 1,
               child: Text(
-                "${item!.qty ?? ''}",
+                "${widget.item!.qty ?? ''}",
                 style: TextStyle(
                     color: textColor,
                     fontWeight: FontWeight.w300,
-                    fontSize: 15),
+                    fontSize: height * 0.015),
                 textAlign: TextAlign.center,
               )),
           GestureDetector(
             onTap: () async {
-              image = await getFromCamera();
-              onImageSelect(image);
+              widget.image = await getFromCamera();
+              setState(() {
+                widget.onImageSelect(widget.image);
+              });
             },
             child: Container(
               width: height * 0.050,
               height: height * 0.050,
-              child: image == null
+              child: widget.image == null
                   ? Icon(
                 Icons.image,
                 size: height * 0.040,
               )
-                  : Image.file(
-                image,
+                  : ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                    child: Image.file(
+                widget.image!,
                 width: height * 0.040,
-                height: height * 0.040,
+                height: height * 0.035,
                 fit: BoxFit.cover,
               ),
+                  ),
             ),
           )
         ],
       ),
     );
   }
-  
+
   Future<File?> getFromCamera() async {
     var pickedFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
