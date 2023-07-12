@@ -12,6 +12,7 @@ import '../Api/MyApi.dart';
 import '../Constant/Colors.dart';
 import '../Model/DeliveryItem.dart';
 import '../Model/Task.dart';
+import '../Model/temp_item.dart';
 import '../Screens/LoginScreen.dart';
 import '../main.dart';
 
@@ -35,8 +36,10 @@ class OrderController extends GetxController {
   final currentOrderItem = Rxn<DeliveryItem>();
   var isDeliveryItemLoaded = false.obs;
   RxList<ItemData> deliveryItems = <ItemData>[].obs;
-  final Map<int, dynamic> itemsImageData = {};
-  final Map<int, dynamic> itemsQuantityData = {};
+  var itemsQuantityData = <TempItem>[];
+  var isItemQuantityUploaded = false.obs;
+  List itemsImageData = <TempItem>[];
+  var isItemImageUploaded = false.obs;
 
 
   getDeliveryItem({required int deliveryid}) async {
@@ -61,6 +64,7 @@ class OrderController extends GetxController {
 
     currentOrder.value = order;
     update();
+    getDeliveryItem(deliveryid: currentOrder.value!.deliveryid!);
     // print("current order $currentOrder");
   }
 
@@ -247,39 +251,121 @@ class OrderController extends GetxController {
   // }
 
   uploadItems({required deliveryId}) async {
-    if(itemsQuantityData.isEmpty){}
     if (itemsImageData.isEmpty) {
       print(itemsImageData.length);
       print('no items');
     } else {
-      itemsImageData.forEach((key, value) async{
-        print("key");
-        print(key);
-        print("value");
-        print(value);
-        try{
-          var convert = await value.readAsBytesSync();
-          var response = await MyApi().uploadItem(
-              deliveryId: deliveryId, image: await base64String(convert), itemId: key);
+      try {
+        isItemImageUploaded(true);
+        List<Future> requestFutures = [];
+
+        for (int i = 0; i < itemsImageData.length; i++) {
+          try {
+            var convert = await itemsImageData[i].value.readAsBytes();
+            var requestFuture = MyApi().uploadItem(
+              deliveryId: deliveryId,
+              image: await base64String(convert),
+              itemId: itemsImageData[i].key,
+            );
+
+            requestFutures.add(requestFuture);
+          } catch (e) {
+            print(e);
+          }
+        }
+
+        List<dynamic> responses = await Future.wait(requestFutures);
+
+        for (var response in responses) {
           var data = jsonDecode(response);
           print(data["status"]);
         }
-        catch(e){
-          print(e);
-        }
-        finally{
 
-        }
-      });
-      // for (int i = 0; i < itemsImageData.length; i++) {
-      //   var convert = await itemsImageData.values.elementAt(i).readAsBytesSync();
-      //   var response = await MyApi().uploadItem(
-      //       deliveryId: deliveryId, image: await base64String(convert), itemId: );
-      //   var data = jsonDecode(response);
-      //   print(data["status"]);
+        itemsImageData.clear();
+      } catch (e) {
+        print(e);
+      }
+      finally{
+        isItemImageUploaded(false);
+      }
+
+      // isItemImageUploaded(true);
+      // for(int i=0; i<itemsImageData.length; i++){
+      //   print(itemsImageData);
+      //   print(itemsImageData[i]);
+      //   try{
+      //     var convert = await itemsImageData[i].value.readAsBytesSync();
+      //     print(convert);
+      //     var response = await MyApi().uploadItem(
+      //         deliveryId: deliveryId, image: await base64String(convert), itemId: itemsImageData[i].key);
+      //     var data = jsonDecode(response);
+      //     print(data["status"]);
+      //   }
+      //   catch(e){
+      //     print(e);
+      //   }
+      //   finally{
+      //     itemsImageData.clear();
+      //   }
       // }
+      // isItemImageUploaded(false);
     }
   }
+  uploadQuantity({required deliveryId}) async {
+    if (itemsQuantityData.isEmpty) {
+      print(itemsQuantityData.length);
+      print('no Quantity');
+    } else {
+      try {
+        List<Future> requestFutures = [];
+        for (int i = 0; i < itemsQuantityData.length; i++) {
+          var requestFuture = MyApi().uploadQuantity(
+            deliveryId: deliveryId,
+            itemId: itemsQuantityData[i].key,
+            qty: itemsQuantityData[i].value,
+          );
+
+          requestFutures.add(requestFuture);
+        }
+        List<dynamic> responses = await Future.wait(requestFutures);
+
+        for (var response in responses) {
+          print(response);
+          var data = jsonDecode(response);
+          print(data["status"]);
+        }
+        itemsQuantityData.clear();
+      } catch (e) {
+        print(e);
+      }
+      ///////////////////////////////////////
+      // isItemQuantityUploaded(true);
+      // for(int i=0; i<itemsQuantityData.length; i++){
+      //   print(itemsQuantityData);
+      //   print(itemsQuantityData[i]);
+      //   print(i);
+      //   try{
+      //     var response = await MyApi().uploadQuantity(
+      //       deliveryId: deliveryId,
+      //       itemId: itemsQuantityData[i].key,
+      //       qty: itemsQuantityData[i].value
+      //     );
+      //    print(response);
+      //     var data = jsonDecode(response);
+      //     print(data["status"]);
+      //   }
+      //   catch(e){
+      //     print(e);
+      //   }
+      //   finally{
+      //     itemsQuantityData.clear();
+      //   }
+      // }
+      // isItemQuantityUploaded(false);
+    }
+  }
+
+
   uploadImage({deliveryId, image}) async {
     var convert = await image.readAsBytesSync();
     try {

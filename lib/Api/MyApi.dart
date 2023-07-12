@@ -114,6 +114,13 @@ class MyApi {
     return response.body;
   }
 
+  uploadQuantity({deliveryId, qty, itemId}) async{
+    var url = "${BASE_URL}method=updatedeliveryitem&qty=$qty&itemid=$itemId&driverid=1";
+    print(url);
+    var response = await http.get(Uri.parse(url));
+    return response.body;
+  }
+
   uploadSignatureMultiPort({deliveryId, signature}) async {
     var request = http.MultipartRequest(
         "POST", Uri.parse(BASE_URL + "method=uploadsignature"));

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_delivery/Constant/Colors.dart';
@@ -14,6 +15,7 @@ class ItemDesign extends StatefulWidget {
   var orderController;
   var onImageSelect;
   var onQuantitySelected;
+  var quantityController = TextEditingController();
 
   @override
   State<ItemDesign> createState() => _ItemDesignState();
@@ -24,6 +26,7 @@ class _ItemDesignState extends State<ItemDesign> {
 
   @override
   Widget build(BuildContext context) {
+    widget.quantityController.text =  widget.item!.qty.toString();
     return Container(
       width: Get.width,
       padding: EdgeInsets.symmetric(vertical: height * 0.007, horizontal: height * 0.010),
@@ -59,16 +62,58 @@ class _ItemDesignState extends State<ItemDesign> {
                     fontSize: height * 0.015),
                 textAlign: TextAlign.center,
               )),
+          // Expanded(
+          //     flex: 1,
+          //     child: Text(
+          //       "${widget.item!.qty ?? ''}",
+          //       style: TextStyle(
+          //           color: textColor,
+          //           fontWeight: FontWeight.w300,
+          //           fontSize: height * 0.015),
+          //       textAlign: TextAlign.center,
+          //     )),
           Expanded(
               flex: 1,
-              child: Text(
-                "${widget.item!.qty ?? ''}",
-                style: TextStyle(
-                    color: textColor,
-                    fontWeight: FontWeight.w300,
-                    fontSize: height * 0.015),
-                textAlign: TextAlign.center,
-              )),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: height * 0.015),
+                child: TextField(
+                  controller: widget.quantityController,
+                   textAlign: TextAlign.center,
+                   keyboardType: TextInputType.numberWithOptions(decimal: false),
+                   onChanged: widget.onQuantitySelected,
+                   cursorColor: alterColor,
+                   inputFormatters: [
+                     FilteringTextInputFormatter.allow(RegExp('[0-9.,]'))
+                   ],
+                   decoration: InputDecoration(
+                     border: UnderlineInputBorder(
+                       borderSide: BorderSide(
+                         color: alterColor
+                       ),
+
+                     ),
+                     focusedBorder: UnderlineInputBorder(
+                       borderSide: BorderSide(
+                           color: alterColor
+                       ),
+
+                     ),
+                   ),
+                  style: TextStyle(
+                          color: textColor,
+                          fontWeight: FontWeight.w300,
+                          fontSize: height * 0.015),
+                ),
+              ),
+              // child: Text(
+              //   "${widget.item!.qty ?? ''}",
+              //   style: TextStyle(
+              //       color: textColor,
+              //       fontWeight: FontWeight.w300,
+              //       fontSize: height * 0.015),
+              //   textAlign: TextAlign.center,
+              // )
+          ),
           GestureDetector(
             onTap: () async {
               widget.image = await getFromCamera();
@@ -103,6 +148,7 @@ class _ItemDesignState extends State<ItemDesign> {
   Future<File?> getFromCamera() async {
     var pickedFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
+      imageQuality: 60,
     );
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path);
