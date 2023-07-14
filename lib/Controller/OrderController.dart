@@ -196,15 +196,35 @@ class OrderController extends GetxController {
             break;
           }
         }
-      } else {
+      }
+      else {
         setCurrentOrder(
           order: todoList.last,
         );
         updateDeliveryDetails('0 left to deliver');
         todoList.removeLast();
         todoList.refresh();
+
+        if(todoList.isEmpty){
+          setCurrentOrder(order: Rows(deliveryid: 0));
+          itemsQuantityData.clear();
+          itemsImageData.clear();
+          deliveryItems.clear();
+          update();
+        }
         return;
       }
+      print('no orders remaining temp ');
+      print(todoList.length);
+    }
+
+    else{
+      print('no orders remaining');
+      setCurrentOrder(order: Rows(deliveryid: 0));
+      itemsQuantityData.clear();
+      itemsImageData.clear();
+      deliveryItems.clear();
+      update();
     }
   }
 

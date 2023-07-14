@@ -24,6 +24,7 @@ class NewOrderRunningScreen extends StatelessWidget {
       onWillPop: () async {
         orderController.itemsImageData.clear();
         orderController.itemsQuantityData.clear();
+        orderController.deliveryItems.clear();
         await orderController.refreshOrder();
         return true;
       },
@@ -40,7 +41,7 @@ class NewOrderRunningScreen extends StatelessWidget {
               onPressed: () {
                 Get.back();
               }),
-          title: Text(
+          title: Obx(() =>  Text(
             orderController.currentOrder.value == null
                 ? "Current Order"
                 : orderController.getCurrentOrder().deliveryrefno,
@@ -49,17 +50,17 @@ class NewOrderRunningScreen extends StatelessWidget {
                 fontSize: height * 0.025,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2.5),
-          ),
+          ),)
         ),
         body: Obx(() =>  ModalProgressHUD(
           inAsyncCall: orderController.isItemImageUploaded.value,
           child: Container(
             height: Get.height,
-            child: Obx(() => orderController.currentOrder.value == null
+            child: Obx(() => orderController.getCurrentOrder().deliveryid == 0
                 ? SizedBox()
                 : Container(
-              height: Get.height,
-              child: Column(
+                height: Get.height,
+                child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -114,8 +115,8 @@ class NewOrderRunningScreen extends StatelessWidget {
                                   color: alterColor,
                                   fontSize: height * 0.018),
                             ),
-                            TextButton(
-                              onPressed: () async {
+                            GestureDetector(
+                              onTap: () async {
                                 await orderController.getLocation();
                                 await orderController.launchMapViaAddress(
                                     orderController
@@ -140,16 +141,17 @@ class NewOrderRunningScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        statusView(
-                            deliveryId: orderController
-                                .getCurrentOrder()
-                                .statusid!),
+                        // statusView(
+                        //     deliveryId: orderController
+                        //         .getCurrentOrder()
+                        //         .statusid!),
                       ],
                     ),
                   ),
-                  !orderController.isDeliveryItemLoaded.value
+
+                  (!orderController.isDeliveryItemLoaded.value
                       ? tableHeader()
-                      : SizedBox(),
+                      : SizedBox()),
                   !orderController.isDeliveryItemLoaded.value
                       ? (orderController
                       .deliveryItems.isNotEmpty ? Expanded(
@@ -200,13 +202,13 @@ class NewOrderRunningScreen extends StatelessWidget {
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: height * 0.010),
-                      margin: EdgeInsets.symmetric(vertical: height * 0.005, horizontal: height * 0.020),
+                      margin: EdgeInsets.symmetric(vertical: height * 0.010, horizontal: height * 0.030),
                       decoration: BoxDecoration(
                           color: alterColor,
                           borderRadius: BorderRadius.circular(height * 0.010)
                       ),
                       alignment: Alignment.center,
-                      child: Text("Upload Items", style: TextStyle(color: appbackgroundColor, fontSize: 18, fontWeight: FontWeight.bold),),
+                      child: Text("Update Items", style: TextStyle(color: appbackgroundColor, fontWeight: FontWeight.bold),),
                     ),
                   ) : SizedBox()
                 ],

@@ -78,6 +78,7 @@ class _ItemDesignState extends State<ItemDesign> {
                 padding: EdgeInsets.symmetric(horizontal: height * 0.015),
                 child: TextField(
                   controller: widget.quantityController,
+                   autofocus: true,
                    textAlign: TextAlign.center,
                    keyboardType: TextInputType.numberWithOptions(decimal: false),
                    onChanged: widget.onQuantitySelected,
