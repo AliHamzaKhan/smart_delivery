@@ -26,7 +26,7 @@ class _ItemDesignState extends State<ItemDesign> {
 
   @override
   Widget build(BuildContext context) {
-    widget.quantityController.text =  widget.item!.qty.toString();
+    // widget.quantityController.text =  widget.item!.qty.toString();
     return Container(
       width: Get.width,
       padding: EdgeInsets.symmetric(vertical: height * 0.007, horizontal: height * 0.010),
@@ -62,6 +62,55 @@ class _ItemDesignState extends State<ItemDesign> {
                     fontSize: height * 0.015),
                 textAlign: TextAlign.center,
               )),
+          
+
+          Expanded(child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: (){
+                  setState(() {
+                    widget.item!.qty =  widget.item!.qty! + 1 ;
+                    widget.onQuantitySelected(widget.item!.qty!);
+                  });
+
+                },
+                child: Container(
+                  // width: Get.height * 0.015,
+                  // height: Get.height * 0.020,
+                  color: subBackgroundColor,
+                  child: Text('+', style: TextStyle(color: alterColor, fontSize: height * 0.020),),
+                ),
+              ),
+              Text(
+                "${widget.item!.qty ?? ''}",
+                style: TextStyle(
+                    color: textColor,
+                    fontWeight: FontWeight.w300,
+                    fontSize: height * 0.015),
+                textAlign: TextAlign.center,
+              ),
+              GestureDetector(
+                onTap: (){
+                  if(widget.item!.qty! <= 0){
+                    return;
+                  }
+                  setState(() {
+                    widget.item!.qty =  widget.item!.qty! - 1 ;
+                    widget.onQuantitySelected(widget.item!.qty!);
+                  });
+
+                },
+                child: Container(
+                  // width: Get.height * 0.015,
+                  // height: Get.height * 0.020,
+                  color: subBackgroundColor,
+                  child: Text('−', style: TextStyle(color: alterColor, fontSize: height * 0.020),),
+                ),
+              ),
+            ],
+          )),
           // Expanded(
           //     flex: 1,
           //     child: Text(
@@ -72,49 +121,54 @@ class _ItemDesignState extends State<ItemDesign> {
           //           fontSize: height * 0.015),
           //       textAlign: TextAlign.center,
           //     )),
-          Expanded(
-              flex: 1,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: height * 0.015),
-                child: TextField(
-                  controller: widget.quantityController,
-                   autofocus: true,
-                   textAlign: TextAlign.center,
-                   keyboardType: TextInputType.numberWithOptions(decimal: false),
-                   onChanged: widget.onQuantitySelected,
-                   cursorColor: alterColor,
-                   inputFormatters: [
-                     FilteringTextInputFormatter.allow(RegExp('[0-9.,]'))
-                   ],
-                   decoration: InputDecoration(
-                     border: UnderlineInputBorder(
-                       borderSide: BorderSide(
-                         color: alterColor
-                       ),
 
-                     ),
-                     focusedBorder: UnderlineInputBorder(
-                       borderSide: BorderSide(
-                           color: alterColor
-                       ),
 
-                     ),
-                   ),
-                  style: TextStyle(
-                          color: textColor,
-                          fontWeight: FontWeight.w300,
-                          fontSize: height * 0.015),
-                ),
-              ),
-              // child: Text(
-              //   "${widget.item!.qty ?? ''}",
-              //   style: TextStyle(
-              //       color: textColor,
-              //       fontWeight: FontWeight.w300,
-              //       fontSize: height * 0.015),
-              //   textAlign: TextAlign.center,
-              // )
-          ),
+
+          // Expanded(
+          //     flex: 1,
+          //     child: Padding(
+          //       padding: EdgeInsets.symmetric(horizontal: height * 0.015),
+          //       child: TextField(
+          //           controller: widget.quantityController,
+          //          autofocus: true,
+          //
+          //          textAlign: TextAlign.center,
+          //          keyboardType: TextInputType.numberWithOptions(decimal: false),
+          //          onChanged: widget.onQuantitySelected,
+          //          cursorColor: alterColor,
+          //          inputFormatters: [
+          //            FilteringTextInputFormatter.allow(RegExp('[0-9.,]'))
+          //          ],
+          //          decoration: InputDecoration(
+          //            hintText: widget.item!.qty.toString(),
+          //            border: UnderlineInputBorder(
+          //              borderSide: BorderSide(
+          //                color: alterColor
+          //              ),
+          //
+          //            ),
+          //            focusedBorder: UnderlineInputBorder(
+          //              borderSide: BorderSide(
+          //                  color: alterColor
+          //              ),
+          //
+          //            ),
+          //          ),
+          //         style: TextStyle(
+          //                 color: textColor,
+          //                 fontWeight: FontWeight.w300,
+          //                 fontSize: height * 0.015),
+          //       ),
+          //     ),
+          //     // child: Text(
+          //     //   "${widget.item!.qty ?? ''}",
+          //     //   style: TextStyle(
+          //     //       color: textColor,
+          //     //       fontWeight: FontWeight.w300,
+          //     //       fontSize: height * 0.015),
+          //     //   textAlign: TextAlign.center,
+          //     // )
+          // ),
           GestureDetector(
             onTap: () async {
               widget.image = await getFromCamera();

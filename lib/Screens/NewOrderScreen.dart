@@ -98,40 +98,67 @@ class NewOrderScreen extends StatelessWidget {
           padding: EdgeInsets.all(height * 0.010),
           child: Column(
             children: [
-              // Obx(
-              //   () => (orderController.isFirstOrder.value
-              //       /*&&  orderController.getCurrentOrder().deliveryrefno !=  null*/)
-              //       ?
-                Obx(() =>orderController.todosMenu.value=='ToDo' ? (orderController.todoList.isNotEmpty ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: height * 0.050),
-                  child: TextButton(
-                      onPressed: () async {
-                        await orderController.getTodo();
-                        Get.to(() => NewOrderRunningScreen(
-                          orderController: orderController,
-                        ));
-                        // orderController.isFirstOrder(false);
-                      },
-                      style: TextButton.styleFrom(
-                          backgroundColor: alterColor,
-                          foregroundColor: alterColor,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.circular(height * 0.010))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("START",
-                              style: TextStyle(
-                                  color: subBackgroundColor,
-                                  fontWeight: FontWeight.bold)),
-                          Icon(Icons.fast_forward_outlined,
-                              color: subBackgroundColor)
-                        ],
-                      )),
-                ) : SizedBox()) : SizedBox()),
-              //       : SizedBox(),
-              // ),
+                // Obx(() =>orderController.todosMenu.value=='ToDo' ? (orderController.todoList.isNotEmpty ? Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: height * 0.050),
+                //   child: TextButton(
+                //       onPressed: () async {
+                //         await orderController.getTodo();
+                //         Get.to(() => NewOrderRunningScreen(
+                //           orderController: orderController,
+                //         ));
+                //         // orderController.isFirstOrder(false);
+                //       },
+                //       style: TextButton.styleFrom(
+                //           backgroundColor: alterColor,
+                //           foregroundColor: alterColor,
+                //           shape: RoundedRectangleBorder(
+                //               borderRadius:
+                //               BorderRadius.circular(height * 0.010))),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Text("START",
+                //               style: TextStyle(
+                //                   color: subBackgroundColor,
+                //                   fontWeight: FontWeight.bold)),
+                //           Icon(Icons.fast_forward_outlined,
+                //               color: subBackgroundColor)
+                //         ],
+                //       )),
+                // ) : SizedBox()) : SizedBox()),
+                //
+
+
+
+              Obx(() =>orderController.todosMenu.value=='ToDo' ? (orderController.todoList.isNotEmpty ? Padding(
+                padding: EdgeInsets.symmetric(horizontal: height * 0.050),
+                child: TextButton(
+                    onPressed: () async {
+                      await orderController.getTodo();
+                      Get.to(() => NewOrderRunningScreen(
+                        orderController: orderController,
+                      ));
+                      // orderController.isFirstOrder(false);
+                    },
+                    style: TextButton.styleFrom(
+                        backgroundColor: alterColor,
+                        foregroundColor: alterColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                            BorderRadius.circular(height * 0.010))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("START",
+                            style: TextStyle(
+                                color: subBackgroundColor,
+                                fontWeight: FontWeight.bold)),
+                        Icon(Icons.fast_forward_outlined,
+                            color: subBackgroundColor)
+                      ],
+                    )),
+              ) : SizedBox()) : SizedBox()),
+
               Expanded(
                   child: Obx(() => !orderController.isOrderLoaded.value
                       ? (orderController.todosMenu.value != "All"

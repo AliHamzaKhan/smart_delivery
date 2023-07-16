@@ -64,181 +64,223 @@ class NewOrderRunningScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        color: subBackgroundColor,
-                        borderRadius:
-                        BorderRadius.circular(height * 0.020)),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: height * 0.020,
-                        vertical: height * 0.020),
-                    margin: EdgeInsets.symmetric(
-                        horizontal: height * 0.005,
-                        vertical: height * 0.010),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Text(
-                        //   orderController.getCurrentOrder().deliveryrefno,
-                        //   style: TextStyle(
-                        //       color: alterColor,
-                        //       fontSize: height * 0.030,
-                        //       fontWeight: FontWeight.bold),
-                        // ),
-                        SizedBox(height: height * 0.010),
-                        Text(
-                          orderController
-                              .getCurrentOrder()
-                              .deliveryaddress!,
-                          style: TextStyle(
-                              color: textColor, fontSize: height * 0.020),
-                        ),
-
-                        Text(
-                          orderController.getCurrentOrder().notesfordriver!,
-                          style: TextStyle(
-                              color: textColor, fontSize: height * 0.018),
-                        ),
-                        SizedBox(height: height * 0.005),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              DistanceCal()
-                                  .kmToMm(orderController
-                                  .getCurrentOrder()
-                                  .distance!)
-                                  .toStringAsFixed(1) +
-                                  " Km",
-                              style: TextStyle(
-                                  color: alterColor,
-                                  fontSize: height * 0.018),
-                            ),
-                            GestureDetector(
-                              onTap: () async {
-                                await orderController.getLocation();
-                                await orderController.launchMapViaAddress(
-                                    orderController
-                                        .getCurrentOrder()!
-                                        .deliveryaddress!);
-                              },
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "Map ",
-                                    style: TextStyle(
-                                        color: alterColor,
-                                        fontSize: height * 0.017),
-                                  ),
-                                  Icon(
-                                    Icons.location_on_outlined,
-                                    color: alterColor,
-                                    size: height * 0.018,
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        // statusView(
-                        //     deliveryId: orderController
-                        //         .getCurrentOrder()
-                        //         .statusid!),
-                      ],
-                    ),
-                  ),
-
-                  (!orderController.isDeliveryItemLoaded.value
-                      ? tableHeader()
-                      : SizedBox()),
-                  !orderController.isDeliveryItemLoaded.value
-                      ? (orderController
-                      .deliveryItems.isNotEmpty ? Expanded(
-                      child: ListView.builder(
-                          itemCount: orderController
-                              .deliveryItems.length,
-                          itemBuilder: (context, index) {
-                            return ItemDesign(
-                              item: ItemData(
-                                  deliveryid: orderController
-                                      .deliveryItems[index].deliveryid,
-                                  itemId: orderController
-                                      .deliveryItems[index].itemId,
-                                  itemName: orderController
-                                      .deliveryItems[index].itemName,
-                                  itemUnit: orderController
-                                      .deliveryItems[index].itemUnit,
-                                  qty: orderController
-                                      .deliveryItems[index].qty),
-                              orderController: orderController,
-                              onImageSelect: (file) {
-                                if (file != null) {
-                                  orderController.itemsImageData.add(TempItem(
-                                      key: orderController.deliveryItems[index].itemId!,
-                                      value: file
-                                  ));
-                                  print(file);
-                                  print(orderController.itemsImageData.length);
-                                }
-                              },
-                              onQuantitySelected: (quantity){
-
-                                orderController.itemsQuantityData.add(TempItem(
-                                    key: orderController.deliveryItems[index].itemId!,
-                                    value: quantity
-                                ));
-                                print(orderController.itemsQuantityData.length);
-                                print(quantity);
-                              },
-                            );
-                          })) : Text('no items'))
-                      : SizedBox(),
-                  !orderController.isDeliveryItemLoaded.value ?
+                  orderController.isViewFullDetailsOpen.value ? 
                   GestureDetector(
-                    onTap: () async{
-                      await  orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
-                      await orderController.uploadQuantity(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                    onTap: (){
+                      orderController.isViewFullDetailsOpen.value = !orderController.isViewFullDetailsOpen.value;
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: height * 0.010),
-                      margin: EdgeInsets.symmetric(vertical: height * 0.010, horizontal: height * 0.030),
                       decoration: BoxDecoration(
-                          color: alterColor,
-                          borderRadius: BorderRadius.circular(height * 0.010)
+                          color: subBackgroundColor,
+                          borderRadius:
+                          BorderRadius.circular(height * 0.020)),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: height * 0.020,
+                          vertical: height * 0.020),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: height * 0.005,
+                          vertical: height * 0.005),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Text(
+                          //   orderController.getCurrentOrder().deliveryrefno,
+                          //   style: TextStyle(
+                          //       color: alterColor,
+                          //       fontSize: height * 0.030,
+                          //       fontWeight: FontWeight.bold),
+                          // ),
+                          SizedBox(height: height * 0.010),
+                          Text(
+                            orderController
+                                .getCurrentOrder()
+                                .deliveryaddress!,
+                            style: TextStyle(
+                                color: textColor, fontSize: height * 0.020),
+                          ),
+
+                          Text(
+                            orderController.getCurrentOrder().notesfordriver!,
+                            style: TextStyle(
+                                color: textColor, fontSize: height * 0.018),
+                          ),
+                          SizedBox(height: height * 0.005),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                DistanceCal()
+                                    .kmToMm(orderController
+                                    .getCurrentOrder()
+                                    .distance!)
+                                    .toStringAsFixed(1) +
+                                    " Km",
+                                style: TextStyle(
+                                    color: alterColor,
+                                    fontSize: height * 0.018),
+                              ),
+                              GestureDetector(
+                                onTap: () async {
+                                  await orderController.getLocation();
+                                  await orderController.launchMapViaAddress(
+                                      orderController
+                                          .getCurrentOrder()!
+                                          .deliveryaddress!);
+                                },
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Map ",
+                                      style: TextStyle(
+                                          color: alterColor,
+                                          fontSize: height * 0.017),
+                                    ),
+                                    Icon(
+                                      Icons.location_on_outlined,
+                                      color: alterColor,
+                                      size: height * 0.018,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          // statusView(
+                          //     deliveryId: orderController
+                          //         .getCurrentOrder()
+                          //         .statusid!),
+                        ],
                       ),
-                      alignment: Alignment.center,
-                      child: Text("Update Items", style: TextStyle(color: appbackgroundColor, fontWeight: FontWeight.bold),),
                     ),
-                  ) : SizedBox()
+                  ) : 
+                  GestureDetector(
+                    onTap: (){
+                      orderController.isViewFullDetailsOpen.value = !orderController.isViewFullDetailsOpen.value;
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: height * 0.020,
+                          vertical: height * 0.020),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: height * 0.005,
+                          vertical: height * 0.010),
+                      decoration: BoxDecoration(
+                          color: subBackgroundColor,
+                          borderRadius:
+                          BorderRadius.circular(height * 0.020)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('View Details', style: TextStyle(
+                              color: alterColor, fontSize: height * 0.020, fontWeight: FontWeight.bold)),
+                          Icon(Icons.arrow_drop_down,   color: alterColor, size: height * 0.030)
+                        ],
+                      ),
+                    ),
+                  ),
+                  Obx(()=>Container(
+                    height: height * 0.10,
+                    child: orderController.isStatusLoaded.value
+                        ? SizedBox(
+                      height: height * 0.020,
+                      child: Padding(
+                        padding: EdgeInsets.all(height * 0.010),
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color: alterColor,
+                          ),
+                        ),
+                      ),
+                    )
+                        : Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: height * 0.010,
+                      ),
+                      margin: EdgeInsets.symmetric(horizontal: height * 0.010),
+                      child: checkValue(
+                          orderController.getCurrentOrder().statusid, context),
+                    ),
+                  )),
+
+
+                  GetBuilder<OrderController>(builder: (controller){
+                    return !orderController.isDeliveryItemLoaded.value ?
+                    (orderController.getCurrentOrder()!.statusid == 8 ? Expanded(child: Column(
+                      children: [
+                        tableHeader(),
+                        (orderController.deliveryItems.isNotEmpty ? Expanded(
+                            child: ListView.builder(
+                                itemCount: orderController
+                                    .deliveryItems.length,
+                                itemBuilder: (context, index) {
+                                  return ItemDesign(
+                                    item: ItemData(
+                                        deliveryid: orderController
+                                            .deliveryItems[index].deliveryid,
+                                        itemId: orderController
+                                            .deliveryItems[index].itemId,
+                                        itemName: orderController
+                                            .deliveryItems[index].itemName,
+                                        itemUnit: orderController
+                                            .deliveryItems[index].itemUnit,
+                                        qty: orderController
+                                            .deliveryItems[index].qty),
+                                    orderController: orderController,
+                                    onImageSelect: (file) {
+                                      if (file != null) {
+                                        orderController.itemsImageData.add(TempItem(
+                                            key: orderController.deliveryItems[index].itemId!,
+                                            value: file
+                                        ));
+                                        print(file);
+                                        print(orderController.itemsImageData.length);
+                                      }
+                                    },
+                                    onQuantitySelected: (quantity){
+
+                                      orderController.itemsQuantityData.add(TempItem(
+                                          key: orderController.deliveryItems[index].itemId!,
+                                          value: quantity
+                                      ));
+                                      print(orderController.itemsQuantityData.length);
+                                      print(quantity);
+                                    },
+                                  );
+                                })) : Text('no items'))
+                      ],
+                    )) : SizedBox()) : SizedBox();
+                  })
+
                 ],
               ),
             )),
           ),
         )),
-        bottomNavigationBar: Obx(()=>Container(
-          height: height * 0.10,
-          child: orderController.isStatusLoaded.value
-              ? SizedBox(
-            height: height * 0.030,
-            child: Padding(
-              padding: EdgeInsets.all(height * 0.020),
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: alterColor,
+          bottomNavigationBar : GetBuilder<OrderController>(
+            builder: (controller){
+              return !orderController.isDeliveryItemLoaded.value ?
+              (orderController.getCurrentOrder()!.statusid == 8 ? GestureDetector(
+                onTap: () async{
+                  await  orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                  await orderController.uploadQuantity(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                },
+                child: Container(
+                  height: height * 0.050,
+                  padding: EdgeInsets.symmetric(vertical: height * 0.015),
+                  margin: EdgeInsets.symmetric(vertical: height * 0.010, horizontal: height * 0.030),
+                  decoration: BoxDecoration(
+                      color: alterColor,
+                      borderRadius: BorderRadius.circular(height * 0.010)
+                  ),
+                  alignment: Alignment.center,
+                  child: Text("Update Items",
+                    style: TextStyle(color: appbackgroundColor, fontWeight: FontWeight.bold),),
                 ),
-              ),
-            ),
-          )
-              : Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: height * 0.020,
-            ),
-            margin: EdgeInsets.symmetric(horizontal: height * 0.010),
-            child: checkValue(
-                orderController.getCurrentOrder().statusid, context),
+              ) : SizedBox())
+                  : SizedBox();
+            },
           ),
-        )),
       ),
     );
   }
@@ -251,6 +293,7 @@ class NewOrderRunningScreen extends StatelessWidget {
   }
 
   checkValue(value, context) {
+    print(orderController.getCurrentOrder()!.statusid);
     switch (value) {
       case 3:
         return Row(

@@ -18,7 +18,7 @@ import '../main.dart';
 
 class OrderController extends GetxController {
   var scaffoldKey;
-
+  var isViewFullDetailsOpen = true.obs;
   var todosMenu = "ToDo".obs;
   var deliveryStatus = "0 deliveries".obs;
   var failedReasons = "Shortage".obs;
