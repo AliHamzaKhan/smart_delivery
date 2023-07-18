@@ -8,15 +8,18 @@ import '../Model/Task.dart';
 import '../Utils/DistanceCal.dart';
 
 class DeliveryOrderDesign extends StatelessWidget {
-  DeliveryOrderDesign({Key? key, this.order, this.onTap,required this.orderController }) : super(key: key);
+  DeliveryOrderDesign({Key? key, this.order, this.onTap,required this.orderController, this.isResetButton = false , this.onResetClick}) : super(key: key);
   Rows? order;
   var onTap;
   OrderController orderController;
   var height = Get.height;
+  bool isResetButton;
+  var onResetClick;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      key: key,
       onTap: onTap,
       child: Container(
           padding: EdgeInsets.symmetric(
@@ -126,6 +129,8 @@ class DeliveryOrderDesign extends StatelessWidget {
                   ),
                 ],
               ),
+              if(isResetButton)
+              TextButton(onPressed: onResetClick, child: Text('Reset Order', style: TextStyle(color: Colors.redAccent, fontSize:  height * 0.020),)),
             ],
           ),
           decoration: BoxDecoration(

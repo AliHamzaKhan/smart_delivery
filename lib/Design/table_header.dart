@@ -24,7 +24,7 @@ tableHeader(){
         ),
         Expanded(flex: 3, child: Text('ITEM',  style: TextStyle(color: alterColor, fontWeight: FontWeight.bold, fontSize: height * 0.018), textAlign: TextAlign.left,)),
         Expanded(flex: 1, child: Text('UNIT', style: TextStyle(color: alterColor, fontWeight: FontWeight.bold, fontSize:  height * 0.018), textAlign: TextAlign.center,)),
-        Expanded(flex: 1, child: Text('QTY', style: TextStyle(color: alterColor, fontWeight: FontWeight.bold, fontSize:  height * 0.018), textAlign: TextAlign.center,)),
+        Expanded(flex: 2, child: Text('QTY', style: TextStyle(color: alterColor, fontWeight: FontWeight.bold, fontSize:  height * 0.018), textAlign: TextAlign.center,)),
         Container(
           width: height * 0.050,
           height: height * 0.050,

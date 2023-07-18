@@ -121,6 +121,13 @@ class MyApi {
     return response.body;
   }
 
+  reOrderList({deliveryid, visitorder}) async{
+    var url = "${BASE_URL}method=updatedeliveryinfo&deliveryid=$deliveryid&visitorder=$visitorder";
+    print(url);
+    var response = await http.get(Uri.parse(url));
+    return response.body;
+  }
+
   uploadSignatureMultiPort({deliveryId, signature}) async {
     var request = http.MultipartRequest(
         "POST", Uri.parse(BASE_URL + "method=uploadsignature"));

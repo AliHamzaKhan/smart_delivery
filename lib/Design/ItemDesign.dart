@@ -64,11 +64,14 @@ class _ItemDesignState extends State<ItemDesign> {
               )),
           
 
-          Expanded(child: Row(
+          Expanded(
+              flex: 2,
+              child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
+
                 onTap: (){
                   setState(() {
                     widget.item!.qty =  widget.item!.qty! + 1 ;
@@ -76,20 +79,43 @@ class _ItemDesignState extends State<ItemDesign> {
                   });
 
                 },
+                behavior: HitTestBehavior.opaque,
                 child: Container(
                   // width: Get.height * 0.015,
                   // height: Get.height * 0.020,
-                  color: subBackgroundColor,
-                  child: Text('+', style: TextStyle(color: alterColor, fontSize: height * 0.020),),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: height * 0.005
+                  ),
+                  color: appbackgroundColor,
+                  child: Text('+', style: TextStyle(color: alterColor, fontSize: height * 0.030),),
                 ),
               ),
-              Text(
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: height * 0.010
+                ),
+                child : AnimatedSwitcher(
+                  duration: Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<double> animation){
+                      return SlideTransition(
+                        child: child,
+                        position: Tween<Offset>(
+                            begin: Offset(0.0, -0.5),
+                            end: Offset(0.0, 0.0))
+                            .animate(animation),
+                      );
+                    },
+                  child: Text(
                 "${widget.item!.qty ?? ''}",
-                style: TextStyle(
-                    color: textColor,
-                    fontWeight: FontWeight.w300,
-                    fontSize: height * 0.015),
-                textAlign: TextAlign.center,
+                    key: ValueKey<String>(widget.item!.qty.toString()),
+                  style: TextStyle(
+                      color: textColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: height * 0.025),
+                  textAlign: TextAlign.center,
+                ),
+                ),
+
               ),
               GestureDetector(
                 onTap: (){
@@ -102,11 +128,18 @@ class _ItemDesignState extends State<ItemDesign> {
                   });
 
                 },
+                behavior: HitTestBehavior.opaque,
                 child: Container(
                   // width: Get.height * 0.015,
                   // height: Get.height * 0.020,
-                  color: subBackgroundColor,
-                  child: Text('−', style: TextStyle(color: alterColor, fontSize: height * 0.020),),
+                  margin: EdgeInsets.only(
+                    right: height * 0.005
+                  ),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: height * 0.005
+                  ),
+                  color: appbackgroundColor,
+                  child: Text('−', style: TextStyle(color: alterColor, fontSize: height * 0.030),),
                 ),
               ),
             ],
@@ -185,7 +218,7 @@ class _ItemDesignState extends State<ItemDesign> {
                 size: height * 0.040,
               )
                   : ClipRRect(
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(height * 0.005),
                     child: Image.file(
                 widget.image!,
                 width: height * 0.040,

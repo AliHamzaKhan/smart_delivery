@@ -274,8 +274,8 @@ class NewOrderRunningScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(height * 0.010)
                   ),
                   alignment: Alignment.center,
-                  child: Text("Update Items",
-                    style: TextStyle(color: appbackgroundColor, fontWeight: FontWeight.bold),),
+                  child: Text("Update ${orderController.deliveryItems.length} Items",
+                    style: TextStyle(color: appbackgroundColor, fontWeight: FontWeight.bold, fontSize: height * 0.017),),
                 ),
               ) : SizedBox())
                   : SizedBox();

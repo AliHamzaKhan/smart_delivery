@@ -10,6 +10,7 @@ import 'package:signature/signature.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Api/MyApi.dart';
 import '../Constant/Colors.dart';
+import '../Design/toast.dart';
 import '../Model/DeliveryItem.dart';
 import '../Model/Task.dart';
 import '../Model/temp_item.dart';
@@ -81,6 +82,9 @@ class OrderController extends GetxController {
       for (int i = 0; i < ordersList.length; i++) {
         if (ordersList[i].visitorderno == 0) {
           ordersList[i].visitorderno = i * 3;
+        }
+        else{
+          break;
         }
       }
       ordersList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
@@ -177,6 +181,25 @@ class OrderController extends GetxController {
     print('todoList ${todoList.length}');
     setCurrentOrder(order: todoList[0]);
     update();
+  }
+
+  reOrderVisit(int start, int current) async{
+    try{
+      var response = await MyApi().reOrderList(
+        deliveryid: todoList[start].deliveryid,
+        visitorder: current,
+      );
+      if(response['status'] == 'success'){
+        refreshOrder();
+      }
+      print(response);
+    }
+    catch(e){
+
+    }
+    finally{
+      
+    }
   }
 
   nextOrder() {
@@ -299,6 +322,12 @@ class OrderController extends GetxController {
         for (var response in responses) {
           var data = jsonDecode(response);
           print(data["status"]);
+          if(data["status"] == 'success'){
+            apiToast(Get.context, 'Images', data["status"] );
+          }
+         else{
+            apiToast(Get.context, 'Images', 'failed' );
+          }
         }
 
         itemsImageData.clear();
@@ -353,6 +382,12 @@ class OrderController extends GetxController {
           print(response);
           var data = jsonDecode(response);
           print(data["status"]);
+          if(data["status"] == 'success'){
+            apiToast(Get.context, 'Quantity', data["status"] );
+          }
+         else{
+            apiToast(Get.context, 'Quantity', 'failed' );
+          }
         }
         itemsQuantityData.clear();
       } catch (e) {
@@ -389,15 +424,22 @@ class OrderController extends GetxController {
   uploadImage({deliveryId, image}) async {
     var convert = await image.readAsBytesSync();
     try {
-      isStatusLoaded(true);
+      isItemImageUploaded(true);
       var response = await MyApi().uploadSignature(
           deliveryId: deliveryId, signature: await base64String(convert));
       var data = jsonDecode(response);
       print(data["status"]);
+      if(data["status"] == 'success'){
+        apiToast(Get.context, 'Image', data["status"] );
+      }
+      else{
+        apiToast(Get.context, 'Image', 'failed' );
+      }
+
     } catch (e) {
       print(e);
     } finally {
-      isStatusLoaded(false);
+      isItemImageUploaded(false);
       update();
     }
   }
@@ -416,14 +458,20 @@ class OrderController extends GetxController {
 
   uploadSignature({deliveryId}) async {
     try {
-      isStatusLoaded(true);
+      isItemImageUploaded(true);
       var response = await MyApi().uploadSignature(
           deliveryId: deliveryId, signature: await exportSignature());
       var data = jsonDecode(response);
       print(data["status"]);
+      if(data["status"] == 'success'){
+        apiToast(Get.context, 'Signature', data["status"] );
+      }
+      else{
+        apiToast(Get.context, 'Signature', data["status"] );
+      }
     } catch (e) {
     } finally {
-      isStatusLoaded(false);
+      isItemImageUploaded(false);
       signatureController.clear();
       update();
     }

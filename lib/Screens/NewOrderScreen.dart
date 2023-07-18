@@ -6,6 +6,7 @@ import '../../main.dart';
 import '../Controller/OrderController.dart';
 import '../Design/DeliveryOrderDesign.dart';
 import '../Design/NewOrderDrawer.dart';
+import '../Design/toast.dart';
 import 'NewOrderRunningScreen.dart';
 
 class NewOrderScreen extends StatelessWidget {
@@ -30,6 +31,7 @@ class NewOrderScreen extends StatelessWidget {
               icon: Icon(
                 Icons.menu,
                 color: alterColor,
+                size: height * 0.030,
               ),
               onPressed: () {
                 // orderController.openDrawer();
@@ -48,6 +50,7 @@ class NewOrderScreen extends StatelessWidget {
                 icon: Icon(
                   Icons.refresh,
                   color: alterColor,
+                  size: height * 0.030,
                 ),
                 onPressed: () async {
                   await orderController.refreshOrder();
@@ -71,12 +74,13 @@ class NewOrderScreen extends StatelessWidget {
                           value: Filter.All,
                           child: Text(
                             'All',
-                            style: TextStyle(color: textColor),
+                            style: TextStyle(color: textColor, fontSize: height * 0.018),
                           ),
                         ),
                         PopupMenuItem<Filter>(
                           value: Filter.ToDo,
-                          child: Text('ToDo', style: TextStyle(color: textColor)),
+                          child:
+                              Text('ToDo', style: TextStyle(color: textColor, fontSize: height * 0.018)),
                         ),
                       ],
                       color: subBackgroundColor,
@@ -98,80 +102,76 @@ class NewOrderScreen extends StatelessWidget {
           padding: EdgeInsets.all(height * 0.010),
           child: Column(
             children: [
-                // Obx(() =>orderController.todosMenu.value=='ToDo' ? (orderController.todoList.isNotEmpty ? Padding(
-                //   padding: EdgeInsets.symmetric(horizontal: height * 0.050),
-                //   child: TextButton(
-                //       onPressed: () async {
-                //         await orderController.getTodo();
-                //         Get.to(() => NewOrderRunningScreen(
-                //           orderController: orderController,
-                //         ));
-                //         // orderController.isFirstOrder(false);
-                //       },
-                //       style: TextButton.styleFrom(
-                //           backgroundColor: alterColor,
-                //           foregroundColor: alterColor,
-                //           shape: RoundedRectangleBorder(
-                //               borderRadius:
-                //               BorderRadius.circular(height * 0.010))),
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: [
-                //           Text("START",
-                //               style: TextStyle(
-                //                   color: subBackgroundColor,
-                //                   fontWeight: FontWeight.bold)),
-                //           Icon(Icons.fast_forward_outlined,
-                //               color: subBackgroundColor)
-                //         ],
-                //       )),
-                // ) : SizedBox()) : SizedBox()),
-                //
-
-
-
-              Obx(() =>orderController.todosMenu.value=='ToDo' ? (orderController.todoList.isNotEmpty ? Padding(
-                padding: EdgeInsets.symmetric(horizontal: height * 0.050),
-                child: TextButton(
-                    onPressed: () async {
-                      await orderController.getTodo();
-                      Get.to(() => NewOrderRunningScreen(
-                        orderController: orderController,
-                      ));
-                      // orderController.isFirstOrder(false);
-                    },
-                    style: TextButton.styleFrom(
-                        backgroundColor: alterColor,
-                        foregroundColor: alterColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(height * 0.010))),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("START",
-                            style: TextStyle(
-                                color: subBackgroundColor,
-                                fontWeight: FontWeight.bold)),
-                        Icon(Icons.fast_forward_outlined,
-                            color: subBackgroundColor)
-                      ],
-                    )),
-              ) : SizedBox()) : SizedBox()),
-
+              // Obx(
+              //   () => (orderController.isFirstOrder.value
+              //       /*&&  orderController.getCurrentOrder().deliveryrefno !=  null*/)
+              //       ?
+              Obx(() => orderController.todosMenu.value == 'ToDo'
+                  ? (orderController.todoList.isNotEmpty
+                      ? Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: height * 0.050),
+                          child: TextButton(
+                              onPressed: () async {
+                                await orderController.getTodo();
+                                Get.to(() => NewOrderRunningScreen(
+                                      orderController: orderController,
+                                    ));
+                                // orderController.isFirstOrder(false);
+                              },
+                              style: TextButton.styleFrom(
+                                  backgroundColor: alterColor,
+                                  foregroundColor: alterColor,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          height * 0.010))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("START",
+                                      style: TextStyle(
+                                          color: subBackgroundColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: height * 0.017
+                                      )),
+                                  Icon(Icons.fast_forward_outlined,
+                                      color: subBackgroundColor, size: height * 0.025,)
+                                ],
+                              )),
+                        )
+                      : SizedBox())
+                  : SizedBox()),
               Expanded(
                   child: Obx(() => !orderController.isOrderLoaded.value
                       ? (orderController.todosMenu.value != "All"
-                          ? ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              itemCount: orderController.todoList.length,
-                              itemBuilder: (context, index) {
-                                return DeliveryOrderDesign(
-                                  order: orderController.todoList[index],
-                                  onTap: () {},
-                                  orderController: orderController,
-                                );
-                              })
+                          ?
+                  ReorderableListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: orderController.todoList.length,
+                      itemBuilder: (context, index) {
+                        return DeliveryOrderDesign(
+                          key: Key("${orderController.todoList[index].visitorderno}"),
+                          order: orderController.todoList[index],
+                          onTap: () {
+                          },
+                          orderController: orderController,
+                        );
+                      },
+                      onReorder: (int start, int current) {
+                        orderController.reOrderVisit(start, current+1);
+                        print('start $start');
+                        print('current $current');
+                      })
+                       // ListView.builder(
+                  //             scrollDirection: Axis.vertical,
+                  //             itemCount: orderController.todoList.length,
+                  //             itemBuilder: (context, index) {
+                  //               return DeliveryOrderDesign(
+                  //                 order: orderController.todoList[index],
+                  //                 onTap: () {},
+                  //                 orderController: orderController,
+                  //               );
+                  //             })
                           : ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemCount: orderController.ordersList.length,
@@ -184,6 +184,8 @@ class NewOrderScreen extends StatelessWidget {
                                     // ));
                                   },
                                   orderController: orderController,
+                                  isResetButton: true,
+                                  onResetClick: (){},
                                 );
                               }))
                       : Center(
@@ -219,14 +221,13 @@ class NewOrderScreen extends StatelessWidget {
       ),
     );
   }
+
   Future<bool> onWillPop() {
     DateTime now = DateTime.now();
     if (currentBackPressTime == '' ||
         now.difference(currentBackPressTime) > Duration(seconds: 2)) {
       currentBackPressTime = now;
-      ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(backgroundColor: appbackgroundColor,content: Row(
-        children: [Text('Press Again To Exit', style: TextStyle(color: alterColor),)],
-      )));
+      appToast(Get.context!, 'Press Again To Exit');
       return Future.value(false);
     }
     return Future.value(true);
