@@ -7,6 +7,7 @@ import '../Controller/OrderController.dart';
 import '../Design/DeliveryOrderDesign.dart';
 import '../Design/NewOrderDrawer.dart';
 import '../Design/toast.dart';
+import '../Model/Task.dart';
 import 'NewOrderRunningScreen.dart';
 
 class NewOrderScreen extends StatelessWidget {
@@ -157,10 +158,24 @@ class NewOrderScreen extends StatelessWidget {
                           orderController: orderController,
                         );
                       },
-                      onReorder: (int start, int current) {
-                        orderController.reOrderVisit(start, current+1);
-                        print('start $start');
-                        print('current $current');
+                      onReorder: (int oldIndex, int newIndex) {
+                        // print('oldIndex $oldIndex');
+                        // print('newIndex $newIndex');
+                        if (oldIndex < newIndex) {
+                          newIndex -= 1;
+                        }
+                        final Rows movedItem = orderController.todoList.removeAt(oldIndex);
+                        orderController.todoList.insert(newIndex, movedItem);
+                        orderController.reOrderVisit(movedItem.deliveryid!, newIndex + 1);
+                        // if(start != current){
+                        //   // print(orderController.todoList[start].deliveryrefno);
+                        //   // print('start $start');
+                        //   // print('current $current');
+                        //   // orderController.reOrderVisit(orderController.todoList[start].deliveryid!, current);
+                        // }
+
+                        // print('oldIndex $oldIndex');
+                        // print('newIndex $newIndex');
                       })
                        // ListView.builder(
                   //             scrollDirection: Axis.vertical,
@@ -184,8 +199,14 @@ class NewOrderScreen extends StatelessWidget {
                                     // ));
                                   },
                                   orderController: orderController,
-                                  isResetButton: true,
-                                  onResetClick: (){},
+                                  isResetButton: orderController.ordersList[index].statusid == 3 ? false : true,
+                                  onResetClick: () async{
+
+                                    await orderController.updateStatus(
+                                        deliveryId: orderController.ordersList[index].deliveryid,
+                                        statusId: 3);
+                                    orderController.refreshOrder();
+                                  },
                                 );
                               }))
                       : Center(

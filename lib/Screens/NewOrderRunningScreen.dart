@@ -595,6 +595,9 @@ class NewOrderRunningScreen extends StatelessWidget {
   }
 
   showDialogueApp({context, deliveryId}) {
+    var isUploading = false;
+    var isPictureModeSelect = false;
+    File? image;
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -604,21 +607,106 @@ class NewOrderRunningScreen extends StatelessWidget {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(height * 0.022)),
             backgroundColor: appbackgroundColor,
-            title: Center(
-                child: Text(
-              "Signature",
-              style: TextStyle(
-                  color: alterColor,
-                  fontSize: height * 0.025,
-                  fontWeight: FontWeight.bold),
-            )),
-            content: Builder(builder: (context) {
+            content: StatefulBuilder(builder: (context, setState) {
               return Container(
                 width: Get.width,
-                height: height * 0.6,
+                height: height * 0.7,
                 margin: EdgeInsets.symmetric(vertical: height * 0.010),
-                child: Column(
+                child: isUploading ? Center(child: CircularProgressIndicator()) : (isPictureModeSelect ?
+                Container(
+                  height: height * 0.7,
+                  width: Get.width * 0.8,
+                  margin: EdgeInsets.symmetric(vertical: height * 0.010),
+                  child: Column(
+                    children: [
+                      SizedBox(height: height * 0.020),
+                      if(isPictureModeSelect)
+                        Text('Upload Picture', style: TextStyle(color: alterColor, fontSize: height * 0.018,fontWeight: FontWeight.bold),),
+
+                      SizedBox(height: height * 0.020),
+                      image == null
+                          ? Icon(
+                        Icons.image,
+                        size: height * 0.4,
+                      )
+                          : Image.file(
+                        image!,
+                        width: Get.width * 0.8,
+                        height: height * 0.5,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(width: height * 0.020),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                              onPressed: () async {
+                                if (image == null) {
+                                  image =
+                                  await orderController.getFromCamera();
+                                  setState(() {});
+                                } else {
+                                  setState(() {
+                                    isUploading = true;
+                                  });
+
+                                  await orderController.uploadImage(
+                                      deliveryId: deliveryId, image: image);
+                                  setState(() {
+                                    isUploading = false;
+                                  });
+                                  Get.back();
+                                }
+                              },
+                              style: TextButton.styleFrom(
+                                  backgroundColor: alterColor,
+                                  foregroundColor: alterColor,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(10))),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                child: Text(
+                                  image == null ? 'Get Image' : 'Upload',
+                                  // 'Upload',
+                                  style: TextStyle(color: subBackgroundColor),
+                                ),
+                              )),
+                          SizedBox(width: height * 0.020),
+                          TextButton(
+                              onPressed: () async {
+                                Get.back();
+                              },
+                              style: TextButton.styleFrom(
+                                  backgroundColor: subBackgroundColor,
+                                  foregroundColor: subBackgroundColor,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.circular(10))),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
+                                child: Text(
+                                  "Skip",
+                                  style: TextStyle(color: alterColor),
+                                ),
+                              )),
+                        ],
+                      )
+                    ],
+                  ),
+                ) :
+                Column(
                   children: [
+                    SizedBox(height: height * 0.020),
+                    if(!isPictureModeSelect)
+                      Text('Signature', style: TextStyle(color: alterColor, fontSize: height * 0.018,fontWeight: FontWeight.bold),),
+                    SizedBox(height: height * 0.020),
                     Container(
                       width: Get.width,
                       height: height * 0.5,
@@ -641,8 +729,15 @@ class NewOrderRunningScreen extends StatelessWidget {
                       children: [
                         TextButton(
                             onPressed: () async {
+                              setState((){
+                                isUploading = true;
+                              });
+
                               await orderController.uploadSignature(
                                   deliveryId: deliveryId);
+                              setState((){
+                                isUploading = false;
+                              });
                               Get.back();
                             },
                             style: TextButton.styleFrom(
@@ -663,10 +758,13 @@ class NewOrderRunningScreen extends StatelessWidget {
                         SizedBox(width: height * 0.020),
                         TextButton(
                             onPressed: () async {
-                              // final picker = ImagePicker();
-                              // final image = await picker.pickImage(source: ImageSource.camera);
-                              showPictureDialogue(context,
-                                  deliveryId: deliveryId);
+                              // // final picker = ImagePicker();
+                              // // final image = await picker.pickImage(source: ImageSource.camera);
+                              // showPictureDialogue(context,
+                              //     deliveryId: deliveryId);
+                              setState((){
+                                isPictureModeSelect = true;
+                              });
                             },
                             style: TextButton.styleFrom(
                                 backgroundColor: subBackgroundColor,
@@ -706,7 +804,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                       ],
                     )
                   ],
-                ),
+                ))
               );
             }),
           );

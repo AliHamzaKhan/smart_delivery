@@ -41,6 +41,7 @@ class OrderController extends GetxController {
   var isItemQuantityUploaded = false.obs;
   List itemsImageData = <TempItem>[];
   var isItemImageUploaded = false.obs;
+  var isSignatureUploaded = false.obs;
 
 
   getDeliveryItem({required int deliveryid}) async {
@@ -71,7 +72,34 @@ class OrderController extends GetxController {
 
   getCurrentOrder() => currentOrder.value;
 
-  getOrders() async {
+  // getOrders() async {
+  //   try {
+  //     isOrderLoaded(true);
+  //     var response = await MyApi().getOrders();
+  //     var result = jsonDecode(response);
+  //     print(result);
+  //     Task task = Task.fromJson(result);
+  //     ordersList.assignAll(task.rows!);
+  //     for (int i = 0; i < ordersList.length; i++) {
+  //       if (ordersList[i].visitorderno == 0) {
+  //         ordersList[i].visitorderno = i * 3;
+  //       }
+  //       else{
+  //         break;
+  //       }
+  //     }
+  //     ordersList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
+  //     filteredTodosList();
+  //     update();
+  //   } catch (e) {
+  //     print(e);
+  //   } finally {
+  //     isOrderLoaded(false);
+  //   }
+  //   update();
+  // }
+
+  getOrders() async{
     try {
       isOrderLoaded(true);
       var response = await MyApi().getOrders();
@@ -79,14 +107,32 @@ class OrderController extends GetxController {
       print(result);
       Task task = Task.fromJson(result);
       ordersList.assignAll(task.rows!);
+
+      // Create a map to track the visitorderno values and their frequency
+      var visitordernoMap = <int, int>{};
+
       for (int i = 0; i < ordersList.length; i++) {
-        if (ordersList[i].visitorderno == 0) {
-          ordersList[i].visitorderno = i * 3;
+        int? visitorderno = ordersList[i].visitorderno;
+        if (visitorderno == 0) {
+          // Calculate a new visitorderno based on the index
+          visitorderno = i * 3;
+          ordersList[i].visitorderno = visitorderno;
         }
-        else{
-          break;
+
+        // Increment the frequency of the visitorderno in the map
+        visitordernoMap[visitorderno!] = (visitordernoMap[visitorderno] ?? 0) + 1;
+      }
+
+      // Iterate over the ordersList again and update visitorderno for duplicates
+      for (int i = 0; i < ordersList.length; i++) {
+        int? visitorderno = ordersList[i].visitorderno;
+        if (visitordernoMap[visitorderno]! > 1) {
+          visitorderno = visitorderno! + i;
+          ordersList[i].visitorderno = visitorderno;
+          visitordernoMap[visitorderno] = (visitordernoMap[visitorderno] ?? 0) + 1;
         }
       }
+
       ordersList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
       filteredTodosList();
       update();
@@ -183,22 +229,26 @@ class OrderController extends GetxController {
     update();
   }
 
-  reOrderVisit(int start, int current) async{
+  reOrderVisit(int deliverId, int current) async{
+    print('deliverId $deliverId');
+    print('current $current');
+
     try{
       var response = await MyApi().reOrderList(
-        deliveryid: todoList[start].deliveryid,
+        deliveryid: deliverId,
         visitorder: current,
       );
-      if(response['status'] == 'success'){
-        refreshOrder();
-      }
       print(response);
+      if(response['status'] == 'success'){
+
+      }
+
     }
     catch(e){
 
     }
     finally{
-      
+      refreshOrder();
     }
   }
 
@@ -318,11 +368,12 @@ class OrderController extends GetxController {
         }
 
         List<dynamic> responses = await Future.wait(requestFutures);
-
+        List<String> statuses = [];
         for (var response in responses) {
           var data = jsonDecode(response);
           print(data["status"]);
-          if(data["status"] == 'success'){
+          statuses.add(data["status"]);
+          if(statuses.contains('success')){
             apiToast(Get.context, 'Images', data["status"] );
           }
          else{
@@ -337,27 +388,6 @@ class OrderController extends GetxController {
       finally{
         isItemImageUploaded(false);
       }
-
-      // isItemImageUploaded(true);
-      // for(int i=0; i<itemsImageData.length; i++){
-      //   print(itemsImageData);
-      //   print(itemsImageData[i]);
-      //   try{
-      //     var convert = await itemsImageData[i].value.readAsBytesSync();
-      //     print(convert);
-      //     var response = await MyApi().uploadItem(
-      //         deliveryId: deliveryId, image: await base64String(convert), itemId: itemsImageData[i].key);
-      //     var data = jsonDecode(response);
-      //     print(data["status"]);
-      //   }
-      //   catch(e){
-      //     print(e);
-      //   }
-      //   finally{
-      //     itemsImageData.clear();
-      //   }
-      // }
-      // isItemImageUploaded(false);
     }
   }
   uploadQuantity({required deliveryId}) async {
@@ -366,6 +396,7 @@ class OrderController extends GetxController {
       print('no Quantity');
     } else {
       try {
+        isItemImageUploaded(true);
         List<Future> requestFutures = [];
         for (int i = 0; i < itemsQuantityData.length; i++) {
           var requestFuture = MyApi().uploadQuantity(
@@ -377,13 +408,15 @@ class OrderController extends GetxController {
           requestFutures.add(requestFuture);
         }
         List<dynamic> responses = await Future.wait(requestFutures);
+        List<String> statuses = [];
 
         for (var response in responses) {
           print(response);
           var data = jsonDecode(response);
           print(data["status"]);
-          if(data["status"] == 'success'){
-            apiToast(Get.context, 'Quantity', data["status"] );
+          statuses.add(data["status"]);
+          if(statuses.contains('success')){
+            apiToast(Get.context, 'Quantity', 'success' );
           }
          else{
             apiToast(Get.context, 'Quantity', 'failed' );
@@ -393,30 +426,9 @@ class OrderController extends GetxController {
       } catch (e) {
         print(e);
       }
-      ///////////////////////////////////////
-      // isItemQuantityUploaded(true);
-      // for(int i=0; i<itemsQuantityData.length; i++){
-      //   print(itemsQuantityData);
-      //   print(itemsQuantityData[i]);
-      //   print(i);
-      //   try{
-      //     var response = await MyApi().uploadQuantity(
-      //       deliveryId: deliveryId,
-      //       itemId: itemsQuantityData[i].key,
-      //       qty: itemsQuantityData[i].value
-      //     );
-      //    print(response);
-      //     var data = jsonDecode(response);
-      //     print(data["status"]);
-      //   }
-      //   catch(e){
-      //     print(e);
-      //   }
-      //   finally{
-      //     itemsQuantityData.clear();
-      //   }
-      // }
-      // isItemQuantityUploaded(false);
+      finally{
+        isItemImageUploaded(false);
+      }
     }
   }
 
@@ -424,9 +436,11 @@ class OrderController extends GetxController {
   uploadImage({deliveryId, image}) async {
     var convert = await image.readAsBytesSync();
     try {
-      isItemImageUploaded(true);
+      isSignatureUploaded(true);
+      print(convert);
       var response = await MyApi().uploadSignature(
           deliveryId: deliveryId, signature: await base64String(convert));
+      print(response);
       var data = jsonDecode(response);
       print(data["status"]);
       if(data["status"] == 'success'){
@@ -439,7 +453,7 @@ class OrderController extends GetxController {
     } catch (e) {
       print(e);
     } finally {
-      isItemImageUploaded(false);
+      isSignatureUploaded(false);
       update();
     }
   }
@@ -458,7 +472,7 @@ class OrderController extends GetxController {
 
   uploadSignature({deliveryId}) async {
     try {
-      isItemImageUploaded(true);
+      isSignatureUploaded(true);
       var response = await MyApi().uploadSignature(
           deliveryId: deliveryId, signature: await exportSignature());
       var data = jsonDecode(response);
@@ -471,7 +485,7 @@ class OrderController extends GetxController {
       }
     } catch (e) {
     } finally {
-      isItemImageUploaded(false);
+      isSignatureUploaded(false);
       signatureController.clear();
       update();
     }

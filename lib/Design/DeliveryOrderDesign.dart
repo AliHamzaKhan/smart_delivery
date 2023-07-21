@@ -135,7 +135,6 @@ class DeliveryOrderDesign extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(height * 0.010),
-            // color: orderController.getCurrentOrder().deliveryrefno == order!.deliveryrefno ? alterColor:subBackgroundColor,
             color: subBackgroundColor,
 
           ),
