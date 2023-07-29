@@ -307,6 +307,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                 onTap: () async{
                   await orderController.uploadQuantityItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                   await  orderController.uploadItemsImage(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                  getDeliveryItems();
                   // await orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                 },
                 child: Container(
@@ -329,9 +330,11 @@ class NewOrderRunningScreen extends StatelessWidget {
     );
   }
 
-  getDeliveryItems() {
+  getDeliveryItems() async{
+    orderController.quantityUpdate.clear();
+    orderController.imageUpdate.clear();
     if (orderController.currentOrder.value != null) {
-      orderController.getDeliveryItem(
+    await  orderController.getDeliveryItem(
           deliveryid: orderController.currentOrder.value!.deliveryid!);
     }
   }

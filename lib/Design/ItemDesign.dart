@@ -154,7 +154,7 @@ class _ItemDesignState extends State<ItemDesign> {
               width: height * 0.050,
               height: height * 0.050,
               child: widget.image == null
-                  ? ( widget.item!.photopath == '' ?
+                  ? (( widget.item!.photopath == '' || widget.item!.photopath == 'null' || widget.item!.photopath == null) ?
               Icon(
                 Icons.image,
                 size: height * 0.040,

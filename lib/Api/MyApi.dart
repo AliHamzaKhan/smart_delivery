@@ -131,7 +131,7 @@ class MyApi {
     var formData = {
       'jdata': jsonEncode({
         "deliveryid": deliveryId,
-        "driverid": 1,
+        "driverid": '1',
         "items": qtyDataJson,
       })
     };
