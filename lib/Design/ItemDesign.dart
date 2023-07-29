@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:smart_delivery/Constant/Colors.dart';
@@ -144,64 +143,6 @@ class _ItemDesignState extends State<ItemDesign> {
               ),
             ],
           )),
-          // Expanded(
-          //     flex: 1,
-          //     child: Text(
-          //       "${widget.item!.qty ?? ''}",
-          //       style: TextStyle(
-          //           color: textColor,
-          //           fontWeight: FontWeight.w300,
-          //           fontSize: height * 0.015),
-          //       textAlign: TextAlign.center,
-          //     )),
-
-
-
-          // Expanded(
-          //     flex: 1,
-          //     child: Padding(
-          //       padding: EdgeInsets.symmetric(horizontal: height * 0.015),
-          //       child: TextField(
-          //           controller: widget.quantityController,
-          //          autofocus: true,
-          //
-          //          textAlign: TextAlign.center,
-          //          keyboardType: TextInputType.numberWithOptions(decimal: false),
-          //          onChanged: widget.onQuantitySelected,
-          //          cursorColor: alterColor,
-          //          inputFormatters: [
-          //            FilteringTextInputFormatter.allow(RegExp('[0-9.,]'))
-          //          ],
-          //          decoration: InputDecoration(
-          //            hintText: widget.item!.qty.toString(),
-          //            border: UnderlineInputBorder(
-          //              borderSide: BorderSide(
-          //                color: alterColor
-          //              ),
-          //
-          //            ),
-          //            focusedBorder: UnderlineInputBorder(
-          //              borderSide: BorderSide(
-          //                  color: alterColor
-          //              ),
-          //
-          //            ),
-          //          ),
-          //         style: TextStyle(
-          //                 color: textColor,
-          //                 fontWeight: FontWeight.w300,
-          //                 fontSize: height * 0.015),
-          //       ),
-          //     ),
-          //     // child: Text(
-          //     //   "${widget.item!.qty ?? ''}",
-          //     //   style: TextStyle(
-          //     //       color: textColor,
-          //     //       fontWeight: FontWeight.w300,
-          //     //       fontSize: height * 0.015),
-          //     //   textAlign: TextAlign.center,
-          //     // )
-          // ),
           GestureDetector(
             onTap: () async {
               widget.image = await getFromCamera();
@@ -213,10 +154,15 @@ class _ItemDesignState extends State<ItemDesign> {
               width: height * 0.050,
               height: height * 0.050,
               child: widget.image == null
-                  ? Icon(
+                  ? ( widget.item!.photopath == '' ?
+              Icon(
                 Icons.image,
                 size: height * 0.040,
-              )
+              ) :
+              Image.network(widget.item!.photopath!,
+                width: height * 0.040,
+                height: height * 0.035,
+                fit: BoxFit.cover,))
                   : ClipRRect(
                 borderRadius: BorderRadius.circular(height * 0.005),
                     child: Image.file(
