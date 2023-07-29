@@ -13,7 +13,7 @@ class AskPermission extends GetxController implements GetxService{
   var address = "Getting address...".obs;
 
 
-  getLocation() async {
+  grantLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 

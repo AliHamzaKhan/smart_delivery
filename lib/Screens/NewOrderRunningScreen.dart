@@ -25,6 +25,8 @@ class NewOrderRunningScreen extends StatelessWidget {
         orderController.itemsImageData.clear();
         orderController.itemsQuantityData.clear();
         orderController.deliveryItems.clear();
+        orderController.quantityUpdate.clear();
+        orderController.imageUpdate.clear();
         await orderController.refreshOrder();
         return true;
       },
@@ -38,7 +40,13 @@ class NewOrderRunningScreen extends StatelessWidget {
                 Icons.arrow_back,
                 color: alterColor,
               ),
-              onPressed: () {
+              onPressed: () async {
+                orderController.itemsImageData.clear();
+                orderController.itemsQuantityData.clear();
+                orderController.deliveryItems.clear();
+                orderController.quantityUpdate.clear();
+                orderController.imageUpdate.clear();
+                await orderController.refreshOrder();
                 Get.back();
               }),
           title: Obx(() =>  Text(
@@ -227,27 +235,62 @@ class NewOrderRunningScreen extends StatelessWidget {
                                         qty: orderController
                                             .deliveryItems[index].qty),
                                     orderController: orderController,
-                                    onImageSelect: (file) {
+                                    onImageSelect: (File? file)async {
                                       if (file != null) {
-                                        orderController.itemsImageData.add(TempItem(
-                                            key: orderController.deliveryItems[index].itemId!,
-                                            value: file
-                                        ));
-                                        print(file);
-                                        print(orderController.itemsImageData.length);
+                                        // var convert = await file.readAsBytesSync();
+                                        // var image = await orderController.base64String(convert);
+                                        // orderController.addUpdateItem(
+                                        //     imageData: image,
+                                        //     itemId: orderController.deliveryItems[index].itemId!,
+                                        //     deliveryId: orderController.getCurrentOrder()!.deliveryid
+                                        // );
+
+                                        // orderController.imageUpdate.add(ItemImageUpdate(
+                                        //   itemid: orderController.deliveryItems[index].itemId!,
+                                        //   imagedata: await orderController.base64String(convert)
+                                        // ));
+                                        var convert = await file.readAsBytes();
+                                        orderController.addImage(
+                                            itemId: orderController.deliveryItems[index].itemId!,
+                                            image: 'data:image/png;base64,' + await orderController.base64String(convert));
+
+                                        // orderController.itemsImageData.add(TempItem(
+                                        //     key: orderController.deliveryItems[index].itemId!,
+                                        //     value: file
+                                        // ));
+                                        // print(orderController.itemsImageData.length);
+                                        // print(file);
                                       }
                                     },
                                     onQuantitySelected: (quantity){
+                                      // if(quantity != null){
+                                      //   orderController.addUpdateItem(
+                                      //       qty: quantity,
+                                      //       itemId: orderController.deliveryItems[index].itemId!,
+                                      //       deliveryId: orderController.getCurrentOrder()!.deliveryid
+                                      //   );
+                                      // }
 
-                                      orderController.itemsQuantityData.add(TempItem(
-                                          key: orderController.deliveryItems[index].itemId!,
-                                          value: quantity
-                                      ));
-                                      print(orderController.itemsQuantityData.length);
-                                      print(quantity);
+
+                                      if(quantity == null){
+                                        return;
+                                      }
+
+                                      orderController.addQuantity(
+                                          itemId: orderController
+                                              .deliveryItems[index].itemId!,
+                                          qty: quantity
+                                      );
+                                      // orderController.itemsQuantityData.add(TempItem(
+                                      //     key: orderController.deliveryItems[index].itemId!,
+                                      //     value: quantity
+                                      // ));
+                                      // print("quantity");
+                                      // print(orderController.quantityUpdate.length);
+                                      // print(quantity);
                                     },
                                   );
-                                })) : Text('no items'))
+                                })) : Text('No Items Found'))
                       ],
                     )) : SizedBox()) : SizedBox();
                   })
@@ -262,8 +305,9 @@ class NewOrderRunningScreen extends StatelessWidget {
               return !orderController.isDeliveryItemLoaded.value ?
               (orderController.getCurrentOrder()!.statusid == 8 ? GestureDetector(
                 onTap: () async{
-                  await  orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
-                  await orderController.uploadQuantity(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                  await orderController.uploadQuantityItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                  await  orderController.uploadItemsImage(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                  // await orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                 },
                 child: Container(
                   height: height * 0.050,

@@ -43,6 +43,83 @@ class OrderController extends GetxController {
   var isItemImageUploaded = false.obs;
   var isSignatureUploaded = false.obs;
 
+  List<ItemQuantityUpdate> quantityUpdate = [];
+  List<ItemImageUpdate> imageUpdate = [];
+
+  addQuantity({required int itemId,required int qty}) {
+
+
+    if(quantityUpdate.isEmpty){
+      quantityUpdate.add(ItemQuantityUpdate(itemid: itemId, qty: qty));
+      print('one');
+      return;
+    }
+
+
+    bool itemExists = quantityUpdate.any((item) => item.itemid == itemId);
+    if (itemExists) {
+      // Item with the given itemId exists, update its quantity
+      int index = quantityUpdate.indexWhere((item) => item.itemid == itemId);
+      quantityUpdate[index].qty = qty;
+    } else {
+      // Item does not exist, add a new ItemQuantityUpdate to the list
+      quantityUpdate.add(ItemQuantityUpdate(itemid: itemId, qty: qty));
+    }
+    // bool itemExists = false;
+
+    // for (int i = 0; i < quantityUpdate.length; i++) {
+    //   if (quantityUpdate[i].itemid == itemId) {
+    //     quantityUpdate[i].qty = qty;
+    //     itemExists = true;
+    //     print('second');
+    //     break;
+    //   }
+    //   if (!itemExists) {
+    //     quantityUpdate.add(ItemQuantityUpdate(itemid: itemId, qty: qty));
+    //     print('third');
+    //   }
+    //
+    // }
+    print('quantityUpdate');
+    print(quantityUpdate.length);
+    print('temid: $itemId, qty: $qty');
+  }
+  addImage({required int itemId,required String? image}) {
+
+
+    if(imageUpdate.isEmpty){
+      imageUpdate.add(ItemImageUpdate(itemid: itemId, imagedata:  image));
+      return;
+    }
+
+
+    bool itemExists = imageUpdate.any((item) => item.itemid == itemId);
+    if (itemExists) {
+      // Item with the given itemId exists, update its quantity
+      int index = imageUpdate.indexWhere((item) => item.itemid == itemId);
+      imageUpdate[index].imagedata = image;
+    } else {
+      // Item does not exist, add a new ItemQuantityUpdate to the list
+      imageUpdate.add(ItemImageUpdate(itemid: itemId, imagedata: image));
+    }
+    // bool itemExists = false;
+
+    // for (int i = 0; i < imageUpdate.length; i++) {
+    //   if (imageUpdate[i].itemid == itemId) {
+    //     imageUpdate[i].imagedata = image;
+    //     itemExists = true;
+    //     break;
+    //   }
+    //   if (!itemExists) {
+    //        imageUpdate.add(ItemImageUpdate(itemid: itemId, imagedata:  image));
+    //   }
+    //   print(imageUpdate.length);
+    //   print('temid: $itemId, imagedata:  $image');
+    // }
+    print('imageUpdate');
+    print(imageUpdate.length);
+    print('temid: $itemId, imagedata:  $image');
+  }
 
   getDeliveryItem({required int deliveryid}) async {
     try {
@@ -99,7 +176,7 @@ class OrderController extends GetxController {
   //   update();
   // }
 
-  getOrders() async{
+  getOrders() async {
     try {
       isOrderLoaded(true);
       var response = await MyApi().getOrders();
@@ -120,7 +197,8 @@ class OrderController extends GetxController {
         }
 
         // Increment the frequency of the visitorderno in the map
-        visitordernoMap[visitorderno!] = (visitordernoMap[visitorderno] ?? 0) + 1;
+        visitordernoMap[visitorderno!] =
+            (visitordernoMap[visitorderno] ?? 0) + 1;
       }
 
       // Iterate over the ordersList again and update visitorderno for duplicates
@@ -129,7 +207,8 @@ class OrderController extends GetxController {
         if (visitordernoMap[visitorderno]! > 1) {
           visitorderno = visitorderno! + i;
           ordersList[i].visitorderno = visitorderno;
-          visitordernoMap[visitorderno] = (visitordernoMap[visitorderno] ?? 0) + 1;
+          visitordernoMap[visitorderno] =
+              (visitordernoMap[visitorderno] ?? 0) + 1;
         }
       }
 
@@ -229,25 +308,19 @@ class OrderController extends GetxController {
     update();
   }
 
-  reOrderVisit(int deliverId, int current) async{
+  reOrderVisit(int deliverId, int current) async {
     print('deliverId $deliverId');
     print('current $current');
 
-    try{
+    try {
       var response = await MyApi().reOrderList(
         deliveryid: deliverId,
         visitorder: current,
       );
       print(response);
-      if(response['status'] == 'success'){
-
-      }
-
-    }
-    catch(e){
-
-    }
-    finally{
+      if (response['status'] == 'success') {}
+    } catch (e) {
+    } finally {
       refreshOrder();
     }
   }
@@ -269,8 +342,7 @@ class OrderController extends GetxController {
             break;
           }
         }
-      }
-      else {
+      } else {
         setCurrentOrder(
           order: todoList.last,
         );
@@ -278,7 +350,7 @@ class OrderController extends GetxController {
         todoList.removeLast();
         todoList.refresh();
 
-        if(todoList.isEmpty){
+        if (todoList.isEmpty) {
           setCurrentOrder(order: Rows(deliveryid: 0));
           itemsQuantityData.clear();
           itemsImageData.clear();
@@ -289,9 +361,7 @@ class OrderController extends GetxController {
       }
       print('no orders remaining temp ');
       print(todoList.length);
-    }
-
-    else{
+    } else {
       print('no orders remaining');
       setCurrentOrder(order: Rows(deliveryid: 0));
       itemsQuantityData.clear();
@@ -343,94 +413,108 @@ class OrderController extends GetxController {
   //   }
   // }
 
-  uploadItems({required deliveryId}) async {
-    if (itemsImageData.isEmpty) {
+  uploadItemsImage({required deliveryId}) async {
+    if (imageUpdate.isEmpty) {
       print(itemsImageData.length);
       print('no items');
     } else {
       try {
         isItemImageUploaded(true);
-        List<Future> requestFutures = [];
+        var response = await MyApi().uploadItemImage(
+            deliveryId: deliveryId,
+            imageData: imageUpdate);
+        print(response);
 
-        for (int i = 0; i < itemsImageData.length; i++) {
-          try {
-            var convert = await itemsImageData[i].value.readAsBytes();
-            var requestFuture = MyApi().uploadItem(
-              deliveryId: deliveryId,
-              image: await base64String(convert),
-              itemId: itemsImageData[i].key,
-            );
+        apiToast(Get.context!, 'Images' , response['status']);
 
-            requestFutures.add(requestFuture);
-          } catch (e) {
-            print(e);
-          }
-        }
-
-        List<dynamic> responses = await Future.wait(requestFutures);
-        List<String> statuses = [];
-        for (var response in responses) {
-          var data = jsonDecode(response);
-          print(data["status"]);
-          statuses.add(data["status"]);
-          if(statuses.contains('success')){
-            apiToast(Get.context, 'Images', data["status"] );
-          }
-         else{
-            apiToast(Get.context, 'Images', 'failed' );
-          }
-        }
-
-        itemsImageData.clear();
+        // List<Future> requestFutures = [];
+        //
+        // for (int i = 0; i < itemsImageData.length; i++) {
+        //   try {
+        //     var convert = await itemsImageData[i].value.readAsBytes();
+        //     var requestFuture = MyApi().uploadItemPhoto(
+        //       deliveryId: deliveryId,
+        //       image: await base64String(convert),
+        //       itemId: itemsImageData[i].key,
+        //     );
+        //
+        //     requestFutures.add(requestFuture);
+        //   } catch (e) {
+        //     print(e);
+        //   }
+        // }
+        //
+        // List<dynamic> responses = await Future.wait(requestFutures);
+        // List<String> statuses = [];
+        // for (var response in responses) {
+        //   var data = jsonDecode(response);
+        //   print(data["status"]);
+        //   statuses.add(data["status"]);
+        //   if (statuses.contains('success')) {
+        //     apiToast(Get.context, 'Images', data["status"]);
+        //   } else {
+        //     apiToast(Get.context, 'Images', 'failed');
+        //   }
+        // }
+        //
+        // itemsImageData.clear();
       } catch (e) {
         print(e);
-      }
-      finally{
+      } finally {
         isItemImageUploaded(false);
       }
     }
   }
-  uploadQuantity({required deliveryId}) async {
-    if (itemsQuantityData.isEmpty) {
-      print(itemsQuantityData.length);
+
+  uploadQuantityItems({required deliveryId}) async {
+    if (quantityUpdate.isEmpty) {
+      print(quantityUpdate.length);
       print('no Quantity');
     } else {
       try {
         isItemImageUploaded(true);
-        List<Future> requestFutures = [];
-        for (int i = 0; i < itemsQuantityData.length; i++) {
-          var requestFuture = MyApi().uploadQuantity(
-            deliveryId: deliveryId,
-            itemId: itemsQuantityData[i].key,
-            qty: itemsQuantityData[i].value,
-          );
+        var response = await MyApi().uploadItemQuantity(
+              deliveryId: deliveryId,
+               qtyData: quantityUpdate);
+        print(response);
 
-          requestFutures.add(requestFuture);
-        }
-        List<dynamic> responses = await Future.wait(requestFutures);
-        List<String> statuses = [];
+        apiToast(Get.context!, 'Quantity', response['status']);
 
-        for (var response in responses) {
-          print(response);
-          var data = jsonDecode(response);
-          print(data["status"]);
-          statuses.add(data["status"]);
-          if(statuses.contains('success')){
-            apiToast(Get.context, 'Quantity', 'success' );
-          }
-         else{
-            apiToast(Get.context, 'Quantity', 'failed' );
-          }
-        }
-        itemsQuantityData.clear();
+        // List<Future> requestFutures = [];
+        // for (int i = 0; i < itemsQuantityData.length; i++) {
+        //   var requestFuture = MyApi().uploadItemQuantity(
+        //     deliveryId: deliveryId,
+        //     itemId: itemsQuantityData[i].key,
+        //     qty: itemsQuantityData[i].value,
+        //   );
+        //
+        //   requestFutures.add(requestFuture);
+        // }
+        // List<dynamic> responses = await Future.wait(requestFutures);
+        // List<String> statuses = [];
+        //
+        // for (var response in responses) {
+        //   print(response);
+        //   var data = jsonDecode(response);
+        //   print(data["status"]);
+        //   statuses.add(data["status"]);
+        //   if (statuses.contains('success')) {
+        //     apiToast(Get.context, 'Quantity', 'success');
+        //   } else {
+        //     apiToast(Get.context, 'Quantity', 'failed');
+        //   }
+        // }
+        // itemsQuantityData.clear();
+
+
       } catch (e) {
         print(e);
-      }
-      finally{
+      } finally {
         isItemImageUploaded(false);
       }
     }
   }
+
 
 
   uploadImage({deliveryId, image}) async {
@@ -443,13 +527,11 @@ class OrderController extends GetxController {
       print(response);
       var data = jsonDecode(response);
       print(data["status"]);
-      if(data["status"] == 'success'){
-        apiToast(Get.context, 'Image', data["status"] );
+      if (data["status"] == 'success') {
+        apiToast(Get.context, 'Image', data["status"]);
+      } else {
+        apiToast(Get.context, 'Image', 'failed');
       }
-      else{
-        apiToast(Get.context, 'Image', 'failed' );
-      }
-
     } catch (e) {
       print(e);
     } finally {
@@ -477,11 +559,10 @@ class OrderController extends GetxController {
           deliveryId: deliveryId, signature: await exportSignature());
       var data = jsonDecode(response);
       print(data["status"]);
-      if(data["status"] == 'success'){
-        apiToast(Get.context, 'Signature', data["status"] );
-      }
-      else{
-        apiToast(Get.context, 'Signature', data["status"] );
+      if (data["status"] == 'success') {
+        apiToast(Get.context, 'Signature', data["status"]);
+      } else {
+        apiToast(Get.context, 'Signature', data["status"]);
       }
     } catch (e) {
     } finally {
@@ -490,6 +571,61 @@ class OrderController extends GetxController {
       update();
     }
   }
+
+  // addUpdateItem({int? deliveryId,int? itemId,String? imageData,int? qty}) async{
+  //   // if(imageData != null){
+  //   //   if(itemUpdateData.isEmpty){
+  //   //     itemUpdateData.add(ItemUpdate(imagedata: imageData , qty: null, itemid: itemId));
+  //   //   }
+  //   // }
+  //   // if(qty != null){
+  //   //   itemUpdateData.add(ItemUpdate(imagedata: null , qty: qty, itemid: itemId));
+  //   // }
+  //   //
+  //   // ItemUpdate? existingItemWithQty = itemUpdateData.firstWhere(
+  //   //       (item) => item.itemId == itemId && item.qty != null,
+  //   //   orElse: () => null,
+  //   // );
+  //   // ItemUpdate? existingItemWithImage = itemUpdateData.firstWhere(
+  //   //       (item) => item.itemId == itemId && item.image != null,
+  //   //   orElse: () => null,
+  //   // );
+  //   //
+  //   // if (existingItemWithImage != null) {
+  //   //   existingItemWithImage.qty = qty ?? existingItemWithImage.qty;
+  //   // } else if (existingItemWithQty != null) {
+  //   //
+  //   //   existingItemWithQty.imagedata = imageData ?? existingItemWithQty.imagedata;
+  //   // } else {
+  //   //
+  //   //   itemUpdateData.add(ItemUpdate(itemid: itemId, imagedata: imageData, qty: qty));
+  //   // }
+  //
+  //   ItemUpdate? existingItemWithImage = itemUpdateData.firstWhere(
+  //         (item) => item.itemId == itemId && item.imageData != null,
+  //     orElse: () => null,
+  //   );
+  //
+  //   // Check if an ItemUpdate with the same itemId and qty is already present
+  //   ItemUpdate? existingItemWithQty = itemUpdateData.firstWhere(
+  //         (item) => item.itemId == itemId && item.qty != null,
+  //     orElse: () => null,
+  //   );
+  //
+  //   if (existingItemWithImage != null) {
+  //     // If an item with the same itemId and image is found, update the qty
+  //     existingItemWithImage.qty = qty ?? existingItemWithImage.qty;
+  //   } else if (existingItemWithQty != null) {
+  //     // If an item with the same itemId and qty is found, update the image
+  //     existingItemWithQty.imagedata = imageData ?? existingItemWithQty.imagedata;
+  //   } else {
+  //     // If no existing item is found, add a new ItemUpdate object to the list
+  //     itemUpdateData.add(ItemUpdate(itemid: itemId, imagedata: imageData, qty: qty));
+  //   }
+  //
+  //
+  // }
+
 
   exportSignature() async {
     final signature = await signatureController.toPngBytes();

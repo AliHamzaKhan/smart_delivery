@@ -20,7 +20,7 @@ class NewOrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    permission.getLocation();
+    permission.grantLocation();
     orderController.refreshOrder();
     return WillPopScope(
       onWillPop: onWillPop,

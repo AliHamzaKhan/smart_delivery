@@ -305,9 +305,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
 
-                TextButton(onPressed: (){
-                  showUploadType(context);
-                }, child: Text("dialogue"))
+                // TextButton(onPressed: (){
+                //   showUploadType(context);
+                // }, child: Text("dialogue"))
               ],
             ),
           ),

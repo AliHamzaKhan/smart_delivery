@@ -9,7 +9,7 @@
     <uses-feature android:name="android.hardware.camera" />
 
    <application
-        android:label="smart_delivery"
+        android:label="Smart Delivery"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
