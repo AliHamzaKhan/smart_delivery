@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../Constant/Colors.dart';
 import '../../main.dart';
 
+import '../Controller/AskLocation.dart';
 import '../Controller/OrderController.dart';
 import '../Design/DeliveryOrderDesign.dart';
 import '../Design/NewOrderDrawer.dart';
@@ -20,7 +21,7 @@ class NewOrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    permission.grantLocation();
+    Get.find<AskPermission>().grantLocation();
     orderController.refreshOrder();
     return WillPopScope(
       onWillPop: onWillPop,
@@ -141,7 +142,9 @@ class NewOrderScreen extends StatelessWidget {
                               )),
                         )
                       : SizedBox())
-                  : SizedBox()),
+                  : Container(
+                // child: Text('Please Check If Your Internet Connection in enable then press refresh button at top', style: TextStyle(color: alterColor),),
+              )),
               Expanded(
                   child: Obx(() => !orderController.isOrderLoaded.value
                       ? (orderController.todosMenu.value != "All"

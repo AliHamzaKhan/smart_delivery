@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../Constant/Colors.dart';
+import '../Controller/AskLocation.dart';
 import '../Model/Task.dart';
 import '../Screens/NewOrderScreen.dart';
 import '../main.dart';
@@ -30,10 +31,12 @@ class Api {
         if (data["status_message"] == "user authenticated") {
           if(save){
             await authmanager.login(username1);
+            Get.find<AskPermission>().grantLocation();
             Get.toNamed('/new_order_screen');
             // Get.offAll(() => NewOrderScreen());
           }
           await authmanager.login(username1);
+          Get.find<AskPermission>().grantLocation();
           Get.toNamed('/new_order_screen');
           // Get.offAll(() => NewOrderScreen());
         } else {

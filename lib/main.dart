@@ -14,11 +14,12 @@ import 'Utils/MyTheme.dart';
 
 
 AuthenticationManager authmanager = Get.put(AuthenticationManager());
-var permission = Get.put(AskPermission());
+
 AuthController authController = Get.put(AuthController());
 
 
 Future main() async{
+  Get.put(AskPermission());
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   runApp(const MyApp());

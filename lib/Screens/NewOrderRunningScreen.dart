@@ -233,9 +233,14 @@ class NewOrderRunningScreen extends StatelessWidget {
                                         itemUnit: orderController
                                             .deliveryItems[index].itemUnit,
                                         qty: orderController
-                                            .deliveryItems[index].qty),
+                                            .deliveryItems[index].qty,
+                                      deliveryrefno: orderController
+                                          .deliveryItems[index].deliveryrefno,
+                                      photopath: orderController
+                                          .deliveryItems[index].photopath
+                                    ),
                                     orderController: orderController,
-                                    onImageSelect: (File? file)async {
+                                    onImageSelect: (File? file) async {
                                       if (file != null) {
                                         // var convert = await file.readAsBytesSync();
                                         // var image = await orderController.base64String(convert);
@@ -250,9 +255,18 @@ class NewOrderRunningScreen extends StatelessWidget {
                                         //   imagedata: await orderController.base64String(convert)
                                         // ));
                                         var convert = await file.readAsBytes();
-                                        orderController.addImage(
-                                            itemId: orderController.deliveryItems[index].itemId!,
-                                            image: 'data:image/png;base64,' + await orderController.base64String(convert));
+                                        var image = await orderController.base64String(convert);
+
+                                        orderController.uploadSingleImage(
+                                          deliveryId: orderController.currentOrder.value!.deliveryid!,
+                                          itemId: orderController.deliveryItems[index].itemId!,
+                                          image: 'data:image/png;base64,' + image.trim()
+                                        );
+                                        // orderController.addImage(
+                                        //     itemId: orderController.deliveryItems[index].itemId!,
+                                        //     image: 'data:image/png;base64,' + image.trim());
+
+
 
                                         // orderController.itemsImageData.add(TempItem(
                                         //     key: orderController.deliveryItems[index].itemId!,
@@ -306,8 +320,10 @@ class NewOrderRunningScreen extends StatelessWidget {
               (orderController.getCurrentOrder()!.statusid == 8 ? GestureDetector(
                 onTap: () async{
                   await orderController.uploadQuantityItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
-                  await  orderController.uploadItemsImage(deliveryId: orderController.getCurrentOrder()!.deliveryid);
-                  getDeliveryItems();
+                  // await  orderController.uploadItemsImage(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                 await orderController.getDeliveryItem(deliveryid: orderController.currentOrder.value!.deliveryid!);
+                  // orderController.deliveryItems.refresh();
+                  // orderController.update();
                   // await orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                 },
                 child: Container(
@@ -331,8 +347,8 @@ class NewOrderRunningScreen extends StatelessWidget {
   }
 
   getDeliveryItems() async{
-    orderController.quantityUpdate.clear();
-    orderController.imageUpdate.clear();
+    // orderController.quantityUpdate.clear();
+    // orderController.imageUpdate.clear();
     if (orderController.currentOrder.value != null) {
     await  orderController.getDeliveryItem(
           deliveryid: orderController.currentOrder.value!.deliveryid!);

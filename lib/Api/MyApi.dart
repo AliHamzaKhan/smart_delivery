@@ -9,6 +9,7 @@ import '../main.dart';
 
 class MyApi {
   static const String BASE_URL = "http://easyrouteplan.com/api/index.php?";
+  static const String IMAGE_BASE_URL = "http://easyrouteplan.com/api/";
   static const String LOGIN_URL =
       "http://easyrouteplan.com/api/index.php?method=login";
   static const String DELIVERY_ORDERS =
@@ -135,13 +136,7 @@ class MyApi {
         "items": qtyDataJson,
       })
     };
-    // var data = {
-    //   'jdata' :{
-    //     "deliveryid":deliveryId,
-    //     "driverid":1,
-    //     "items":imageData.map((e) => e.toJson())
-    //   }
-    // };
+
     print(url);
     print(formData);
 
@@ -163,6 +158,7 @@ class MyApi {
         "items": qtyDataJson,
       })
     };
+    print(formData);
 
     print(url);
     print(formData);

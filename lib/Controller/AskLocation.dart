@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class AskPermission extends GetxController implements GetxService{
+class AskPermission extends GetxService  {
   late StreamSubscription streamSubscription;
   var latitude = "".obs;
   var longitude = "".obs;
@@ -66,5 +66,11 @@ class AskPermission extends GetxController implements GetxService{
       // longitude.value = position.longitude.toString();
       // getAddressFromLatLng(position);
     });
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    grantLocation();
   }
 }

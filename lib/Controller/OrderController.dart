@@ -118,7 +118,7 @@ class OrderController extends GetxController {
     // }
     print('imageUpdate');
     print(imageUpdate.length);
-    print('temid: $itemId, imagedata:  $image');
+    print('itemId: $itemId, imagedata:  $image');
   }
 
   getDeliveryItem({required int deliveryid}) async {
@@ -135,6 +135,7 @@ class OrderController extends GetxController {
     } finally {
       isDeliveryItemLoaded(false);
     }
+    // update();
     // return deliveryItems;
   }
 
@@ -237,8 +238,9 @@ class OrderController extends GetxController {
   }
 
   updateStatus({deliveryId, statusId, reason}) async {
+    isStatusLoaded(true);
     try {
-      isStatusLoaded(true);
+
       var response = await MyApi().updateOrder(
           deliveryId: deliveryId, statusId: statusId, reason: reason);
       var data = jsonDecode(response);
@@ -413,6 +415,20 @@ class OrderController extends GetxController {
   //   }
   // }
 
+  uploadSingleImage({deliveryId , image, itemId}) async{
+        var response = await MyApi().uploadItemPhoto(
+          deliveryId: deliveryId,
+          image: image,
+          itemId: itemId);
+        print(response);
+
+        var data = jsonDecode(response);
+
+        appToast(Get.context, data["status"], );
+        // apiToast(Get.context, 'Images', response["status"]);
+
+  }
+
   uploadItemsImage({required deliveryId}) async {
     if (imageUpdate.isEmpty) {
       print(itemsImageData.length);
@@ -423,9 +439,10 @@ class OrderController extends GetxController {
         var response = await MyApi().uploadItemImage(
             deliveryId: deliveryId,
             imageData: imageUpdate);
-        print(response);
 
-        apiToast(Get.context!, 'Images' , response['status']);
+        var data = jsonDecode(response);
+
+        apiToast(Get.context!, 'Images' , data['status']);
 
         // List<Future> requestFutures = [];
         //
@@ -477,8 +494,8 @@ class OrderController extends GetxController {
               deliveryId: deliveryId,
                qtyData: quantityUpdate);
         print(response);
-
-        apiToast(Get.context!, 'Quantity', response['status']);
+        var data = jsonDecode(response);
+        apiToast(Get.context!, 'Quantity', data['status']);
 
         // List<Future> requestFutures = [];
         // for (int i = 0; i < itemsQuantityData.length; i++) {
@@ -667,6 +684,10 @@ class OrderController extends GetxController {
   logout() async {
     authmanager.logOut();
     ordersList.clear();
+    todoList.clear();
+    deliveryItems.clear();
+    imageUpdate.clear();
+    itemsImageData.clear();
     currentOrder.value = null;
     Get.offAll(() => LoginScreen());
   }
