@@ -497,6 +497,7 @@ class OrderController extends GetxController {
         var data = jsonDecode(response);
         apiToast(Get.context!, 'Quantity', data['status']);
 
+
         // List<Future> requestFutures = [];
         // for (int i = 0; i < itemsQuantityData.length; i++) {
         //   var requestFuture = MyApi().uploadItemQuantity(
@@ -527,6 +528,7 @@ class OrderController extends GetxController {
       } catch (e) {
         print(e);
       } finally {
+        quantityUpdate.clear();
         isItemImageUploaded(false);
       }
     }
