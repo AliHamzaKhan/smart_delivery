@@ -322,8 +322,8 @@ class NewOrderRunningScreen extends StatelessWidget {
                   await orderController.uploadQuantityItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                   // await  orderController.uploadItemsImage(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                  await orderController.getDeliveryItem(deliveryid: orderController.currentOrder.value!.deliveryid!);
-                  // orderController.deliveryItems.refresh();
-                  // orderController.update();
+                  orderController.deliveryItems.refresh();
+                  orderController.update();
                   // await orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                 },
                 child: Container(
@@ -338,7 +338,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                   child: Text("Update ${orderController.deliveryItems.length} Items",
                     style: TextStyle(color: appbackgroundColor, fontWeight: FontWeight.bold, fontSize: height * 0.017),),
                 ),
-              ) : SizedBox())
+              ) : Container())
                   : SizedBox();
             },
           ),
