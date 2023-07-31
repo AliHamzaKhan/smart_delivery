@@ -204,6 +204,7 @@ class OrderController extends GetxController {
 
       // Iterate over the ordersList again and update visitorderno for duplicates
       for (int i = 0; i < ordersList.length; i++) {
+        print(ordersList[i].visitorderno);
         int? visitorderno = ordersList[i].visitorderno;
         if (visitordernoMap[visitorderno]! > 1) {
           visitorderno = visitorderno! + i;
@@ -320,7 +321,9 @@ class OrderController extends GetxController {
         visitorder: current,
       );
       print(response);
-      if (response['status'] == 'success') {}
+      if (response['status'] == 'success') {
+        appToast(Get.context!, 'visit order changed successfully');
+      }
     } catch (e) {
     } finally {
       refreshOrder();
@@ -358,6 +361,7 @@ class OrderController extends GetxController {
           itemsImageData.clear();
           deliveryItems.clear();
           update();
+          // Get.back();
         }
         return;
       }
@@ -370,6 +374,7 @@ class OrderController extends GetxController {
       itemsImageData.clear();
       deliveryItems.clear();
       update();
+      // Get.back();
     }
   }
 
@@ -424,7 +429,12 @@ class OrderController extends GetxController {
 
         var data = jsonDecode(response);
 
-        appToast(Get.context, data["status"], );
+        if(data["status"] == 'success'){
+          apiToast(Get.context!, 'Images', "successfully", seconds: 1);
+        }
+        else{
+          apiToast(Get.context!, 'Images', "failed", seconds: 1);
+        }
         // apiToast(Get.context, 'Images', response["status"]);
 
   }
@@ -441,8 +451,12 @@ class OrderController extends GetxController {
             imageData: imageUpdate);
 
         var data = jsonDecode(response);
-
-        apiToast(Get.context!, 'Images' , data['status']);
+        if(data["status"] == 'success'){
+          apiToast(Get.context!, 'Images', "successfully");
+        }
+        else{
+          apiToast(Get.context!, 'Images' , 'failed');
+        }
 
         // List<Future> requestFutures = [];
         //
@@ -495,7 +509,13 @@ class OrderController extends GetxController {
                qtyData: quantityUpdate);
         print(response);
         var data = jsonDecode(response);
-        apiToast(Get.context!, 'Quantity', data['status']);
+        if(data["status"] == 'success'){
+          apiToast(Get.context!, 'Quantity', "successfully");
+        }
+        else{
+          apiToast(Get.context!, 'Quantity', 'failed');
+        }
+
 
 
         // List<Future> requestFutures = [];
@@ -547,7 +567,7 @@ class OrderController extends GetxController {
       var data = jsonDecode(response);
       print(data["status"]);
       if (data["status"] == 'success') {
-        apiToast(Get.context, 'Image', data["status"]);
+        apiToast(Get.context, 'Image', 'successfully');
       } else {
         apiToast(Get.context, 'Image', 'failed');
       }

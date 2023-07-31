@@ -9,7 +9,6 @@ import '../Controller/OrderController.dart';
 import '../Design/ItemDesign.dart';
 import '../Design/table_header.dart';
 import '../Model/DeliveryItem.dart';
-import '../Model/temp_item.dart';
 
 class NewOrderRunningScreen extends StatelessWidget {
   NewOrderRunningScreen({Key? key, required this.orderController})
@@ -50,8 +49,8 @@ class NewOrderRunningScreen extends StatelessWidget {
                 Get.back();
               }),
           title: Obx(() =>  Text(
-            orderController.currentOrder.value == null
-                ? "Current Order"
+            orderController.getCurrentOrder().deliveryid == 0
+                ? "Order"
                 : orderController.getCurrentOrder().deliveryrefno,
             style: TextStyle(
                 color: alterColor,
@@ -65,7 +64,10 @@ class NewOrderRunningScreen extends StatelessWidget {
           child: Container(
             height: Get.height,
             child: Obx(() => orderController.getCurrentOrder().deliveryid == 0
-                ? SizedBox()
+                ? Container(
+              alignment: Alignment.center,
+              child: Text('No more deliveries available', style: TextStyle(color: alterColor, fontSize: height * 0.030,),),
+            )
                 : Container(
                 height: Get.height,
                 child: Column(
@@ -214,7 +216,7 @@ class NewOrderRunningScreen extends StatelessWidget {
 
                   GetBuilder<OrderController>(builder: (controller){
                     return !orderController.isDeliveryItemLoaded.value ?
-                    (orderController.getCurrentOrder()!.statusid == 8 ? Expanded(child: Column(
+                    (orderController.getCurrentOrder()!.statusid != 0 ? Expanded(child: Column(
                       children: [
                         tableHeader(),
                         (orderController.deliveryItems.isNotEmpty ? Expanded(
@@ -317,13 +319,14 @@ class NewOrderRunningScreen extends StatelessWidget {
           bottomNavigationBar : GetBuilder<OrderController>(
             builder: (controller){
               return !orderController.isDeliveryItemLoaded.value ?
-              (orderController.getCurrentOrder()!.statusid == 8 ? GestureDetector(
+              (orderController.getCurrentOrder()!.statusid != 0 ? GestureDetector(
                 onTap: () async{
-                  await orderController.getDeliveryItem(deliveryid: orderController.currentOrder.value!.deliveryid!);
+
                   await orderController.uploadQuantityItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                  await orderController.getDeliveryItem(deliveryid: orderController.currentOrder.value!.deliveryid!);
                   // await  orderController.uploadItemsImage(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                   orderController.deliveryItems.refresh();
-                  // orderController.update();
+                  orderController.update();
                   // await orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                 },
                 child: Container(
@@ -347,8 +350,6 @@ class NewOrderRunningScreen extends StatelessWidget {
   }
 
   getDeliveryItems() async{
-    // orderController.quantityUpdate.clear();
-    // orderController.imageUpdate.clear();
     if (orderController.currentOrder.value != null) {
     await  orderController.getDeliveryItem(
           deliveryid: orderController.currentOrder.value!.deliveryid!);
@@ -368,10 +369,11 @@ class NewOrderRunningScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(height * 0.005))),
               onPressed: () async {
-                orderController.getCurrentOrder()!.statusid = 8;
+
                 await orderController.updateStatus(
                     deliveryId: orderController.getCurrentOrder()!.deliveryid,
                     statusId: 8);
+                orderController.getCurrentOrder()!.statusid = 8;
                 // orderController.onChange();
               },
               child: Text(

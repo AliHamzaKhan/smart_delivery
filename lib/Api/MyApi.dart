@@ -66,6 +66,7 @@ class MyApi {
 
     print(url);
     var response = await http.get(Uri.parse(url));
+    print(response);
     return response.body;
   }
 

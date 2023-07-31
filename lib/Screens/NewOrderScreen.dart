@@ -180,16 +180,6 @@ class NewOrderScreen extends StatelessWidget {
                         // print('oldIndex $oldIndex');
                         // print('newIndex $newIndex');
                       })
-                       // ListView.builder(
-                  //             scrollDirection: Axis.vertical,
-                  //             itemCount: orderController.todoList.length,
-                  //             itemBuilder: (context, index) {
-                  //               return DeliveryOrderDesign(
-                  //                 order: orderController.todoList[index],
-                  //                 onTap: () {},
-                  //                 orderController: orderController,
-                  //               );
-                  //             })
                           : ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemCount: orderController.ordersList.length,
