@@ -267,9 +267,6 @@ class NewOrderRunningScreen extends StatelessWidget {
                                         // orderController.addImage(
                                         //     itemId: orderController.deliveryItems[index].itemId!,
                                         //     image: 'data:image/png;base64,' + image.trim());
-
-
-
                                         // orderController.itemsImageData.add(TempItem(
                                         //     key: orderController.deliveryItems[index].itemId!,
                                         //     value: file
@@ -279,13 +276,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                                       }
                                     },
                                     onQuantitySelected: (quantity){
-                                      // if(quantity != null){
-                                      //   orderController.addUpdateItem(
-                                      //       qty: quantity,
-                                      //       itemId: orderController.deliveryItems[index].itemId!,
-                                      //       deliveryId: orderController.getCurrentOrder()!.deliveryid
-                                      //   );
-                                      // }
+
 
 
                                       if(quantity == null){
@@ -297,13 +288,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                                               .deliveryItems[index].itemId!,
                                           qty: quantity
                                       );
-                                      // orderController.itemsQuantityData.add(TempItem(
-                                      //     key: orderController.deliveryItems[index].itemId!,
-                                      //     value: quantity
-                                      // ));
-                                      // print("quantity");
-                                      // print(orderController.quantityUpdate.length);
-                                      // print(quantity);
+
                                     },
                                   );
                                 })) : Text('No Items Found'))
@@ -321,13 +306,10 @@ class NewOrderRunningScreen extends StatelessWidget {
               return !orderController.isDeliveryItemLoaded.value ?
               (orderController.getCurrentOrder()!.statusid != 0 ? GestureDetector(
                 onTap: () async{
-
                   await orderController.uploadQuantityItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                   await orderController.getDeliveryItem(deliveryid: orderController.currentOrder.value!.deliveryid!);
-                  // await  orderController.uploadItemsImage(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                   orderController.deliveryItems.refresh();
                   orderController.update();
-                  // await orderController.uploadItems(deliveryId: orderController.getCurrentOrder()!.deliveryid);
                 },
                 child: Container(
                   height: height * 0.050,
@@ -374,7 +356,6 @@ class NewOrderRunningScreen extends StatelessWidget {
                     deliveryId: orderController.getCurrentOrder()!.deliveryid,
                     statusId: 8);
                 orderController.getCurrentOrder()!.statusid = 8;
-                // orderController.onChange();
               },
               child: Text(
                 "Arrived",
@@ -520,74 +501,7 @@ class NewOrderRunningScreen extends StatelessWidget {
             ),
           ],
         );
-      // case 7:
-      //   return Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: [
-      //       Text(
-      //         "All Orders  Completed",
-      //         style: TextStyle(
-      //             color: alterColor,
-      //             fontSize: height * 0.022,
-      //             fontWeight: FontWeight.bold),
-      //       ),
-      //       // Text(
-      //       //   "Signature",
-      //       //   style: TextStyle(
-      //       //       color: alterColor,
-      //       //       fontSize: height * 0.022,
-      //       //       fontWeight: FontWeight.bold),
-      //       // ),
-      //       // SizedBox(height: height * 0.005),
-      //       // Container(
-      //       //   width: Get.width,
-      //       //   height: height * 0.4,
-      //       //   padding: EdgeInsets.symmetric(
-      //       //       horizontal: height * 0.020, vertical: height * 0.020),
-      //       //   // margin: EdgeInsets.symmetric(horizontal: height * 0.010),
-      //       //   decoration: BoxDecoration(
-      //       //       color: subBackgroundColor,
-      //       //       borderRadius: BorderRadius.circular(height * 0.020)),
-      //       //   child: Signature(
-      //       //     width: Get.width - 40,
-      //       //     height: height * 0.4,
-      //       //     controller: orderController.signatureController,
-      //       //     backgroundColor: subBackgroundColor,
-      //       //     dynamicPressureSupported: false,
-      //       //   ),
-      //       // ),
-      //       // InkWell(
-      //       //   onTap: () async {
-      //       //     if (orderController.signatureController.isNotEmpty) {
-      //       //       await orderController.uploadSignature();
-      //       //       await orderController.nextOrder();
-      //       //     } else {
-      //       //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //       //           content: Text(
-      //       //         "Please take signature.....",
-      //       //         style: TextStyle(color: alterColor),
-      //       //       )));
-      //       //     }
-      //       //   },
-      //       //   child: Container(
-      //       //       width: Get.width,
-      //       //       height: height * 0.055,
-      //       //       margin: EdgeInsets.symmetric(
-      //       //           horizontal: height * 0.040, vertical: height * 0.020),
-      //       //       alignment: Alignment.center,
-      //       //       decoration: BoxDecoration(
-      //       //           color: alterColor,
-      //       //           borderRadius: BorderRadius.circular(height * 0.020)),
-      //       //       child: Text(
-      //       //         "Send To Server",
-      //       //         style: TextStyle(
-      //       //             color: subBackgroundColor,
-      //       //             fontSize: height * 0.018,
-      //       //             fontWeight: FontWeight.bold),
-      //       //       )),
-      //       // )
-      //     ],
-      //   );
+
       default:
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -599,61 +513,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                   fontSize: height * 0.022,
                   fontWeight: FontWeight.bold),
             ),
-            // Text(
-            //   "Signature",
-            //   style: TextStyle(
-            //       color: alterColor,
-            //       fontSize: height * 0.022,
-            //       fontWeight: FontWeight.bold),
-            // ),
-            // SizedBox(height: height * 0.005),
-            // Container(
-            //   width: Get.width,
-            //   height: height * 0.4,
-            //   padding: EdgeInsets.symmetric(
-            //       horizontal: height * 0.020, vertical: height * 0.020),
-            //   // margin: EdgeInsets.symmetric(horizontal: height * 0.010),
-            //   decoration: BoxDecoration(
-            //       color: subBackgroundColor,
-            //       borderRadius: BorderRadius.circular(height * 0.020)),
-            //   child: Signature(
-            //     width: Get.width - 40,
-            //     height: height * 0.4,
-            //     controller: orderController.signatureController,
-            //     backgroundColor: subBackgroundColor,
-            //     dynamicPressureSupported: false,
-            //   ),
-            // ),
-            // InkWell(
-            //   onTap: () async {
-            //     if (orderController.signatureController.isNotEmpty) {
-            //       await orderController.uploadSignature();
-            //       await orderController.nextOrder();
-            //     } else {
-            //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            //           content: Text(
-            //         "Please take signature.....",
-            //         style: TextStyle(color: alterColor),
-            //       )));
-            //     }
-            //   },
-            //   child: Container(
-            //       width: Get.width,
-            //       height: height * 0.055,
-            //       margin: EdgeInsets.symmetric(
-            //           horizontal: height * 0.040, vertical: height * 0.020),
-            //       alignment: Alignment.center,
-            //       decoration: BoxDecoration(
-            //           color: alterColor,
-            //           borderRadius: BorderRadius.circular(height * 0.020)),
-            //       child: Text(
-            //         "Send To Server",
-            //         style: TextStyle(
-            //             color: subBackgroundColor,
-            //             fontSize: height * 0.018,
-            //             fontWeight: FontWeight.bold),
-            //       )),
-            // )
+
           ],
         );
     }
@@ -823,10 +683,6 @@ class NewOrderRunningScreen extends StatelessWidget {
                         SizedBox(width: height * 0.020),
                         TextButton(
                             onPressed: () async {
-                              // // final picker = ImagePicker();
-                              // // final image = await picker.pickImage(source: ImageSource.camera);
-                              // showPictureDialogue(context,
-                              //     deliveryId: deliveryId);
                               setState((){
                                 isPictureModeSelect = true;
                               });
@@ -991,46 +847,5 @@ class NewOrderRunningScreen extends StatelessWidget {
         });
   }
 
-  statusView({deliveryId}) {
-    switch (deliveryId) {
-      case 6:
-        return Text(
-          "Failed",
-          style: TextStyle(
-              color: Colors.redAccent.shade700,
-              fontSize: height * 0.018,
-              fontWeight: FontWeight.bold),
-        );
-      case 5:
-        return Text(
-          "Completed",
-          style: TextStyle(
-              color: Colors.green.shade900,
-              fontSize: height * 0.018,
-              fontWeight: FontWeight.bold),
-        );
-      case 3:
-        return Text(
-          "Todo",
-          style: TextStyle(
-              color: alterColor,
-              fontSize: height * 0.018,
-              fontWeight: FontWeight.bold),
-        );
-      case 8:
-        return Text(
-          "Arrived",
-          style: TextStyle(
-              color: Colors.green.shade900,
-              fontSize: height * 0.018,
-              fontWeight: FontWeight.bold),
-        );
-      default:
-        return Text("Departed",
-            style: TextStyle(
-                color: Colors.green,
-                fontSize: height * 0.018,
-                fontWeight: FontWeight.bold));
-    }
-  }
+
 }

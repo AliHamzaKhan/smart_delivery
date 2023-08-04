@@ -24,9 +24,7 @@ class SplashScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return waitingView();
-            // return Center(
-            //   child: CircularProgressIndicator(),
-            // );
+
           } else {
             if (snapshot.hasError)
               return errorView(snapshot);
@@ -36,18 +34,7 @@ class SplashScreen extends StatelessWidget {
         },
       );
     });
-    // return Obx(() => FutureBuilder(
-    //   future: authmanager.initializeSettings(),
-    //     builder: (context, snapshot){
-    //       if (snapshot.connectionState == ConnectionState.waiting) {
-    //                 return waitingView();
-    //               } else {
-    //                 if (snapshot.hasError)
-    //                   return errorView(snapshot);
-    //                 else
-    //                   return OnBoard();
-    //               }
-    // }));
+
   }
 
   Scaffold errorView(AsyncSnapshot<Object?> snapshot) {
@@ -61,10 +48,7 @@ class SplashScreen extends StatelessWidget {
       backgroundColor: appbackgroundColor,
         body: Container(
           decoration: BoxDecoration(
-            // image: DecorationImage(
-            //   image: AssetImage("assets/icons/logo.jpg"),
-            //   fit: BoxFit.cover
-            // )
+
           ),
           child: Center(
             child: Column(

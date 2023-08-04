@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Constant/Colors.dart';
-import '../../main.dart';
-
 import '../Controller/AskLocation.dart';
 import '../Controller/OrderController.dart';
 import '../Design/DeliveryOrderDesign.dart';
@@ -36,7 +34,6 @@ class NewOrderScreen extends StatelessWidget {
                 size: height * 0.030,
               ),
               onPressed: () {
-                // orderController.openDrawer();
                 scaffoldKey.currentState!.openDrawer();
               }),
           title: Text(
@@ -104,10 +101,7 @@ class NewOrderScreen extends StatelessWidget {
           padding: EdgeInsets.all(height * 0.010),
           child: Column(
             children: [
-              // Obx(
-              //   () => (orderController.isFirstOrder.value
-              //       /*&&  orderController.getCurrentOrder().deliveryrefno !=  null*/)
-              //       ?
+
               Obx(() => orderController.todosMenu.value == 'ToDo'
                   ? (orderController.todoList.isNotEmpty
                       ? Padding(
@@ -119,7 +113,6 @@ class NewOrderScreen extends StatelessWidget {
                                 Get.to(() => NewOrderRunningScreen(
                                       orderController: orderController,
                                     ));
-                                // orderController.isFirstOrder(false);
                               },
                               style: TextButton.styleFrom(
                                   backgroundColor: alterColor,
@@ -162,23 +155,12 @@ class NewOrderScreen extends StatelessWidget {
                         );
                       },
                       onReorder: (int oldIndex, int newIndex) {
-                        // print('oldIndex $oldIndex');
-                        // print('newIndex $newIndex');
                         if (oldIndex < newIndex) {
                           newIndex -= 1;
                         }
                         final Rows movedItem = orderController.todoList.removeAt(oldIndex);
                         orderController.todoList.insert(newIndex, movedItem);
                         orderController.reOrderVisit(movedItem.deliveryid!, newIndex + 1);
-                        // if(start != current){
-                        //   // print(orderController.todoList[start].deliveryrefno);
-                        //   // print('start $start');
-                        //   // print('current $current');
-                        //   // orderController.reOrderVisit(orderController.todoList[start].deliveryid!, current);
-                        // }
-
-                        // print('oldIndex $oldIndex');
-                        // print('newIndex $newIndex');
                       })
                           : ListView.builder(
                               scrollDirection: Axis.vertical,
@@ -187,9 +169,6 @@ class NewOrderScreen extends StatelessWidget {
                                 return DeliveryOrderDesign(
                                   order: orderController.ordersList[index],
                                   onTap: () {
-                                    // Get.to(()=>NewOrderRunningScreen(
-                                    //   orderController: orderController,
-                                    // ));
                                   },
                                   orderController: orderController,
                                   isResetButton: orderController.ordersList[index].statusid == 3 ? false : true,

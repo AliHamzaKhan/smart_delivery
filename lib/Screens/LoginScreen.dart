@@ -17,13 +17,12 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   String dialCodeDigits = "";
-  final TextEditingController _controller = TextEditingController();
-  final TextEditingController _usernamecontroller = TextEditingController();
-  final TextEditingController _passwordcontroller = TextEditingController();
+  late TextEditingController controller ;
+  late TextEditingController usernamecontroller;
+  late TextEditingController passwordcontroller;
   final _formkey = GlobalKey<FormState>();
   bool _isSwitchOn = true;
 
- // var manager = Get.put(AuthenticationManager());
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: CustomTextField(
                             hintText: "Username",
-                            cntrlr: _usernamecontroller,
+                            cntrlr: usernamecontroller,
                             ispasswordfield: false,
                             isPassword: false,
                             isEmail: false,
@@ -184,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 15),
                             child: CustomTextField(
                               hintText: "Password",
-                              cntrlr: _passwordcontroller,
+                              cntrlr: passwordcontroller,
                               ispasswordfield: true,
                               isPassword: true,
                               isEmail: false,
@@ -230,18 +229,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           //         "remember me",
                           //         style: TextStyle(color: textColor),
                           //       ),
-                          //       const Spacer(),
-                          //       TextButton(
-                          //           onPressed: () {
-                          //        //     Get.to(() => ForgotPasswordScreen());
-                          //           },
-                          //           child: Text(
-                          //             "forgot password?",
-                          //             style: TextStyle(
-                          //                 color: textColor,
-                          //                 fontSize: screenHeight * 0.018,
-                          //                 decoration: TextDecoration.underline),
-                          //           ))
                           //     ],
                           //   ),
                           // ),
@@ -251,55 +238,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         Obx(() => authController.loading.value ? MainButton(
                             title: "SIGN IN",
                             onTap: () async {
+
                               if (_formkey.currentState!.validate()) {
                                 FocusScope.of(context).unfocus();
                                 await authController.login(
-                                  username: _usernamecontroller.text,
+                                  username: usernamecontroller.text,
                                   password:
-                                  _passwordcontroller.text.trim(),
+                                  passwordcontroller.text.trim(),
                                   save: _isSwitchOn,
                                 );
                               }
                             }) :
                         Center(child: CircularProgressIndicator(),) ),
 
-                        // GetBuilder<AuthController>(builder: (controller){
-                        //   return controller.getLoading()?
-                        //   MainButton(
-                        //       title: "SIGN IN",
-                        //       onTap: () async {
-                        //         if (_formkey.currentState!.validate()) {
-                        //           FocusScope.of(context).unfocus();
-                        //           await authController.login(
-                        //             username: _usernamecontroller.text,
-                        //             password:
-                        //             _passwordcontroller.text.trim(),
-                        //             save: _isSwitchOn,
-                        //           );
-                        //         }
-                        //       }) :
-                        //   Center(child: CircularProgressIndicator(),);
-                        // }),
                         SizedBox(
                           height: screenHeight * 0.03,
                         ),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.center,
-                        //   children: [
-                        //     Text("Don't have an account ?",
-                        //         style: TextStyle(color: textColor)),
-                        //     TextButton(
-                        //         onPressed: () {
-                        //           // Get.to(() => SignUpScreen());
-                        //         },
-                        //         child: Text("   SignUp   ",
-                        //             style: TextStyle(
-                        //               color: alterColor,
-                        //               fontWeight: FontWeight.bold,
-                        //               fontSize: 15,
-                        //             )))
-                        //   ],
-                        // ),
                       ],
                     ),
                   ),
@@ -314,5 +268,21 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController();
+    usernamecontroller = TextEditingController();
+    passwordcontroller = TextEditingController();
+  }
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+    usernamecontroller.dispose();
+    passwordcontroller.dispose();
   }
 }
