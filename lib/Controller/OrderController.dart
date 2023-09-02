@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -46,76 +47,46 @@ class OrderController extends GetxController {
   List<ItemQuantityUpdate> quantityUpdate = [];
   List<ItemImageUpdate> imageUpdate = [];
 
-  addQuantity({required int itemId,required int qty}) {
+  var inAppReload = true;
 
-
-    if(quantityUpdate.isEmpty){
+  addQuantity({required int itemId, required int qty}) {
+    if (quantityUpdate.isEmpty) {
       quantityUpdate.add(ItemQuantityUpdate(itemid: itemId, qty: qty));
       print('one');
       return;
     }
 
-
     bool itemExists = quantityUpdate.any((item) => item.itemid == itemId);
     if (itemExists) {
-      // Item with the given itemId exists, update its quantity
+
       int index = quantityUpdate.indexWhere((item) => item.itemid == itemId);
       quantityUpdate[index].qty = qty;
     } else {
-      // Item does not exist, add a new ItemQuantityUpdate to the list
+
       quantityUpdate.add(ItemQuantityUpdate(itemid: itemId, qty: qty));
     }
-    // bool itemExists = false;
 
-    // for (int i = 0; i < quantityUpdate.length; i++) {
-    //   if (quantityUpdate[i].itemid == itemId) {
-    //     quantityUpdate[i].qty = qty;
-    //     itemExists = true;
-    //     print('second');
-    //     break;
-    //   }
-    //   if (!itemExists) {
-    //     quantityUpdate.add(ItemQuantityUpdate(itemid: itemId, qty: qty));
-    //     print('third');
-    //   }
-    //
-    // }
     print('quantityUpdate');
     print(quantityUpdate.length);
     print('temid: $itemId, qty: $qty');
   }
-  addImage({required int itemId,required String? image}) {
 
-
-    if(imageUpdate.isEmpty){
-      imageUpdate.add(ItemImageUpdate(itemid: itemId, imagedata:  image));
+  addImage({required int itemId, required String? image}) {
+    if (imageUpdate.isEmpty) {
+      imageUpdate.add(ItemImageUpdate(itemid: itemId, imagedata: image));
       return;
     }
 
-
     bool itemExists = imageUpdate.any((item) => item.itemid == itemId);
     if (itemExists) {
-      // Item with the given itemId exists, update its quantity
+
       int index = imageUpdate.indexWhere((item) => item.itemid == itemId);
       imageUpdate[index].imagedata = image;
     } else {
-      // Item does not exist, add a new ItemQuantityUpdate to the list
+
       imageUpdate.add(ItemImageUpdate(itemid: itemId, imagedata: image));
     }
-    // bool itemExists = false;
 
-    // for (int i = 0; i < imageUpdate.length; i++) {
-    //   if (imageUpdate[i].itemid == itemId) {
-    //     imageUpdate[i].imagedata = image;
-    //     itemExists = true;
-    //     break;
-    //   }
-    //   if (!itemExists) {
-    //        imageUpdate.add(ItemImageUpdate(itemid: itemId, imagedata:  image));
-    //   }
-    //   print(imageUpdate.length);
-    //   print('temid: $itemId, imagedata:  $image');
-    // }
     print('imageUpdate');
     print(imageUpdate.length);
     print('itemId: $itemId, imagedata:  $image');
@@ -135,12 +106,11 @@ class OrderController extends GetxController {
     } finally {
       isDeliveryItemLoaded(false);
     }
-    // update();
-    // return deliveryItems;
+
   }
 
   setCurrentOrder({order, controller}) {
-    // controller.startTask(order: order);
+
 
     currentOrder.value = order;
     update();
@@ -186,23 +156,23 @@ class OrderController extends GetxController {
       Task task = Task.fromJson(result);
       ordersList.assignAll(task.rows!);
 
-      // Create a map to track the visitorderno values and their frequency
+
       var visitordernoMap = <int, int>{};
 
       for (int i = 0; i < ordersList.length; i++) {
         int? visitorderno = ordersList[i].visitorderno;
         if (visitorderno == 0) {
-          // Calculate a new visitorderno based on the index
+
           visitorderno = i * 3;
           ordersList[i].visitorderno = visitorderno;
         }
 
-        // Increment the frequency of the visitorderno in the map
+
         visitordernoMap[visitorderno!] =
             (visitordernoMap[visitorderno] ?? 0) + 1;
       }
 
-      // Iterate over the ordersList again and update visitorderno for duplicates
+
       for (int i = 0; i < ordersList.length; i++) {
         print(ordersList[i].visitorderno);
         int? visitorderno = ordersList[i].visitorderno;
@@ -238,10 +208,12 @@ class OrderController extends GetxController {
     print("duplicate ${temp.length}");
   }
 
-  updateStatus({deliveryId, statusId, reason}) async {
+  updateStatus({deliveryId, statusId, reason, inRunning = false}) async {
+    if (inRunning) {
+      isOrderLoaded(true);
+    }
     isStatusLoaded(true);
     try {
-
       var response = await MyApi().updateOrder(
           deliveryId: deliveryId, statusId: statusId, reason: reason);
       var data = jsonDecode(response);
@@ -258,6 +230,9 @@ class OrderController extends GetxController {
     } catch (e) {
       print(e);
     } finally {
+      if (inRunning) {
+        isOrderLoaded(false);
+      }
       isStatusLoaded(false);
     }
     update();
@@ -420,23 +395,19 @@ class OrderController extends GetxController {
   //   }
   // }
 
-  uploadSingleImage({deliveryId , image, itemId}) async{
-        var response = await MyApi().uploadItemPhoto(
-          deliveryId: deliveryId,
-          image: image,
-          itemId: itemId);
-        print(response);
+  uploadSingleImage({deliveryId, image, itemId}) async {
+    var response = await MyApi()
+        .uploadItemPhoto(deliveryId: deliveryId, image: image, itemId: itemId);
+    print(response);
 
-        var data = jsonDecode(response);
+    var data = jsonDecode(response);
 
-        if(data["status"] == 'success'){
-          apiToast(Get.context!, 'Images', "successfully", seconds: 1);
-        }
-        else{
-          apiToast(Get.context!, 'Images', "failed", seconds: 1);
-        }
-        // apiToast(Get.context, 'Images', response["status"]);
-
+    if (data["status"] == 'success') {
+      apiToast(Get.context!, 'Images', "successfully", seconds: 1);
+    } else {
+      apiToast(Get.context!, 'Images', "failed", seconds: 1);
+    }
+    // apiToast(Get.context, 'Images', response["status"]);
   }
 
   uploadItemsImage({required deliveryId}) async {
@@ -446,16 +417,14 @@ class OrderController extends GetxController {
     } else {
       try {
         isItemImageUploaded(true);
-        var response = await MyApi().uploadItemImage(
-            deliveryId: deliveryId,
-            imageData: imageUpdate);
+        var response = await MyApi()
+            .uploadItemImage(deliveryId: deliveryId, imageData: imageUpdate);
 
         var data = jsonDecode(response);
-        if(data["status"] == 'success'){
+        if (data["status"] == 'success') {
           apiToast(Get.context!, 'Images', "successfully");
-        }
-        else{
-          apiToast(Get.context!, 'Images' , 'failed');
+        } else {
+          apiToast(Get.context!, 'Images', 'failed');
         }
 
         // List<Future> requestFutures = [];
@@ -505,18 +474,14 @@ class OrderController extends GetxController {
       try {
         isItemImageUploaded(true);
         var response = await MyApi().uploadItemQuantity(
-              deliveryId: deliveryId,
-               qtyData: quantityUpdate);
+            deliveryId: deliveryId, qtyData: quantityUpdate);
         print(response);
         var data = jsonDecode(response);
-        if(data["status"] == 'success'){
+        if (data["status"] == 'success') {
           apiToast(Get.context!, 'Quantity', "successfully");
-        }
-        else{
+        } else {
           apiToast(Get.context!, 'Quantity', 'failed');
         }
-
-
 
         // List<Future> requestFutures = [];
         // for (int i = 0; i < itemsQuantityData.length; i++) {
@@ -543,8 +508,6 @@ class OrderController extends GetxController {
         //   }
         // }
         // itemsQuantityData.clear();
-
-
       } catch (e) {
         print(e);
       } finally {
@@ -553,8 +516,6 @@ class OrderController extends GetxController {
       }
     }
   }
-
-
 
   uploadImage({deliveryId, image}) async {
     var convert = await image.readAsBytesSync();
@@ -665,7 +626,6 @@ class OrderController extends GetxController {
   //
   // }
 
-
   exportSignature() async {
     final signature = await signatureController.toPngBytes();
     var a = await base64String(signature!);
@@ -728,6 +688,7 @@ class OrderController extends GetxController {
     if (authmanager.isLogged.value) {
       driverName.value = await authmanager.checkLoginStatus();
     }
+
     getOrders();
     scaffoldKey = GlobalKey<ScaffoldState>();
     signatureController = SignatureController(
@@ -735,5 +696,10 @@ class OrderController extends GetxController {
       exportBackgroundColor: Colors.white,
       penColor: alterColor,
     );
+    if (inAppReload) {
+      Timer.periodic(Duration(minutes: 15), (timer) {
+        getOrders();
+      });
+    }
   }
 }

@@ -173,8 +173,8 @@ class NewOrderScreen extends StatelessWidget {
                                   orderController: orderController,
                                   isResetButton: orderController.ordersList[index].statusid == 3 ? false : true,
                                   onResetClick: () async{
-
                                     await orderController.updateStatus(
+                                      inRunning: true,
                                         deliveryId: orderController.ordersList[index].deliveryid,
                                         statusId: 3);
                                     orderController.refreshOrder();
