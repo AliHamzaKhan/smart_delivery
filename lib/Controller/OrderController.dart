@@ -58,11 +58,9 @@ class OrderController extends GetxController {
 
     bool itemExists = quantityUpdate.any((item) => item.itemid == itemId);
     if (itemExists) {
-
       int index = quantityUpdate.indexWhere((item) => item.itemid == itemId);
       quantityUpdate[index].qty = qty;
     } else {
-
       quantityUpdate.add(ItemQuantityUpdate(itemid: itemId, qty: qty));
     }
 
@@ -79,11 +77,9 @@ class OrderController extends GetxController {
 
     bool itemExists = imageUpdate.any((item) => item.itemid == itemId);
     if (itemExists) {
-
       int index = imageUpdate.indexWhere((item) => item.itemid == itemId);
       imageUpdate[index].imagedata = image;
     } else {
-
       imageUpdate.add(ItemImageUpdate(itemid: itemId, imagedata: image));
     }
 
@@ -106,12 +102,9 @@ class OrderController extends GetxController {
     } finally {
       isDeliveryItemLoaded(false);
     }
-
   }
 
   setCurrentOrder({order, controller}) {
-
-
     currentOrder.value = order;
     update();
     getDeliveryItem(deliveryid: currentOrder.value!.deliveryid!);
@@ -156,22 +149,18 @@ class OrderController extends GetxController {
       Task task = Task.fromJson(result);
       ordersList.assignAll(task.rows!);
 
-
       var visitordernoMap = <int, int>{};
 
       for (int i = 0; i < ordersList.length; i++) {
         int? visitorderno = ordersList[i].visitorderno;
         if (visitorderno == 0) {
-
           visitorderno = i * 3;
           ordersList[i].visitorderno = visitorderno;
         }
 
-
         visitordernoMap[visitorderno!] =
             (visitordernoMap[visitorderno] ?? 0) + 1;
       }
-
 
       for (int i = 0; i < ordersList.length; i++) {
         print(ordersList[i].visitorderno);
