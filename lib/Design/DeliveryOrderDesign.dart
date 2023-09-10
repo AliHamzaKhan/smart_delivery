@@ -83,18 +83,36 @@ class DeliveryOrderDesign extends StatelessWidget {
               SizedBox(height: height * 0.010),
 
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-
-                  // checkValue(order!.statusid),
-                ],
-              ),
-              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("${order!.notesfordriver}"),
+                  if(order!.timeFrom! != '')
+                  Text(
+                    order!.timeFrom!,
+                    style: TextStyle(color: textColor, fontSize: height * 0.015),
+                  ),
+                  if(order!.timeTo! != '')
+                  Text(
+                    order!.timeTo!,
+                    style: TextStyle(color: textColor, fontSize: height * 0.015),
+                  )
                 ],
               ),
+              SizedBox(height: height * 0.010),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.end,
+              //   children: [
+              //
+              //     // checkValue(order!.statusid),
+              //   ],
+              // ),
+              if(order!.notes != '')
+                Text("${order!.notes}",
+                  style: TextStyle(color: textColor, fontSize: height * 0.015,), maxLines: 1,),
+
+              if(order!.tel != '')
+                Text("${order!.tel}",
+                  style: TextStyle(color: textColor, fontSize: height * 0.015,), maxLines: 1,),
+
               SizedBox(height: height * 0.005),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

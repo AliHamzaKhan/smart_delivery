@@ -11,6 +11,10 @@ class Rows {
   String? arrivedon;
   String? eta;
   int? distance;
+  String? timeFrom;
+  String? timeTo;
+  String? notes;
+  String? tel;
 
   Rows({
     this.deliveryid,
@@ -24,6 +28,10 @@ class Rows {
     this.arrivedon,
     this.eta,
     this.distance,
+     this.timeFrom,
+     this.timeTo,
+     this.notes,
+     this.tel,
   });
 
   factory Rows.fromJson(Map<String, dynamic> json) => Rows(
@@ -38,6 +46,10 @@ class Rows {
         arrivedon: json["arrivedon"] ?? "",
         eta: json["eta"] ?? "",
         distance: json["distance"] ?? 0,
+        timeFrom: json["time_from"] ?? "",
+        timeTo: json["time_to"] ?? "",
+        notes: json["notes"] ?? "",
+        tel: json["tel"] ?? "",
       );
 
   Map<String, dynamic> toJson() {
@@ -53,6 +65,10 @@ class Rows {
     data['arrivedon'] = this.arrivedon;
     data['eta'] = this.eta;
     data['distance'] = this.distance;
+    data['time_from'] = this.timeFrom;
+    data['time_to'] = this.timeTo;
+    data['notes'] = this.notes;
+    data['tel'] = this.tel;
     return data;
   }
 }
