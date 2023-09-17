@@ -104,10 +104,11 @@ class OrderController extends GetxController {
     }
   }
 
-  setCurrentOrder({order, controller}) {
+  setCurrentOrder({order, controller}) async{
     currentOrder.value = order;
     update();
-    getDeliveryItem(deliveryid: currentOrder.value!.deliveryid!);
+   await postStartDeliveryStatus(deliveryId: currentOrder.value!.deliveryid);
+  await  getDeliveryItem(deliveryid: currentOrder.value!.deliveryid!);
     // print("current order $currentOrder");
   }
 
@@ -140,6 +141,14 @@ class OrderController extends GetxController {
   //   update();
   // }
 
+  postStartDeliveryStatus({deliveryId}) async{
+    var response = await MyApi().updateOrder(
+        deliveryId: deliveryId, statusId: 9);
+    var data = jsonDecode(response);
+    if(data["status"] == "success"){
+      apiToast(Get.context!, 'Delivery Started', "successfully");
+    }
+  }
   getOrders() async {
     try {
       isOrderLoaded(true);
@@ -245,6 +254,7 @@ class OrderController extends GetxController {
     6: "Failed",
     8: "Arrived",
     7: "Departed",
+    9 : "Started"
   };
 
   setFailedReasons(value) {

@@ -73,13 +73,15 @@ class NewOrderScreen extends StatelessWidget {
                           value: Filter.All,
                           child: Text(
                             'All',
-                            style: TextStyle(color: textColor, fontSize: height * 0.018),
+                            style: TextStyle(
+                                color: textColor, fontSize: height * 0.018),
                           ),
                         ),
                         PopupMenuItem<Filter>(
                           value: Filter.ToDo,
-                          child:
-                              Text('ToDo', style: TextStyle(color: textColor, fontSize: height * 0.018)),
+                          child: Text('ToDo',
+                              style: TextStyle(
+                                  color: textColor, fontSize: height * 0.018)),
                         ),
                       ],
                       color: subBackgroundColor,
@@ -101,7 +103,6 @@ class NewOrderScreen extends StatelessWidget {
           padding: EdgeInsets.all(height * 0.010),
           child: Column(
             children: [
-
               Obx(() => orderController.todosMenu.value == 'ToDo'
                   ? (orderController.todoList.isNotEmpty
                       ? Padding(
@@ -127,55 +128,63 @@ class NewOrderScreen extends StatelessWidget {
                                       style: TextStyle(
                                           color: subBackgroundColor,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: height * 0.017
-                                      )),
-                                  Icon(Icons.fast_forward_outlined,
-                                      color: subBackgroundColor, size: height * 0.025,)
+                                          fontSize: height * 0.017)),
+                                  Icon(
+                                    Icons.fast_forward_outlined,
+                                    color: subBackgroundColor,
+                                    size: height * 0.025,
+                                  )
                                 ],
                               )),
                         )
                       : SizedBox())
                   : Container(
-                // child: Text('Please Check If Your Internet Connection in enable then press refresh button at top', style: TextStyle(color: alterColor),),
-              )),
+                      // child: Text('Please Check If Your Internet Connection in enable then press refresh button at top', style: TextStyle(color: alterColor),),
+                      )),
               Expanded(
                   child: Obx(() => !orderController.isOrderLoaded.value
                       ? (orderController.todosMenu.value != "All"
-                          ?
-                  ReorderableListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: orderController.todoList.length,
-                      itemBuilder: (context, index) {
-                        return DeliveryOrderDesign(
-                          key: Key("${orderController.todoList[index].visitorderno}"),
-                          order: orderController.todoList[index],
-                          onTap: () {
-                          },
-                          orderController: orderController,
-                        );
-                      },
-                      onReorder: (int oldIndex, int newIndex) {
-                        if (oldIndex < newIndex) {
-                          newIndex -= 1;
-                        }
-                        final Rows movedItem = orderController.todoList.removeAt(oldIndex);
-                        orderController.todoList.insert(newIndex, movedItem);
-                        orderController.reOrderVisit(movedItem.deliveryid!, newIndex + 1);
-                      })
+                          ? ReorderableListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: orderController.todoList.length,
+                              itemBuilder: (context, index) {
+                                return DeliveryOrderDesign(
+                                  key: Key(
+                                      "${orderController.todoList[index].visitorderno}"),
+                                  order: orderController.todoList[index],
+                                  onTap: () {},
+                                  orderController: orderController,
+                                );
+                              },
+                              onReorder: (int oldIndex, int newIndex) {
+                                if (oldIndex < newIndex) {
+                                  newIndex -= 1;
+                                }
+                                final Rows movedItem =
+                                    orderController.todoList.removeAt(oldIndex);
+                                orderController.todoList
+                                    .insert(newIndex, movedItem);
+                                orderController.reOrderVisit(
+                                    movedItem.deliveryid!, newIndex + 1);
+                              })
                           : ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemCount: orderController.ordersList.length,
                               itemBuilder: (context, index) {
                                 return DeliveryOrderDesign(
                                   order: orderController.ordersList[index],
-                                  onTap: () {
-                                  },
+                                  onTap: () {},
                                   orderController: orderController,
-                                  isResetButton: orderController.ordersList[index].statusid == 3 ? false : true,
-                                  onResetClick: () async{
+                                  isResetButton: orderController
+                                              .ordersList[index].statusid ==
+                                          3
+                                      ? false
+                                      : true,
+                                  onResetClick: () async {
                                     await orderController.updateStatus(
-                                      inRunning: true,
-                                        deliveryId: orderController.ordersList[index].deliveryid,
+                                        inRunning: true,
+                                        deliveryId: orderController
+                                            .ordersList[index].deliveryid,
                                         statusId: 3);
                                     orderController.refreshOrder();
                                   },

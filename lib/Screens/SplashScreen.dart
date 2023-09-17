@@ -55,14 +55,19 @@ class SplashScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(child: Text("Smart Delivery", style: TextStyle(color: alterColor, fontSize: 30, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, letterSpacing: 5),)),
-                SizedBox(height: 100),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: CircularProgressIndicator(color: alterColor,),
+                // Center(child: Text("Smart Delivery", style: TextStyle(color: alterColor, fontSize: 30, fontWeight: FontWeight.bold, fontStyle: FontStyle.normal, letterSpacing: 5),)),
+                // SizedBox(height: 100),
+                // Padding(
+                //   padding: const EdgeInsets.all(16.0),
+                //   child: CircularProgressIndicator(color: alterColor,),
+                // ),
+                SizedBox(
+                  height: Get.height * 0.5,
+                  width: Get.width * 0.8,
+                  child: Image.asset('assets/icons/cct_app_icon.png', fit: BoxFit.cover,),
                 ),
-                SizedBox(height: 5),
-                Text("Loading...", style: TextStyle(color: alterColor),),
+                // SizedBox(height: 5),
+                // Text("Loading...", style: TextStyle(color: alterColor),),
               ],
             ),
           ),
