@@ -17,15 +17,20 @@ class ItemDesign extends StatefulWidget {
   var onQuantitySelected;
   var quantityController = TextEditingController();
 
+  var qty = 0;
+
   @override
   State<ItemDesign> createState() => _ItemDesignState();
+
 }
 
 class _ItemDesignState extends State<ItemDesign> {
   var height = Get.height;
 
+
   @override
   Widget build(BuildContext context) {
+    // var qty = widget.item!.qty;
     print(MyApi.IMAGE_BASE_URL + widget.item!.photopath!);
     return Container(
       width: Get.width,
@@ -74,8 +79,9 @@ class _ItemDesignState extends State<ItemDesign> {
 
                 onTap: (){
                   setState(() {
-                    widget.item!.qty =  widget.item!.qty! + 1 ;
-                    widget.onQuantitySelected(widget.item!.qty!);
+                    // widget.item!.qty =  widget.item!.qty! + 1 ;
+                    widget. qty =   widget. qty + 1 ;
+                    widget.onQuantitySelected(widget.qty);
                   });
 
                 },
@@ -106,7 +112,8 @@ class _ItemDesignState extends State<ItemDesign> {
                       );
                     },
                   child: Text(
-                "${widget.item!.qty ?? ''}",
+                // "${widget.item!.qty ?? ''}",
+                    '${widget.qty.toString()}',
                     key: ValueKey<String>(widget.item!.qty.toString()),
                   style: TextStyle(
                       color: textColor,
@@ -123,8 +130,9 @@ class _ItemDesignState extends State<ItemDesign> {
                     return;
                   }
                   setState(() {
-                    widget.item!.qty =  widget.item!.qty! - 1 ;
-                    widget.onQuantitySelected(widget.item!.qty!);
+                    // widget.item!.qty =  widget.item!.qty! - 1 ;
+                    widget.qty =   widget. qty - 1 ;
+                    widget.onQuantitySelected(widget.qty);
                   });
 
                 },
@@ -226,6 +234,13 @@ class _ItemDesignState extends State<ItemDesign> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.qty = widget.item!.qty!;
+    print("initCalled");
   }
 
   Future<File?> getFromCamera() async {

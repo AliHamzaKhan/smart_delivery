@@ -237,6 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         Obx(() => authController.loading.value ? MainButton(
                             title: "SIGN IN",
+
                             onTap: () async {
 
                               if (_formkey.currentState!.validate()) {

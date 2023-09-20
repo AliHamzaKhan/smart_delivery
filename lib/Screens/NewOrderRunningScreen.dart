@@ -18,7 +18,7 @@ class NewOrderRunningScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    getDeliveryItems();
+    // getDeliveryItems();
     return WillPopScope(
       onWillPop: () async {
         orderController.itemsImageData.clear();
@@ -124,53 +124,74 @@ class NewOrderRunningScreen extends StatelessWidget {
                                                 fontSize: height * 0.020),
                                           ),
 
-                                          if( orderController
-                                              .getCurrentOrder().notes! != '')
-                                          Text(
-                                            orderController
-                                                .getCurrentOrder()
-                                                .notes!,
-                                            style: TextStyle(
-                                                color: textColor,
-                                                fontSize: height * 0.018),
-                                          ),
+                                          if (orderController
+                                                  .getCurrentOrder()
+                                                  .notes! !=
+                                              '')
+                                            Text(
+                                              orderController
+                                                  .getCurrentOrder()
+                                                  .notes!,
+                                              style: TextStyle(
+                                                  color: textColor,
+                                                  fontSize: height * 0.018),
+                                            ),
                                           SizedBox(height: height * 0.005),
-                                          if(orderController
-                                              .getCurrentOrder().timeFrom! != '' || orderController
-                                              .getCurrentOrder().timeTo! != '')
+                                          if (orderController
+                                                      .getCurrentOrder()
+                                                      .timeFrom! !=
+                                                  '' ||
+                                              orderController
+                                                      .getCurrentOrder()
+                                                      .timeTo! !=
+                                                  '')
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
-                                                if(orderController
-                                                    .getCurrentOrder().timeFrom!)
+                                                if (orderController
+                                                    .getCurrentOrder()
+                                                    .timeFrom!)
                                                   Text(
                                                     orderController
-                                                        .getCurrentOrder().timeFrom!,
-                                                    style: TextStyle(color: textColor, fontSize: height * 0.015),
+                                                        .getCurrentOrder()
+                                                        .timeFrom!,
+                                                    style: TextStyle(
+                                                        color: textColor,
+                                                        fontSize:
+                                                            height * 0.015),
                                                   ),
-                                                if(orderController
-                                                    .getCurrentOrder().timeTo! != '')
+                                                if (orderController
+                                                        .getCurrentOrder()
+                                                        .timeTo! !=
+                                                    '')
                                                   Text(
                                                     orderController
-                                                        .getCurrentOrder().timeTo!,
-                                                    style: TextStyle(color: textColor, fontSize: height * 0.015),
+                                                        .getCurrentOrder()
+                                                        .timeTo!,
+                                                    style: TextStyle(
+                                                        color: textColor,
+                                                        fontSize:
+                                                            height * 0.015),
                                                   )
                                               ],
                                             ),
 
                                           SizedBox(height: height * 0.005),
 
-                                          if( orderController
-                                              .getCurrentOrder()
-                                              .tel! != '')
-                                          Text(
-                                            orderController
-                                                .getCurrentOrder()
-                                                .tel!,
-                                            style: TextStyle(
-                                                color: textColor,
-                                                fontSize: height * 0.020),
-                                          ),
+                                          if (orderController
+                                                  .getCurrentOrder()
+                                                  .tel! !=
+                                              '')
+                                            Text(
+                                              orderController
+                                                  .getCurrentOrder()
+                                                  .tel!,
+                                              style: TextStyle(
+                                                  color: textColor,
+                                                  fontSize: height * 0.020),
+                                            ),
 
                                           SizedBox(height: height * 0.005),
                                           Row(
@@ -288,128 +309,104 @@ class NewOrderRunningScreen extends StatelessWidget {
                                               context),
                                         ),
                                 )),
-                            GetBuilder<OrderController>(builder: (controller) {
-                              return !orderController.isDeliveryItemLoaded.value
-                                  ? (orderController
-                                              .getCurrentOrder()!
-                                              .statusid !=
-                                          0
-                                      ? Expanded(
-                                          child: Column(
-                                          children: [
-                                            tableHeader(),
-                                            (orderController
-                                                    .deliveryItems.isNotEmpty
-                                                ? Expanded(
-                                                    child: ListView.builder(
-                                                        itemCount:
-                                                            orderController
-                                                                .deliveryItems
-                                                                .length,
-                                                        itemBuilder:
-                                                            (context, index) {
-                                                          return ItemDesign(
-                                                            item: ItemData(
-                                                                deliveryid: orderController
-                                                                    .deliveryItems[
-                                                                        index]
-                                                                    .deliveryid,
-                                                                itemId: orderController
-                                                                    .deliveryItems[
-                                                                        index]
-                                                                    .itemId,
-                                                                itemName: orderController
-                                                                    .deliveryItems[
-                                                                        index]
-                                                                    .itemName,
-                                                                itemUnit: orderController
-                                                                    .deliveryItems[
-                                                                        index]
-                                                                    .itemUnit,
-                                                                qty: orderController
-                                                                    .deliveryItems[
-                                                                        index]
-                                                                    .qty,
-                                                                deliveryrefno:
-                                                                    orderController
-                                                                        .deliveryItems[
-                                                                            index]
-                                                                        .deliveryrefno,
-                                                                photopath: orderController
-                                                                    .deliveryItems[
-                                                                        index]
-                                                                    .photopath),
-                                                            orderController:
-                                                                orderController,
-                                                            onImageSelect: (File?
-                                                                file) async {
-                                                              if (file !=
-                                                                  null) {
-                                                                // var convert = await file.readAsBytesSync();
-                                                                // var image = await orderController.base64String(convert);
-                                                                // orderController.addUpdateItem(
-                                                                //     imageData: image,
-                                                                //     itemId: orderController.deliveryItems[index].itemId!,
-                                                                //     deliveryId: orderController.getCurrentOrder()!.deliveryid
-                                                                // );
 
-                                                                // orderController.imageUpdate.add(ItemImageUpdate(
-                                                                //   itemid: orderController.deliveryItems[index].itemId!,
-                                                                //   imagedata: await orderController.base64String(convert)
-                                                                // ));
-                                                                var convert =
-                                                                    await file
-                                                                        .readAsBytes();
-                                                                var image = await orderController
-                                                                    .base64String(
-                                                                        convert);
+                            !orderController.isDeliveryItemLoaded.value
+                                ? (orderController.getCurrentOrder()!.statusid != 0
+                                ? Expanded(
+                                child: Column(
+                                  children: [
+                                    tableHeader(),
+                                    (orderController.deliveryItems.isNotEmpty
+                                        ? Expanded(
+                                        child: ListView.builder(
+                                            itemCount: orderController.deliveryItems.length,
+                                            itemBuilder: (context, index) {
+                                              return ItemDesign(
+                                                item: ItemData(
+                                                    deliveryid: orderController.deliveryItems[index].deliveryid,
+                                                    itemId: orderController.deliveryItems[index].itemId,
+                                                    itemName: orderController.deliveryItems[index].itemName,
+                                                    itemUnit: orderController.deliveryItems[index].itemUnit,
+                                                    qty: orderController.deliveryItems[index].qty,
+                                                    deliveryrefno:
+                                                    orderController.deliveryItems[index].deliveryrefno,
+                                                    photopath: orderController.deliveryItems[index].photopath),
+                                                orderController: orderController,
+                                                onImageSelect: (File?
+                                                file) async {
+                                                  if (file !=
+                                                      null) {
+                                                    // var convert = await file.readAsBytesSync();
+                                                    // var image = await orderController.base64String(convert);
+                                                    // orderController.addUpdateItem(
+                                                    //     imageData: image,
+                                                    //     itemId: orderController.deliveryItems[index].itemId!,
+                                                    //     deliveryId: orderController.getCurrentOrder()!.deliveryid
+                                                    // );
 
-                                                                orderController.uploadSingleImage(
-                                                                    deliveryId: orderController
-                                                                        .currentOrder
-                                                                        .value!
-                                                                        .deliveryid!,
-                                                                    itemId: orderController
-                                                                        .deliveryItems[
-                                                                            index]
-                                                                        .itemId!,
-                                                                    image: 'data:image/png;base64,' +
-                                                                        image
-                                                                            .trim());
-                                                                // orderController.addImage(
-                                                                //     itemId: orderController.deliveryItems[index].itemId!,
-                                                                //     image: 'data:image/png;base64,' + image.trim());
-                                                                // orderController.itemsImageData.add(TempItem(
-                                                                //     key: orderController.deliveryItems[index].itemId!,
-                                                                //     value: file
-                                                                // ));
-                                                                // print(orderController.itemsImageData.length);
-                                                                // print(file);
-                                                              }
-                                                            },
-                                                            onQuantitySelected:
-                                                                (quantity) {
-                                                              if (quantity ==
-                                                                  null) {
-                                                                return;
-                                                              }
+                                                    // orderController.imageUpdate.add(ItemImageUpdate(
+                                                    //   itemid: orderController.deliveryItems[index].itemId!,
+                                                    //   imagedata: await orderController.base64String(convert)
+                                                    // ));
+                                                    var convert =
+                                                    await file
+                                                        .readAsBytes();
+                                                    var image = await orderController
+                                                        .base64String(
+                                                        convert);
 
-                                                              orderController.addQuantity(
-                                                                  itemId: orderController
-                                                                      .deliveryItems[
-                                                                          index]
-                                                                      .itemId!,
-                                                                  qty:
-                                                                      quantity);
-                                                            },
-                                                          );
-                                                        }))
-                                                : Text('No Items Found'))
-                                          ],
-                                        ))
-                                      : SizedBox())
-                                  : SizedBox();
-                            })
+                                                    orderController.uploadSingleImage(
+                                                        deliveryId: orderController
+                                                            .currentOrder
+                                                            .value!
+                                                            .deliveryid!,
+                                                        itemId: orderController
+                                                            .deliveryItems[
+                                                        index]
+                                                            .itemId!,
+                                                        image: 'data:image/png;base64,' +
+                                                            image
+                                                                .trim());
+                                                    // orderController.addImage(
+                                                    //     itemId: orderController.deliveryItems[index].itemId!,
+                                                    //     image: 'data:image/png;base64,' + image.trim());
+                                                    // orderController.itemsImageData.add(TempItem(
+                                                    //     key: orderController.deliveryItems[index].itemId!,
+                                                    //     value: file
+                                                    // ));
+                                                    // print(orderController.itemsImageData.length);
+                                                    // print(file);
+                                                  }
+                                                },
+                                                onQuantitySelected:
+                                                    (quantity) {
+                                                  if (quantity ==
+                                                      null) {
+                                                    return;
+                                                  }
+
+                                                  orderController.addQuantity(
+                                                      itemId: orderController
+                                                          .deliveryItems[
+                                                      index]
+                                                          .itemId!,
+                                                      qty:
+                                                      quantity);
+                                                },
+                                              );
+                                            }))
+                                        : Text('No Items Found'))
+                                  ],
+                                ))
+                                : SizedBox())
+                                : SizedBox(
+                              child: Center(
+                                child: Text('Loading.....'),
+                              ),
+                            )
+                            // GetBuilder<OrderController>(builder: (controller) {
+                            //   return ;
+                            // })
                           ],
                         ),
                       )),
@@ -460,12 +457,12 @@ class NewOrderRunningScreen extends StatelessWidget {
     );
   }
 
-  getDeliveryItems() async {
-    if (orderController.currentOrder.value != null) {
-      await orderController.getDeliveryItem(
-          deliveryid: orderController.currentOrder.value!.deliveryid!);
-    }
-  }
+  // getDeliveryItems() async {
+  //   if (orderController.currentOrder.value != null) {
+  //     await orderController.getDeliveryItem(
+  //         deliveryid: orderController.currentOrder.value!.deliveryid!);
+  //   }
+  // }
 
   checkValue(value, context) {
     print(orderController.getCurrentOrder()!.statusid);

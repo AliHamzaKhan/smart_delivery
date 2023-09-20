@@ -24,8 +24,8 @@ class MainButton extends StatelessWidget {
           child: Center(
             child: Text(
               title,
-              style: const TextStyle(
-                  color: Colors.black,
+              style:  TextStyle(
+                  color: appbackgroundColor,
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
             ),

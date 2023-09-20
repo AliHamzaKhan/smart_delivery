@@ -89,14 +89,16 @@ class OrderController extends GetxController {
   }
 
   getDeliveryItem({required int deliveryid}) async {
+    isDeliveryItemLoaded(true);
     try {
-      isDeliveryItemLoaded(true);
+
       var response = await MyApi().getDeliveryItems(deliveryid);
       var result = jsonDecode(response);
       print(result);
       DeliveryItem deliveryItem = DeliveryItem.fromJson(result);
       deliveryItems.assignAll(deliveryItem.itemData!);
       print(deliveryItem.itemData!.length);
+      // update();
     } catch (e) {
       print(e);
     } finally {
@@ -107,7 +109,7 @@ class OrderController extends GetxController {
   setCurrentOrder({order, controller}) async{
     currentOrder.value = order;
     update();
-   await postStartDeliveryStatus(deliveryId: currentOrder.value!.deliveryid);
+
   await  getDeliveryItem(deliveryid: currentOrder.value!.deliveryid!);
     // print("current order $currentOrder");
   }
@@ -142,12 +144,9 @@ class OrderController extends GetxController {
   // }
 
   postStartDeliveryStatus({deliveryId}) async{
-    var response = await MyApi().updateOrder(
+   await MyApi().updateOrder(
         deliveryId: deliveryId, statusId: 9);
-    var data = jsonDecode(response);
-    if(data["status"] == "success"){
-      apiToast(Get.context!, 'Delivery Started', "successfully");
-    }
+    apiToast(Get.context!, 'Delivery Started', "successfully");
   }
   getOrders() async {
     try {
@@ -278,10 +277,11 @@ class OrderController extends GetxController {
     } else {}
   }
 
-  getTodo() {
+  getTodo() async {
     todoList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
     print('todoList ${todoList.length}');
     setCurrentOrder(order: todoList[0]);
+    await postStartDeliveryStatus(deliveryId: currentOrder.value!.deliveryid);
     update();
   }
 
@@ -466,6 +466,7 @@ class OrderController extends GetxController {
   }
 
   uploadQuantityItems({required deliveryId}) async {
+    isDeliveryItemLoaded(true);
     if (quantityUpdate.isEmpty) {
       print(quantityUpdate.length);
       print('no Quantity');
@@ -512,6 +513,7 @@ class OrderController extends GetxController {
       } finally {
         quantityUpdate.clear();
         isItemImageUploaded(false);
+        isDeliveryItemLoaded(false);
       }
     }
   }
