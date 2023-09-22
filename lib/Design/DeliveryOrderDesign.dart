@@ -6,6 +6,8 @@ import '../Constant/Colors.dart';
 import '../Controller/OrderController.dart';
 import '../Model/Task.dart';
 import '../Utils/DistanceCal.dart';
+import '../Utils/app_widget.dart';
+import '../Utils/dataParser.dart';
 
 class DeliveryOrderDesign extends StatelessWidget {
   DeliveryOrderDesign({Key? key, this.order, this.onTap,required this.orderController, this.isResetButton = false , this.onResetClick}) : super(key: key);
@@ -72,31 +74,26 @@ class DeliveryOrderDesign extends StatelessWidget {
                 ],
               ),
               SizedBox(height: height * 0.010),
-              Row(
-                children: [
-                  Text(
-                    order!.deliveryaddress!,
-                    style: TextStyle(color: textColor, fontSize: height * 0.015),
-                  )
-                ],
-              ),
+
+              getTableWidget('Address', AppDataParser().getStringData(order!.deliveryaddress!) ),
+
               SizedBox(height: height * 0.010),
 
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   if(order!.timeFrom! != '')
-                  Text(
-                    order!.timeFrom!,
-                    style: TextStyle(color: textColor, fontSize: height * 0.015),
-                  ),
+                    Expanded(child: getTableWidget('From',order!.timeFrom! ),),
+
                   if(order!.timeTo! != '')
-                  Text(
-                    order!.timeTo!,
-                    style: TextStyle(color: textColor, fontSize: height * 0.015),
-                  )
+                    Expanded(child: getTableWidget('To', order!.timeTo!),)
+
+
                 ],
               ),
+
+
               SizedBox(height: height * 0.010),
               // Row(
               //   mainAxisAlignment: MainAxisAlignment.end,
@@ -106,12 +103,13 @@ class DeliveryOrderDesign extends StatelessWidget {
               //   ],
               // ),
               if(order!.notes != '')
-                Text("${order!.notes}",
-                  style: TextStyle(color: textColor, fontSize: height * 0.015,), maxLines: 1,),
+                getTableWidget('Notes', "${order!.notes}"),
+
 
               if(order!.tel != '')
-                Text("${order!.tel}",
-                  style: TextStyle(color: textColor, fontSize: height * 0.015,), maxLines: 1,),
+                getTableWidget('Tel', "${order!.tel}"),
+
+
 
               SizedBox(height: height * 0.005),
               Row(
@@ -138,7 +136,7 @@ class DeliveryOrderDesign extends StatelessWidget {
                           style: TextStyle(color: alterColor, fontSize: height * 0.017),
                         ),
                         Icon(
-                          Icons.location_on_outlined,
+                          Icons.location_on,
                           color: alterColor,
                           size: height * 0.018,
                         )

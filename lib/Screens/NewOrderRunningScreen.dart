@@ -9,6 +9,7 @@ import '../Controller/OrderController.dart';
 import '../Design/ItemDesign.dart';
 import '../Design/table_header.dart';
 import '../Model/DeliveryItem.dart';
+import '../Utils/app_widget.dart';
 
 class NewOrderRunningScreen extends StatelessWidget {
   NewOrderRunningScreen({Key? key, required this.orderController})
@@ -114,101 +115,93 @@ class NewOrderRunningScreen extends StatelessWidget {
                                           //       fontSize: height * 0.030,
                                           //       fontWeight: FontWeight.bold),
                                           // ),
-                                          SizedBox(height: height * 0.010),
-                                          Text(
-                                            orderController
-                                                .getCurrentOrder()
-                                                .deliveryaddress!,
-                                            style: TextStyle(
-                                                color: textColor,
-                                                fontSize: height * 0.020),
-                                          ),
+                                          // SizedBox(height: height * 0.005),
+                                          getTableWidget('Address',orderController.getCurrentOrder().deliveryaddress!,
+                                           textSize: 0.018),
+                                          // Text(
+                                          //   orderController
+                                          //       .getCurrentOrder()
+                                          //       .deliveryaddress!,
+                                          //   style: TextStyle(
+                                          //       color: textColor,
+                                          //       fontSize: height * 0.020),
+                                          // ),
 
-                                          if (orderController
-                                                  .getCurrentOrder()
-                                                  .notes! !=
-                                              '')
-                                            Text(
-                                              orderController
-                                                  .getCurrentOrder()
-                                                  .notes!,
-                                              style: TextStyle(
-                                                  color: textColor,
-                                                  fontSize: height * 0.018),
-                                            ),
+                                          if (orderController.getCurrentOrder().notes! != '')
+                                            getTableWidget('Notes', orderController.getCurrentOrder().notes!,textSize: 0.018, maxLines: 5),
+                                            // Text(
+                                            //   orderController
+                                            //       .getCurrentOrder()
+                                            //       .notes!,
+                                            //   style: TextStyle(
+                                            //       color: textColor,
+                                            //       fontSize: height * 0.018),
+                                            // ),
                                           SizedBox(height: height * 0.005),
-                                          if (orderController
-                                                      .getCurrentOrder()
-                                                      .timeFrom! !=
-                                                  '' ||
-                                              orderController
-                                                      .getCurrentOrder()
-                                                      .timeTo! !=
-                                                  '')
+                                          if (orderController.getCurrentOrder().timeFrom! != '' ||
+                                              orderController.getCurrentOrder().timeTo! != '')
                                             Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                if (orderController
-                                                    .getCurrentOrder()
-                                                    .timeFrom!)
-                                                  Text(
-                                                    orderController
-                                                        .getCurrentOrder()
-                                                        .timeFrom!,
-                                                    style: TextStyle(
-                                                        color: textColor,
-                                                        fontSize:
-                                                            height * 0.015),
-                                                  ),
-                                                if (orderController
-                                                        .getCurrentOrder()
-                                                        .timeTo! !=
-                                                    '')
-                                                  Text(
-                                                    orderController
-                                                        .getCurrentOrder()
-                                                        .timeTo!,
-                                                    style: TextStyle(
-                                                        color: textColor,
-                                                        fontSize:
-                                                            height * 0.015),
-                                                  )
+                                                if (orderController.getCurrentOrder().timeFrom! != '')
+
+                                                  Expanded(child: getTableWidget('From', orderController.getCurrentOrder().timeFrom!,textSize: 0.018)),
+
+                                                  // Text(orderController.getCurrentOrder().timeFrom!,
+                                                  //   style: TextStyle(
+                                                  //       color: textColor,
+                                                  //       fontSize: height * 0.015),
+                                                  // ),
+                                                if (orderController.getCurrentOrder().timeTo! != '')
+                                                  Expanded(child: getTableWidget('To', orderController.getCurrentOrder().timeTo!,textSize: 0.018)),
+                                                  // Text(orderController.getCurrentOrder().timeTo!,
+                                                  //   style: TextStyle(
+                                                  //       color: textColor,
+                                                  //       fontSize:
+                                                  //           height * 0.015),
+                                                  // )
                                               ],
                                             ),
 
                                           SizedBox(height: height * 0.005),
 
-                                          if (orderController
-                                                  .getCurrentOrder()
-                                                  .tel! !=
-                                              '')
-                                            Text(
-                                              orderController
-                                                  .getCurrentOrder()
-                                                  .tel!,
-                                              style: TextStyle(
-                                                  color: textColor,
-                                                  fontSize: height * 0.020),
-                                            ),
+                                          if (orderController.getCurrentOrder().tel! != '')
+                                            getTableWidget('Tel',  orderController
+                                                .getCurrentOrder()
+                                                .tel!),
+                                            // Text(
+                                            //   orderController
+                                            //       .getCurrentOrder()
+                                            //       .tel!,
+                                            //   style: TextStyle(
+                                            //       color: textColor,
+                                            //       fontSize: height * 0.020),
+                                            // ),
 
                                           SizedBox(height: height * 0.005),
                                           Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Text(
-                                                DistanceCal()
-                                                        .kmToMm(orderController
-                                                            .getCurrentOrder()
-                                                            .distance!)
-                                                        .toStringAsFixed(1) +
-                                                    " Km",
-                                                style: TextStyle(
-                                                    color: alterColor,
-                                                    fontSize: height * 0.018),
-                                              ),
+                                              Expanded(child: getTableWidget('Km',DistanceCal()
+                                                  .kmToMm(orderController
+                                                  .getCurrentOrder()
+                                                  .distance!)
+                                                  .toStringAsFixed(1),
+                                                  textColor: alterColor,
+                                                  textSize: 0.018
+                                              )),
+                                              // Text(
+                                              //   DistanceCal()
+                                              //           .kmToMm(orderController
+                                              //               .getCurrentOrder()
+                                              //               .distance!)
+                                              //           .toStringAsFixed(1) +
+                                              //       " Km",
+                                              //   style: TextStyle(
+                                              //       color: alterColor,
+                                              //       fontSize: height * 0.018),
+                                              // ),
                                               GestureDetector(
                                                 onTap: () async {
                                                   await orderController
