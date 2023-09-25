@@ -49,7 +49,7 @@ class Rows {
         timeFrom: json["time_from"] ?? "",
         timeTo: json["time_to"] ?? "",
         notes: json["notes"] ?? "",
-        tel: json["tel"] ?? "",
+        tel: json["telno"] ?? "",
       );
 
   Map<String, dynamic> toJson() {
