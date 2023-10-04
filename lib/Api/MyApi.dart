@@ -29,24 +29,24 @@ class MyApi {
 
   getOrders() async {
     var userName = await getAuthToken();
-    print("userName $userName");
+    appDebugPrint("userName $userName");
     var location = await getLocation() ?? LatLng(0, 0);
-    print(location);
+    appDebugPrint(location);
     var deliveries =
         "${BASE_URL}method=driverdelivery&username=$userName&latitude=${location.latitude}&longitude=${location.longitude}";
-    print(deliveries);
+    appDebugPrint(deliveries);
     var response = await http.get(Uri.parse(deliveries));
     return response.body;
   }
 
   getDeliveryItems(deliveryid) async {
     var userName = await getAuthToken();
-    print("userName $userName");
+    appDebugPrint("userName $userName");
     var location = await getLocation() ?? LatLng(0, 0);
-    print(location);
+    appDebugPrint(location);
     var deliveries =
         "${BASE_URL}method=deliveryitems&deliveryid=$deliveryid";
-    print(deliveries);
+    appDebugPrint(deliveries);
     var response = await http.get(Uri.parse(deliveries));
     return response.body;
   }
@@ -64,13 +64,14 @@ class MyApi {
               .trim();
     }
 
-    print(url);
+    appDebugPrint(url);
     var response = await http.get(Uri.parse(url));
-    print(response);
+    appDebugPrint(response);
     return response.body;
   }
 
   getLocation() async {
+
     return await Get.find<OrderController>().getLocation();
   }
 
@@ -82,7 +83,7 @@ class MyApi {
     // var a = utf8.encode(input);
     // var url =
     //     "${BASE_URL}method=uploadsignature&imagedata=$signature&deliveryid=$deliveryId";
-    print("signature");
+    appDebugPrint("signature");
 
     var form = Map<String, dynamic>();
     form["deliveryid"] = '$deliveryId';
@@ -93,7 +94,7 @@ class MyApi {
       body: form,
       // headers: {'Content-Type': 'application/json'},
     );
-    print(response.body);
+    appDebugPrint(response.body);
 
     return response.body;
   }
@@ -102,7 +103,7 @@ class MyApi {
     // var a = utf8.encode(input);
     // var url =
     //     "${BASE_URL}method=uploadsignature&imagedata=$signature&deliveryid=$deliveryId";
-    print("upload image");
+    appDebugPrint("upload image");
 
     var form = Map<String, dynamic>();
     form["itemid"] = '$itemId';
@@ -114,7 +115,7 @@ class MyApi {
       body: form,
       // headers: {'Content-Type': 'application/json'},
     );
-    print(response.body);
+    appDebugPrint(response.body);
 
     return response.body;
   }
@@ -138,8 +139,8 @@ class MyApi {
       })
     };
 
-    print(url);
-    print(formData);
+    appDebugPrint(url);
+    appDebugPrint(formData);
 
     var response = await http.post(Uri.parse(url), body: formData);
     // var response = await http.get(Uri.parse(url));
@@ -159,10 +160,10 @@ class MyApi {
         "items": qtyDataJson,
       })
     };
-    print(formData);
+    appDebugPrint(formData);
 
-    print(url);
-    print(formData);
+    appDebugPrint(url);
+    appDebugPrint(formData);
 
     var response = await http.post(Uri.parse(url), body: formData);
     // var response = await http.get(Uri.parse(url));
@@ -171,7 +172,7 @@ class MyApi {
 
   reOrderList({deliveryid, visitorder}) async{
     var url = "${BASE_URL}method=updatedeliveryinfo&deliveryid=$deliveryid&visitorder=$visitorder";
-    print(url);
+    appDebugPrint(url);
     var response = await http.get(Uri.parse(url));
     return response.body;
   }
@@ -190,7 +191,7 @@ class MyApi {
     var response = await request.send();
     var responseData = await response.stream.toBytes();
     var responseString = String.fromCharCodes(responseData);
-    print(responseString);
+    appDebugPrint(responseString);
   }
 
   logout() async {

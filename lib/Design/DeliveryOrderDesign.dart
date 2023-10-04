@@ -93,7 +93,6 @@ class DeliveryOrderDesign extends StatelessWidget {
                 ],
               ),
 
-
               SizedBox(height: height * 0.010),
               // Row(
               //   mainAxisAlignment: MainAxisAlignment.end,
@@ -102,12 +101,14 @@ class DeliveryOrderDesign extends StatelessWidget {
               //     // checkValue(order!.statusid),
               //   ],
               // ),
+              if(order!.tel != '')
+                getTableWidget('Tel', "${order!.tel}"),
+
               if(order!.notes != '')
                 getTableWidget('Notes', "${order!.notes}"),
 
 
-              if(order!.tel != '')
-                getTableWidget('Tel', "${order!.tel}"),
+
 
 
 

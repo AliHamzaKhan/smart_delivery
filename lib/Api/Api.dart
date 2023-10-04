@@ -10,9 +10,11 @@ import '../main.dart';
 
 class Api {
   // static String LOGIN_URL = "http://easyrouteplan.com/api/index.php?method=login&username=driver1&password=driver1";
-  static  const  String BASE_URL = "http://easyrouteplan.com/api/index.php?";
-  static  const  String LOGIN_URL = "http://easyrouteplan.com/api/index.php?method=login";
-  static  const  String DELIVERY_ORDERS = "http://easyrouteplan.com/api/index.php?method=driverdelivery&username=driver2";
+  static const String BASE_URL = "http://easyrouteplan.com/api/index.php?";
+  static const String LOGIN_URL =
+      "http://easyrouteplan.com/api/index.php?method=login";
+  static const String DELIVERY_ORDERS =
+      "http://easyrouteplan.com/api/index.php?method=driverdelivery&username=driver2";
 
   Task? tasks;
 
@@ -23,20 +25,21 @@ class Api {
     print("$username1 $password1 $save");
     try {
       var response = await http.post(
-        Uri.parse("${BASE_URL}method=login&username=$username1&password=$password1"),
+        Uri.parse(
+            "${BASE_URL}method=login&username=$username1&password=$password1"),
       );
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body.toString());
         print("data $data");
         if (data["status_message"] == "user authenticated") {
-          if(save){
+          if (save) {
             await authmanager.login(username1);
-            Get.find<AskPermission>().grantLocation();
+
             Get.toNamed('/new_order_screen');
             // Get.offAll(() => NewOrderScreen());
           }
           await authmanager.login(username1);
-          Get.find<AskPermission>().grantLocation();
+
           Get.toNamed('/new_order_screen');
           // Get.offAll(() => NewOrderScreen());
         } else {
@@ -68,5 +71,4 @@ class Api {
       authController.setLoading(true);
     }
   }
-
 }

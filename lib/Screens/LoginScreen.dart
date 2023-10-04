@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import '../Constant/Colors.dart';
+import '../Controller/AskLocation.dart';
 import '../Design/CustomeTextField.dart';
 import '../Design/HorizontalLine.dart';
 import '../Design/MainButton.dart';
@@ -242,6 +243,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               if (_formkey.currentState!.validate()) {
                                 FocusScope.of(context).unfocus();
+                                AskPermission permission = Get.find<AskPermission>();
+                                if(permission.serviceEnabled.value){
+                                  permission.grantLocation();
+                                }
                                 await authController.login(
                                   username: usernamecontroller.text,
                                   password:

@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signature/signature.dart';
+import 'package:smart_delivery/Utils/app_loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Api/MyApi.dart';
 import '../Constant/Colors.dart';
@@ -19,6 +20,7 @@ import '../Screens/LoginScreen.dart';
 import '../main.dart';
 
 class OrderController extends GetxController {
+  var startDelivery = false.obs;
   var scaffoldKey;
   var isViewFullDetailsOpen = true.obs;
   var todosMenu = "ToDo".obs;
@@ -52,7 +54,7 @@ class OrderController extends GetxController {
   addQuantity({required int itemId, required int qty}) {
     if (quantityUpdate.isEmpty) {
       quantityUpdate.add(ItemQuantityUpdate(itemid: itemId, qty: qty));
-      print('one');
+      appDebugPrint('one');
       return;
     }
 
@@ -64,9 +66,9 @@ class OrderController extends GetxController {
       quantityUpdate.add(ItemQuantityUpdate(itemid: itemId, qty: qty));
     }
 
-    print('quantityUpdate');
-    print(quantityUpdate.length);
-    print('temid: $itemId, qty: $qty');
+    appDebugPrint('quantityUpdate');
+    appDebugPrint(quantityUpdate.length);
+    appDebugPrint('temid: $itemId, qty: $qty');
   }
 
   addImage({required int itemId, required String? image}) {
@@ -83,35 +85,34 @@ class OrderController extends GetxController {
       imageUpdate.add(ItemImageUpdate(itemid: itemId, imagedata: image));
     }
 
-    print('imageUpdate');
-    print(imageUpdate.length);
-    print('itemId: $itemId, imagedata:  $image');
+    appDebugPrint('imageUpdate');
+    appDebugPrint(imageUpdate.length);
+    appDebugPrint('itemId: $itemId, imagedata:  $image');
   }
 
   getDeliveryItem({required int deliveryid}) async {
     isDeliveryItemLoaded(true);
     try {
-
       var response = await MyApi().getDeliveryItems(deliveryid);
       var result = jsonDecode(response);
-      print(result);
+      appDebugPrint(result);
       DeliveryItem deliveryItem = DeliveryItem.fromJson(result);
-      deliveryItems.assignAll(deliveryItem.itemData!);
-      print(deliveryItem.itemData!.length);
+        deliveryItems.assignAll(deliveryItem.itemData!);
+      appDebugPrint(deliveryItem.itemData!.length);
       // update();
     } catch (e) {
-      print(e);
+      appDebugPrint(e);
     } finally {
       isDeliveryItemLoaded(false);
     }
   }
 
-  setCurrentOrder({order, controller}) async{
+  setCurrentOrder({order, controller}) async {
     currentOrder.value = order;
     update();
 
-  await  getDeliveryItem(deliveryid: currentOrder.value!.deliveryid!);
-    // print("current order $currentOrder");
+    await getDeliveryItem(deliveryid: currentOrder.value!.deliveryid!);
+    // appDebugPrint("current order $currentOrder");
   }
 
   getCurrentOrder() => currentOrder.value;
@@ -121,7 +122,7 @@ class OrderController extends GetxController {
   //     isOrderLoaded(true);
   //     var response = await MyApi().getOrders();
   //     var result = jsonDecode(response);
-  //     print(result);
+  //     appDebugPrint(result);
   //     Task task = Task.fromJson(result);
   //     ordersList.assignAll(task.rows!);
   //     for (int i = 0; i < ordersList.length; i++) {
@@ -136,24 +137,24 @@ class OrderController extends GetxController {
   //     filteredTodosList();
   //     update();
   //   } catch (e) {
-  //     print(e);
+  //     appDebugPrint(e);
   //   } finally {
   //     isOrderLoaded(false);
   //   }
   //   update();
   // }
 
-  postStartDeliveryStatus({deliveryId}) async{
-   await MyApi().updateOrder(
-        deliveryId: deliveryId, statusId: 9);
-    apiToast(Get.context!, 'Delivery Started', "successfully");
+  postStartDeliveryStatus({deliveryId}) async {
+    await MyApi().updateOrder(deliveryId: deliveryId, statusId: 9);
+    appToast(Get.context!, 'Delivery Started successfully');
   }
+
   getOrders() async {
     try {
       isOrderLoaded(true);
       var response = await MyApi().getOrders();
       var result = jsonDecode(response);
-      print(result);
+      appDebugPrint(result);
       Task task = Task.fromJson(result);
       ordersList.assignAll(task.rows!);
 
@@ -171,7 +172,7 @@ class OrderController extends GetxController {
       }
 
       for (int i = 0; i < ordersList.length; i++) {
-        print(ordersList[i].visitorderno);
+        appDebugPrint(ordersList[i].visitorderno);
         int? visitorderno = ordersList[i].visitorderno;
         if (visitordernoMap[visitorderno]! > 1) {
           visitorderno = visitorderno! + i;
@@ -185,7 +186,7 @@ class OrderController extends GetxController {
       filteredTodosList();
       update();
     } catch (e) {
-      print(e);
+      appDebugPrint(e);
     } finally {
       isOrderLoaded(false);
     }
@@ -197,12 +198,12 @@ class OrderController extends GetxController {
     await getOrders();
     ordersList.toList().forEach((order) {
       if (temp.contains(order)) {
-        print("duplicate ${order.visitorderno}");
+        appDebugPrint("duplicate ${order.visitorderno}");
       } else {
         temp.add(order);
       }
     });
-    print("duplicate ${temp.length}");
+    appDebugPrint("duplicate ${temp.length}");
   }
 
   updateStatus({deliveryId, statusId, reason, inRunning = false}) async {
@@ -214,18 +215,19 @@ class OrderController extends GetxController {
       var response = await MyApi().updateOrder(
           deliveryId: deliveryId, statusId: statusId, reason: reason);
       var data = jsonDecode(response);
-      print(response);
+      appDebugPrint(response);
       currentOrder.value?.deliveryid = deliveryId;
       currentOrder.value?.statusid = statusId;
-      print(data);
+      appDebugPrint(data);
       if (data["status"] == "success") {
         currentOrder.value?.deliveryid = deliveryId;
         currentOrder.value?.statusid = statusId;
+        getCurrentOrder()!.statusid = statusId;
         // await getOrders();
         update();
       }
     } catch (e) {
-      print(e);
+      appDebugPrint(e);
     } finally {
       if (inRunning) {
         isOrderLoaded(false);
@@ -242,7 +244,7 @@ class OrderController extends GetxController {
 
   filteredTodosList() {
     todoList.value = ordersList.where((order) => order.statusid == 3).toList();
-    print('todoList ${todoList.length}');
+    appDebugPrint('todoList ${todoList.length}');
     updateDeliveryDetails("${todoList.length} left to deliver ");
     update();
   }
@@ -253,7 +255,7 @@ class OrderController extends GetxController {
     6: "Failed",
     8: "Arrived",
     7: "Departed",
-    9 : "Started"
+    9: "Started"
   };
 
   setFailedReasons(value) {
@@ -265,12 +267,12 @@ class OrderController extends GetxController {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);
     // currentLocation.value = LatLng(position.latitude, position.longitude);
-    print("position $position");
+    appDebugPrint("position $position");
     return LatLng(position.latitude, position.longitude);
   }
 
   getFirstOrder(controller) {
-    print(todoList.length);
+    appDebugPrint(todoList.length);
     if (todoList.length >= 0) {
       setCurrentOrder(order: todoList[0], controller: controller);
       update();
@@ -278,23 +280,25 @@ class OrderController extends GetxController {
   }
 
   getTodo() async {
+    startDelivery(true);
     todoList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
-    print('todoList ${todoList.length}');
+    appDebugPrint('todoList ${todoList.length}');
     setCurrentOrder(order: todoList[0]);
     await postStartDeliveryStatus(deliveryId: currentOrder.value!.deliveryid);
+    startDelivery(false);
     update();
   }
 
   reOrderVisit(int deliverId, int current) async {
-    print('deliverId $deliverId');
-    print('current $current');
+    appDebugPrint('deliverId $deliverId');
+    appDebugPrint('current $current');
 
     try {
       var response = await MyApi().reOrderList(
         deliveryid: deliverId,
         visitorder: current,
       );
-      print(response);
+      appDebugPrint(response);
       if (response['status'] == 'success') {
         appToast(Get.context!, 'visit order changed successfully');
       }
@@ -339,10 +343,10 @@ class OrderController extends GetxController {
         }
         return;
       }
-      print('no orders remaining temp ');
-      print(todoList.length);
+      appDebugPrint('no orders remaining temp ');
+      appDebugPrint(todoList.length);
     } else {
-      print('no orders remaining');
+      appDebugPrint('no orders remaining');
       setCurrentOrder(order: Rows(deliveryid: 0));
       itemsQuantityData.clear();
       itemsImageData.clear();
@@ -358,7 +362,7 @@ class OrderController extends GetxController {
   //     setCurrentOrder(
   //       order: todoList.last,
   //     );
-  //     print("last order");
+  //     appDebugPrint("last order");
   //     todoList.removeLast();
   //     todoList.refresh();
   //     update();
@@ -368,11 +372,11 @@ class OrderController extends GetxController {
   //     for (var i in todoList) {
   //       if (i.visitorderno == getCurrentOrder().visitorderno) {
   //         var a = todoList.indexOf(i);
-  //         // print("order  ${a + 1}");
+  //         // appDebugPrint("order  ${a + 1}");
   //         setCurrentOrder(
   //           order: todoList[a + 1],
   //         );
-  //         // print("latest element ${todoList[a + 1].deliveryrefno}");
+  //         // appDebugPrint("latest element ${todoList[a + 1].deliveryrefno}");
   //         todoList.removeAt(a);
   //         todoList.refresh();
   //         update();
@@ -380,7 +384,7 @@ class OrderController extends GetxController {
   //       } else {
   //         todoList.clear();
   //         todoList.refresh();
-  //         print("no order");
+  //         appDebugPrint("no order");
   //         update();
   //         break;
   //       }
@@ -388,16 +392,17 @@ class OrderController extends GetxController {
   //   } else {
   //     todoList.clear();
   //     todoList.refresh();
-  //     print("no order");
+  //     appDebugPrint("no order");
   //     update();
   //     return;
   //   }
   // }
 
   uploadSingleImage({deliveryId, image, itemId}) async {
+    AppLoader.showLoading();
     var response = await MyApi()
         .uploadItemPhoto(deliveryId: deliveryId, image: image, itemId: itemId);
-    print(response);
+    appDebugPrint(response);
 
     var data = jsonDecode(response);
 
@@ -406,13 +411,14 @@ class OrderController extends GetxController {
     } else {
       apiToast(Get.context!, 'Images', "failed", seconds: 1);
     }
+    AppLoader.dismiss();
     // apiToast(Get.context, 'Images', response["status"]);
   }
 
   uploadItemsImage({required deliveryId}) async {
     if (imageUpdate.isEmpty) {
-      print(itemsImageData.length);
-      print('no items');
+      appDebugPrint(itemsImageData.length);
+      appDebugPrint('no items');
     } else {
       try {
         isItemImageUploaded(true);
@@ -439,7 +445,7 @@ class OrderController extends GetxController {
         //
         //     requestFutures.add(requestFuture);
         //   } catch (e) {
-        //     print(e);
+        //     appDebugPrint(e);
         //   }
         // }
         //
@@ -447,7 +453,7 @@ class OrderController extends GetxController {
         // List<String> statuses = [];
         // for (var response in responses) {
         //   var data = jsonDecode(response);
-        //   print(data["status"]);
+        //   appDebugPrint(data["status"]);
         //   statuses.add(data["status"]);
         //   if (statuses.contains('success')) {
         //     apiToast(Get.context, 'Images', data["status"]);
@@ -458,7 +464,7 @@ class OrderController extends GetxController {
         //
         // itemsImageData.clear();
       } catch (e) {
-        print(e);
+        appDebugPrint(e);
       } finally {
         isItemImageUploaded(false);
       }
@@ -468,14 +474,14 @@ class OrderController extends GetxController {
   uploadQuantityItems({required deliveryId}) async {
     isDeliveryItemLoaded(true);
     if (quantityUpdate.isEmpty) {
-      print(quantityUpdate.length);
-      print('no Quantity');
+      appDebugPrint(quantityUpdate.length);
+      appDebugPrint('no Quantity');
     } else {
       try {
         isItemImageUploaded(true);
         var response = await MyApi().uploadItemQuantity(
             deliveryId: deliveryId, qtyData: quantityUpdate);
-        print(response);
+        appDebugPrint(response);
         var data = jsonDecode(response);
         if (data["status"] == 'success') {
           apiToast(Get.context!, 'Quantity', "successfully");
@@ -497,9 +503,9 @@ class OrderController extends GetxController {
         // List<String> statuses = [];
         //
         // for (var response in responses) {
-        //   print(response);
+        //   appDebugPrint(response);
         //   var data = jsonDecode(response);
-        //   print(data["status"]);
+        //   appDebugPrint(data["status"]);
         //   statuses.add(data["status"]);
         //   if (statuses.contains('success')) {
         //     apiToast(Get.context, 'Quantity', 'success');
@@ -509,7 +515,7 @@ class OrderController extends GetxController {
         // }
         // itemsQuantityData.clear();
       } catch (e) {
-        print(e);
+        appDebugPrint(e);
       } finally {
         quantityUpdate.clear();
         isItemImageUploaded(false);
@@ -522,19 +528,19 @@ class OrderController extends GetxController {
     var convert = await image.readAsBytesSync();
     try {
       isSignatureUploaded(true);
-      print(convert);
+      appDebugPrint(convert);
       var response = await MyApi().uploadSignature(
           deliveryId: deliveryId, signature: await base64String(convert));
-      print(response);
+      appDebugPrint(response);
       var data = jsonDecode(response);
-      print(data["status"]);
+      appDebugPrint(data["status"]);
       if (data["status"] == 'success') {
         apiToast(Get.context, 'Image', 'successfully');
       } else {
         apiToast(Get.context, 'Image', 'failed');
       }
     } catch (e) {
-      print(e);
+      appDebugPrint(e);
     } finally {
       isSignatureUploaded(false);
       update();
@@ -559,7 +565,7 @@ class OrderController extends GetxController {
       var response = await MyApi().uploadSignature(
           deliveryId: deliveryId, signature: await exportSignature());
       var data = jsonDecode(response);
-      print(data["status"]);
+      appDebugPrint(data["status"]);
       if (data["status"] == 'success') {
         apiToast(Get.context, 'Signature', data["status"]);
       } else {

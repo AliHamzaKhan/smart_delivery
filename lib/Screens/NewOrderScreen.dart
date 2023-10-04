@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../Constant/Colors.dart';
 import '../Controller/AskLocation.dart';
 import '../Controller/OrderController.dart';
+import '../Controller/order_controller_service.dart';
 import '../Design/DeliveryOrderDesign.dart';
 import '../Design/NewOrderDrawer.dart';
 import '../Design/toast.dart';
@@ -13,6 +14,7 @@ class NewOrderScreen extends StatelessWidget {
   NewOrderScreen({Key? key}) : super(key: key);
 
   var orderController = Get.put(OrderController());
+  // var orderController = Get.find<OrderControllerService>().orderController;
   var height = Get.height;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime currentBackPressTime = DateTime.now();
@@ -108,7 +110,12 @@ class NewOrderScreen extends StatelessWidget {
                       ? Padding(
                           padding:
                               EdgeInsets.symmetric(horizontal: height * 0.050),
-                          child: TextButton(
+                          child: orderController.startDelivery.value
+                              ? Center(
+                              child: CircularProgressIndicator(
+                                color: alterColor,
+                              ))
+                              : TextButton(
                               onPressed: () async {
                                 await orderController.getTodo();
                                 Get.to(() => NewOrderRunningScreen(
@@ -149,8 +156,7 @@ class NewOrderScreen extends StatelessWidget {
                               itemCount: orderController.todoList.length,
                               itemBuilder: (context, index) {
                                 return DeliveryOrderDesign(
-                                  key: Key(
-                                      "${orderController.todoList[index].visitorderno}"),
+                                  key: Key("${orderController.todoList[index].visitorderno}"),
                                   order: orderController.todoList[index],
                                   onTap: () {},
                                   orderController: orderController,
@@ -208,13 +214,13 @@ class NewOrderScreen extends StatelessWidget {
                   topRight: Radius.circular(height * 0.030),
                 )),
             alignment: Alignment.center,
-            child: Text(
-              controller.deliveryStatus.value,
-              style: TextStyle(
-                  color: subBackgroundColor,
-                  fontSize: height * 0.020,
-                  fontWeight: FontWeight.bold),
-            ),
+            child:  Text(
+                    controller.deliveryStatus.value,
+                    style: TextStyle(
+                        color: subBackgroundColor,
+                        fontSize: height * 0.020,
+                        fontWeight: FontWeight.bold),
+                  ),
           );
         }),
         drawer: NewOrderDrawer(

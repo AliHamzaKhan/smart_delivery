@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:signature/signature.dart';
+import 'package:smart_delivery/Controller/AskLocation.dart';
 import '../../Constant/Colors.dart';
 import '../../Utils/DistanceCal.dart';
 import '../Controller/OrderController.dart';
@@ -10,18 +11,25 @@ import '../Design/ItemDesign.dart';
 import '../Design/table_header.dart';
 import '../Model/DeliveryItem.dart';
 import '../Utils/app_widget.dart';
+import '../Utils/dataParser.dart';
 
 class NewOrderRunningScreen extends StatelessWidget {
   NewOrderRunningScreen({Key? key, required this.orderController})
       : super(key: key);
   OrderController orderController;
   var height = Get.height;
+  AskPermission permission = Get.find();
 
   @override
   Widget build(BuildContext context) {
+
+      if(!permission.serviceEnabled.value){
+        permission.getLocation();
+      }
     // getDeliveryItems();
     return WillPopScope(
       onWillPop: () async {
+        orderController.startDelivery(false);
         orderController.itemsImageData.clear();
         orderController.itemsQuantityData.clear();
         orderController.deliveryItems.clear();
@@ -41,6 +49,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                   color: alterColor,
                 ),
                 onPressed: () async {
+                  orderController.startDelivery(false);
                   orderController.itemsImageData.clear();
                   orderController.itemsQuantityData.clear();
                   orderController.deliveryItems.clear();
@@ -62,7 +71,7 @@ class NewOrderRunningScreen extends StatelessWidget {
               ),
             )),
         body: Obx(() => ModalProgressHUD(
-              inAsyncCall: orderController.isItemImageUploaded.value,
+              inAsyncCall:orderController.isItemImageUploaded.value,
               child: Container(
                 height: Get.height,
                 child: Obx(() => orderController.getCurrentOrder().deliveryid ==
@@ -116,7 +125,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                                           //       fontWeight: FontWeight.bold),
                                           // ),
                                           // SizedBox(height: height * 0.005),
-                                          getTableWidget('Address',orderController.getCurrentOrder().deliveryaddress!,
+                                          getTableWidget('Address',AppDataParser().getStringData(orderController.getCurrentOrder().deliveryaddress!),
                                            textSize: 0.018),
                                           // Text(
                                           //   orderController
@@ -127,9 +136,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                                           //       fontSize: height * 0.020),
                                           // ),
 
-                                          if (orderController.getCurrentOrder().notes! != '')
-                                            getTableWidget('Notes', orderController.getCurrentOrder().notes!,textSize: 0.018, maxLines: 5),
-                                            // Text(
+                                             // Text(
                                             //   orderController
                                             //       .getCurrentOrder()
                                             //       .notes!,
@@ -177,6 +184,8 @@ class NewOrderRunningScreen extends StatelessWidget {
                                             //       color: textColor,
                                             //       fontSize: height * 0.020),
                                             // ),
+                                          if (orderController.getCurrentOrder().notes! != '')
+                                            getTableWidget('Notes', orderController.getCurrentOrder().notes!,textSize: 0.018, maxLines: 5),
 
                                           SizedBox(height: height * 0.005),
                                           Row(
@@ -188,7 +197,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                                                   .getCurrentOrder()
                                                   .distance!)
                                                   .toStringAsFixed(1),
-                                                  textColor: alterColor,
+                                                  color: alterColor,
                                                   textSize: 0.018
                                               )),
                                               // Text(
@@ -341,25 +350,13 @@ class NewOrderRunningScreen extends StatelessWidget {
                                                     //   itemid: orderController.deliveryItems[index].itemId!,
                                                     //   imagedata: await orderController.base64String(convert)
                                                     // ));
-                                                    var convert =
-                                                    await file
-                                                        .readAsBytes();
-                                                    var image = await orderController
-                                                        .base64String(
-                                                        convert);
+                                                    var convert = await file.readAsBytes();
+                                                    var image = await orderController.base64String(convert);
 
                                                     orderController.uploadSingleImage(
-                                                        deliveryId: orderController
-                                                            .currentOrder
-                                                            .value!
-                                                            .deliveryid!,
-                                                        itemId: orderController
-                                                            .deliveryItems[
-                                                        index]
-                                                            .itemId!,
-                                                        image: 'data:image/png;base64,' +
-                                                            image
-                                                                .trim());
+                                                        deliveryId: orderController.currentOrder.value!.deliveryid!,
+                                                        itemId: orderController.deliveryItems[index].itemId!,
+                                                        image: 'data:image/png;base64,' + image.trim());
                                                     // orderController.addImage(
                                                     //     itemId: orderController.deliveryItems[index].itemId!,
                                                     //     image: 'data:image/png;base64,' + image.trim());
@@ -533,7 +530,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                       deliveryId: orderController.getCurrentOrder()!.deliveryid,
                       statusId: 7,
                       reason: orderController.failedReasons.value);
-                  orderController.getCurrentOrder()!.statusid = 7;
+                  // orderController.getCurrentOrder()!.statusid = 7;
                   await orderController.nextOrder();
                 },
                 child: Text(
@@ -559,7 +556,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                   await orderController.updateStatus(
                       deliveryId: orderController.getCurrentOrder()!.deliveryid,
                       statusId: 7);
-                  orderController.getCurrentOrder()!.statusid = 7;
+                  // orderController.getCurrentOrder()!.statusid = 7;
                   await orderController.nextOrder();
                 },
                 child: Text(
@@ -584,7 +581,9 @@ class NewOrderRunningScreen extends StatelessWidget {
                 await orderController.updateStatus(
                     deliveryId: orderController.getCurrentOrder()!.deliveryid,
                     statusId: 5);
-                orderController.getCurrentOrder()!.statusid = 5;
+                // orderController.getCurrentOrder()!.statusid = 5;
+
+                orderController.signatureController.clear();
                 await showDialogueApp(
                     context: context,
                     deliveryId: orderController.getCurrentOrder()!.deliveryid);
@@ -607,7 +606,10 @@ class NewOrderRunningScreen extends StatelessWidget {
                 await orderController.updateStatus(
                     deliveryId: orderController.getCurrentOrder()!.deliveryid,
                     statusId: 6);
-                orderController.getCurrentOrder()!.statusid = 6;
+                // await showDialogueApp(
+                //     context: context,
+                //     deliveryId: orderController.getCurrentOrder()!.deliveryid);
+                // orderController.getCurrentOrder()!.statusid = 6;
               },
               child: Text(
                 "Failed",
@@ -646,6 +648,8 @@ class NewOrderRunningScreen extends StatelessWidget {
         builder: (_) {
           return AlertDialog(
             contentPadding: EdgeInsets.zero,
+            actionsPadding: EdgeInsets.zero,
+            insetPadding: EdgeInsets.zero,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(height * 0.022)),
             backgroundColor: appbackgroundColor,
@@ -784,10 +788,9 @@ class NewOrderRunningScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(
                                           height * 0.020)),
                                   child: Signature(
-                                    width: Get.width - 40,
+                                    width: Get.width,
                                     height: height * 0.4,
-                                    controller:
-                                        orderController.signatureController,
+                                    controller: orderController.signatureController,
                                     backgroundColor: subBackgroundColor,
                                     dynamicPressureSupported: false,
                                   ),
@@ -870,6 +873,10 @@ class NewOrderRunningScreen extends StatelessWidget {
                                             style: TextStyle(color: alterColor),
                                           ),
                                         )),
+                                    SizedBox(width: height * 0.020),
+                                    IconButton(onPressed: (){
+                                      orderController.signatureController.clear();
+                                    }, icon: Icon(Icons.undo))
                                   ],
                                 )
                               ],
@@ -993,4 +1000,6 @@ class NewOrderRunningScreen extends StatelessWidget {
           );
         });
   }
+
+    
 }

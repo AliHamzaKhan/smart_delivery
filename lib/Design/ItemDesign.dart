@@ -112,7 +112,7 @@ class _ItemDesignState extends State<ItemDesign> {
                       );
                     },
                   child: Text(
-                // "${widget.item!.qty ?? ''}",
+
                     '${widget.qty.toString()}',
                     key: ValueKey<String>(widget.item!.qty.toString()),
                   style: TextStyle(
@@ -126,14 +126,14 @@ class _ItemDesignState extends State<ItemDesign> {
               ),
               GestureDetector(
                 onTap: (){
-                  if(widget.item!.qty! <= 0){
-                    return;
+                  if(widget.qty > 0){
+                    setState(() {
+                      // widget.item!.qty =  widget.item!.qty! - 1 ;
+                      widget.qty = widget. qty - 1 ;
+                      widget.onQuantitySelected(widget.qty);
+                    });
                   }
-                  setState(() {
-                    // widget.item!.qty =  widget.item!.qty! - 1 ;
-                    widget.qty =   widget. qty - 1 ;
-                    widget.onQuantitySelected(widget.qty);
-                  });
+
 
                 },
                 behavior: HitTestBehavior.opaque,
