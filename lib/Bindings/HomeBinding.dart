@@ -7,7 +7,6 @@ import '../Controller/OrderController.dart';
 class HomeBinding extends Bindings{
   @override
   void dependencies() {
-    Get.lazyPut(()=>AskPermission());
     Get.lazyPut(()=>OrderController());
   }
 

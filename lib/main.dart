@@ -24,7 +24,6 @@ AuthController authController = Get.put(AuthController());
 Future main() async{
   WidgetsFlutterBinding.ensureInitialized();
   Get.put(AskPermission());
-  // Get.put(OrderControllerService(), permanent: true);
   await GetStorage.init();
   runApp(const MyApp());
 }

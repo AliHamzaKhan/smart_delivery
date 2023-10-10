@@ -15,9 +15,7 @@ class AuthController extends GetxController implements GetxService{
        save: save,
      );
   }
-  signin(username,phoneno,password){
 
-  }
   setLoading(value){
     loading.value = value;
     update();

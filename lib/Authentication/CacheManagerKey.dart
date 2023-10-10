@@ -1,3 +1,3 @@
 
 
-enum CacheManagerKey { TOKEN }
+enum CacheManagerKey { TOKEN, TIMER }

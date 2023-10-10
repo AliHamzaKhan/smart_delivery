@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_delivery/Controller/AskLocation.dart';
 import '../Controller/OrderController.dart';
 import '../Model/temp_item.dart';
 import '../main.dart';
@@ -71,8 +72,9 @@ class MyApi {
   }
 
   getLocation() async {
+    var position = await Get.find<AskPermission>().getLocation();
+    return LatLng(position!.latitude, position!.longitude);
 
-    return await Get.find<OrderController>().getLocation();
   }
 
   getAuthToken() async {
@@ -80,9 +82,7 @@ class MyApi {
   }
 
   uploadSignature({deliveryId, signature}) async {
-    // var a = utf8.encode(input);
-    // var url =
-    //     "${BASE_URL}method=uploadsignature&imagedata=$signature&deliveryid=$deliveryId";
+
     appDebugPrint("signature");
 
     var form = Map<String, dynamic>();
@@ -92,7 +92,6 @@ class MyApi {
     var response = await http.post(
       Uri.parse(BASE_URL + 'method=uploadsignature'),
       body: form,
-      // headers: {'Content-Type': 'application/json'},
     );
     appDebugPrint(response.body);
 
@@ -100,9 +99,7 @@ class MyApi {
   }
 
   uploadItemPhoto({deliveryId, image, itemId}) async {
-    // var a = utf8.encode(input);
-    // var url =
-    //     "${BASE_URL}method=uploadsignature&imagedata=$signature&deliveryid=$deliveryId";
+
     appDebugPrint("upload image");
 
     var form = Map<String, dynamic>();
@@ -113,17 +110,10 @@ class MyApi {
     var response = await http.post(
       Uri.parse(BASE_URL + 'method=uploaditemphoto'),
       body: form,
-      // headers: {'Content-Type': 'application/json'},
     );
     appDebugPrint(response.body);
 
     return response.body;
-  }
-
-  uploadItems({deliveryId, itemData}) async{
-    var url = "${BASE_URL}method=updatedeliveryitem";
-
-
   }
 
   uploadItemImage({deliveryId,required List<ItemImageUpdate> imageData}) async{
@@ -143,14 +133,12 @@ class MyApi {
     appDebugPrint(formData);
 
     var response = await http.post(Uri.parse(url), body: formData);
-    // var response = await http.get(Uri.parse(url));
     return response.body;
   }
 
   uploadItemQuantity({deliveryId,required List<ItemQuantityUpdate> qtyData}) async{
 
 
-    // var url = "${BASE_URL}method=updatedeliveryitem&qty=$qty&itemid=$itemId&driverid=1";
     var url = "${BASE_URL}method=updatedeliveryitem";
     List<Map<String, dynamic>> qtyDataJson = qtyData.map((e) => e.toJson()).toList();
     var formData = {
@@ -166,7 +154,6 @@ class MyApi {
     appDebugPrint(formData);
 
     var response = await http.post(Uri.parse(url), body: formData);
-    // var response = await http.get(Uri.parse(url));
     return response.body;
   }
 
@@ -177,22 +164,7 @@ class MyApi {
     return response.body;
   }
 
-  uploadSignatureMultiPort({deliveryId, signature}) async {
-    var request = http.MultipartRequest("POST", Uri.parse(BASE_URL + "method=uploadsignature"));
-    // request.fields["method"] = "uploadsignature";
-    // request.fields["imagedata"] = signature;
-    request.fields["deliveryid"] = deliveryId;
 
-    var form = Map<String, dynamic>();
-
-    var pic = await http.MultipartFile.fromString("imagedata", signature,
-        filename: 'imagedata');
-    request.files.add(pic);
-    var response = await request.send();
-    var responseData = await response.stream.toBytes();
-    var responseString = String.fromCharCodes(responseData);
-    appDebugPrint(responseString);
-  }
 
   logout() async {
     authmanager.logOut();

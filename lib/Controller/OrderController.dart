@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signature/signature.dart';
 import 'package:smart_delivery/Utils/app_loading.dart';
@@ -36,6 +34,7 @@ class OrderController extends GetxController {
   var driverName = ''.obs;
 
   final currentOrder = Rxn<Rows>();
+  var refreshTimer = 2.obs;
 
   final currentOrderItem = Rxn<DeliveryItem>();
   var isDeliveryItemLoaded = false.obs;
@@ -117,38 +116,42 @@ class OrderController extends GetxController {
 
   getCurrentOrder() => currentOrder.value;
 
-  // getOrders() async {
-  //   try {
-  //     isOrderLoaded(true);
-  //     var response = await MyApi().getOrders();
-  //     var result = jsonDecode(response);
-  //     appDebugPrint(result);
-  //     Task task = Task.fromJson(result);
-  //     ordersList.assignAll(task.rows!);
-  //     for (int i = 0; i < ordersList.length; i++) {
-  //       if (ordersList[i].visitorderno == 0) {
-  //         ordersList[i].visitorderno = i * 3;
-  //       }
-  //       else{
-  //         break;
-  //       }
-  //     }
-  //     ordersList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
-  //     filteredTodosList();
-  //     update();
-  //   } catch (e) {
-  //     appDebugPrint(e);
-  //   } finally {
-  //     isOrderLoaded(false);
-  //   }
-  //   update();
-  // }
-
   postStartDeliveryStatus({deliveryId}) async {
     await MyApi().updateOrder(deliveryId: deliveryId, statusId: 9);
     appToast(Get.context!, 'Delivery Started successfully');
   }
 
+  List<int> rearrangeListWithDuplicates(List<int> list) {
+    List<int> result = [];
+    Map<int, int> countMap = {};
+    Set<int> usedNumbers = Set.from(list);
+
+    for (int number in list) {
+      if (countMap.containsKey(number)) {
+        int newNumber = number;
+        while (usedNumbers.contains(newNumber)) {
+          newNumber++;
+        }
+        usedNumbers.add(newNumber);
+        result.add(newNumber);
+      } else {
+        countMap[number] = 1;
+        result.add(number);
+      }
+    }
+
+    return result;
+  }
+  bool hasDuplicates(List<int> list) {
+    Set<int> seen = Set<int>();
+    for (int number in list) {
+      if (seen.contains(number)) {
+        return true;
+      }
+      seen.add(number);
+    }
+    return false;
+  }
   getOrders() async {
     try {
       isOrderLoaded(true);
@@ -158,29 +161,23 @@ class OrderController extends GetxController {
       Task task = Task.fromJson(result);
       ordersList.assignAll(task.rows!);
 
-      var visitordernoMap = <int, int>{};
-
+      List<int> temp = [];
       for (int i = 0; i < ordersList.length; i++) {
-        int? visitorderno = ordersList[i].visitorderno;
-        if (visitorderno == 0) {
-          visitorderno = i * 3;
-          ordersList[i].visitorderno = visitorderno;
-        }
+        temp.add(ordersList[i].visitorderno!);
+      }
+      if(hasDuplicates(temp)){
+        var tempVisitOrders = rearrangeListWithDuplicates(temp);
+        for (int i = 0; i < ordersList.length; i++) {
+          if(temp.length == ordersList.length){
+            ordersList[i].visitorderno = tempVisitOrders[i];
+            appDebugPrint("${ordersList[i].visitorderno} --- ${ordersList[i].deliveryrefno}" );
+          }
 
-        visitordernoMap[visitorderno!] =
-            (visitordernoMap[visitorderno] ?? 0) + 1;
+        }
+      }else{
+        appDebugPrint('no duplicate');
       }
 
-      for (int i = 0; i < ordersList.length; i++) {
-        appDebugPrint(ordersList[i].visitorderno);
-        int? visitorderno = ordersList[i].visitorderno;
-        if (visitordernoMap[visitorderno]! > 1) {
-          visitorderno = visitorderno! + i;
-          ordersList[i].visitorderno = visitorderno;
-          visitordernoMap[visitorderno] =
-              (visitordernoMap[visitorderno] ?? 0) + 1;
-        }
-      }
 
       ordersList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
       filteredTodosList();
@@ -223,7 +220,6 @@ class OrderController extends GetxController {
         currentOrder.value?.deliveryid = deliveryId;
         currentOrder.value?.statusid = statusId;
         getCurrentOrder()!.statusid = statusId;
-        // await getOrders();
         update();
       }
     } catch (e) {
@@ -261,14 +257,6 @@ class OrderController extends GetxController {
   setFailedReasons(value) {
     failedReasons.value = value;
     update();
-  }
-
-  getLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.bestForNavigation);
-    // currentLocation.value = LatLng(position.latitude, position.longitude);
-    appDebugPrint("position $position");
-    return LatLng(position.latitude, position.longitude);
   }
 
   getFirstOrder(controller) {
@@ -339,7 +327,6 @@ class OrderController extends GetxController {
           itemsImageData.clear();
           deliveryItems.clear();
           update();
-          // Get.back();
         }
         return;
       }
@@ -352,51 +339,9 @@ class OrderController extends GetxController {
       itemsImageData.clear();
       deliveryItems.clear();
       update();
-      // Get.back();
+
     }
   }
-
-  // nextOrder() {
-  //
-  //   if (todoList.last == true) {
-  //     setCurrentOrder(
-  //       order: todoList.last,
-  //     );
-  //     appDebugPrint("last order");
-  //     todoList.removeLast();
-  //     todoList.refresh();
-  //     update();
-  //     return;
-  //   }
-  //   if (todoList.last != true) {
-  //     for (var i in todoList) {
-  //       if (i.visitorderno == getCurrentOrder().visitorderno) {
-  //         var a = todoList.indexOf(i);
-  //         // appDebugPrint("order  ${a + 1}");
-  //         setCurrentOrder(
-  //           order: todoList[a + 1],
-  //         );
-  //         // appDebugPrint("latest element ${todoList[a + 1].deliveryrefno}");
-  //         todoList.removeAt(a);
-  //         todoList.refresh();
-  //         update();
-  //         break;
-  //       } else {
-  //         todoList.clear();
-  //         todoList.refresh();
-  //         appDebugPrint("no order");
-  //         update();
-  //         break;
-  //       }
-  //     }
-  //   } else {
-  //     todoList.clear();
-  //     todoList.refresh();
-  //     appDebugPrint("no order");
-  //     update();
-  //     return;
-  //   }
-  // }
 
   uploadSingleImage({deliveryId, image, itemId}) async {
     AppLoader.showLoading();
@@ -412,7 +357,7 @@ class OrderController extends GetxController {
       apiToast(Get.context!, 'Images', "failed", seconds: 1);
     }
     AppLoader.dismiss();
-    // apiToast(Get.context, 'Images', response["status"]);
+
   }
 
   uploadItemsImage({required deliveryId}) async {
@@ -432,37 +377,7 @@ class OrderController extends GetxController {
           apiToast(Get.context!, 'Images', 'failed');
         }
 
-        // List<Future> requestFutures = [];
-        //
-        // for (int i = 0; i < itemsImageData.length; i++) {
-        //   try {
-        //     var convert = await itemsImageData[i].value.readAsBytes();
-        //     var requestFuture = MyApi().uploadItemPhoto(
-        //       deliveryId: deliveryId,
-        //       image: await base64String(convert),
-        //       itemId: itemsImageData[i].key,
-        //     );
-        //
-        //     requestFutures.add(requestFuture);
-        //   } catch (e) {
-        //     appDebugPrint(e);
-        //   }
-        // }
-        //
-        // List<dynamic> responses = await Future.wait(requestFutures);
-        // List<String> statuses = [];
-        // for (var response in responses) {
-        //   var data = jsonDecode(response);
-        //   appDebugPrint(data["status"]);
-        //   statuses.add(data["status"]);
-        //   if (statuses.contains('success')) {
-        //     apiToast(Get.context, 'Images', data["status"]);
-        //   } else {
-        //     apiToast(Get.context, 'Images', 'failed');
-        //   }
-        // }
-        //
-        // itemsImageData.clear();
+
       } catch (e) {
         appDebugPrint(e);
       } finally {
@@ -489,31 +404,6 @@ class OrderController extends GetxController {
           apiToast(Get.context!, 'Quantity', 'failed');
         }
 
-        // List<Future> requestFutures = [];
-        // for (int i = 0; i < itemsQuantityData.length; i++) {
-        //   var requestFuture = MyApi().uploadItemQuantity(
-        //     deliveryId: deliveryId,
-        //     itemId: itemsQuantityData[i].key,
-        //     qty: itemsQuantityData[i].value,
-        //   );
-        //
-        //   requestFutures.add(requestFuture);
-        // }
-        // List<dynamic> responses = await Future.wait(requestFutures);
-        // List<String> statuses = [];
-        //
-        // for (var response in responses) {
-        //   appDebugPrint(response);
-        //   var data = jsonDecode(response);
-        //   appDebugPrint(data["status"]);
-        //   statuses.add(data["status"]);
-        //   if (statuses.contains('success')) {
-        //     apiToast(Get.context, 'Quantity', 'success');
-        //   } else {
-        //     apiToast(Get.context, 'Quantity', 'failed');
-        //   }
-        // }
-        // itemsQuantityData.clear();
       } catch (e) {
         appDebugPrint(e);
       } finally {
@@ -579,60 +469,6 @@ class OrderController extends GetxController {
     }
   }
 
-  // addUpdateItem({int? deliveryId,int? itemId,String? imageData,int? qty}) async{
-  //   // if(imageData != null){
-  //   //   if(itemUpdateData.isEmpty){
-  //   //     itemUpdateData.add(ItemUpdate(imagedata: imageData , qty: null, itemid: itemId));
-  //   //   }
-  //   // }
-  //   // if(qty != null){
-  //   //   itemUpdateData.add(ItemUpdate(imagedata: null , qty: qty, itemid: itemId));
-  //   // }
-  //   //
-  //   // ItemUpdate? existingItemWithQty = itemUpdateData.firstWhere(
-  //   //       (item) => item.itemId == itemId && item.qty != null,
-  //   //   orElse: () => null,
-  //   // );
-  //   // ItemUpdate? existingItemWithImage = itemUpdateData.firstWhere(
-  //   //       (item) => item.itemId == itemId && item.image != null,
-  //   //   orElse: () => null,
-  //   // );
-  //   //
-  //   // if (existingItemWithImage != null) {
-  //   //   existingItemWithImage.qty = qty ?? existingItemWithImage.qty;
-  //   // } else if (existingItemWithQty != null) {
-  //   //
-  //   //   existingItemWithQty.imagedata = imageData ?? existingItemWithQty.imagedata;
-  //   // } else {
-  //   //
-  //   //   itemUpdateData.add(ItemUpdate(itemid: itemId, imagedata: imageData, qty: qty));
-  //   // }
-  //
-  //   ItemUpdate? existingItemWithImage = itemUpdateData.firstWhere(
-  //         (item) => item.itemId == itemId && item.imageData != null,
-  //     orElse: () => null,
-  //   );
-  //
-  //   // Check if an ItemUpdate with the same itemId and qty is already present
-  //   ItemUpdate? existingItemWithQty = itemUpdateData.firstWhere(
-  //         (item) => item.itemId == itemId && item.qty != null,
-  //     orElse: () => null,
-  //   );
-  //
-  //   if (existingItemWithImage != null) {
-  //     // If an item with the same itemId and image is found, update the qty
-  //     existingItemWithImage.qty = qty ?? existingItemWithImage.qty;
-  //   } else if (existingItemWithQty != null) {
-  //     // If an item with the same itemId and qty is found, update the image
-  //     existingItemWithQty.imagedata = imageData ?? existingItemWithQty.imagedata;
-  //   } else {
-  //     // If no existing item is found, add a new ItemUpdate object to the list
-  //     itemUpdateData.add(ItemUpdate(itemid: itemId, imagedata: imageData, qty: qty));
-  //   }
-  //
-  //
-  // }
-
   exportSignature() async {
     final signature = await signatureController.toPngBytes();
     var a = await base64String(signature!);
@@ -647,8 +483,7 @@ class OrderController extends GetxController {
   launchMapViaAddress(String address) async {
     String encodedAddress = Uri.encodeComponent(address);
     var uri = Uri.parse("google.navigation:q=$encodedAddress&mode=d");
-    String googleMapUrl =
-        "https://www.google.com/maps/search/?api=1&query=$encodedAddress";
+    String googleMapUrl = "https://www.google.com/maps/search/?api=1&query=$encodedAddress";
     String appleMapUrl = "http://maps.apple.com/?q=$encodedAddress";
     if (Platform.isAndroid) {
       try {
@@ -694,6 +529,12 @@ class OrderController extends GetxController {
     super.onInit();
     if (authmanager.isLogged.value) {
       driverName.value = await authmanager.checkLoginStatus();
+      // var timer = await authmanager.getTimer();
+      // if(timer != null){
+      //   refreshTimer.value = timer;
+      //   appDebugPrint('timer ${refreshTimer.value}');
+      //   appDebugPrint('timer ${timer}');
+      // }
     }
 
     getOrders();
@@ -704,7 +545,7 @@ class OrderController extends GetxController {
       penColor: alterColor,
     );
     if (inAppReload) {
-      Timer.periodic(Duration(minutes: 15), (timer) {
+      Timer.periodic(Duration(minutes: refreshTimer.value), (timer) {
         getOrders();
       });
     }

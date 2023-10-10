@@ -18,14 +18,14 @@ class NewOrderRunningScreen extends StatelessWidget {
       : super(key: key);
   OrderController orderController;
   var height = Get.height;
-  AskPermission permission = Get.find();
+  // AskPermission permission = Get.find();
 
   @override
   Widget build(BuildContext context) {
 
-      if(!permission.serviceEnabled.value){
-        permission.getLocation();
-      }
+      // if(!permission.serviceEnabled.value){
+      //   permission.getLocation();
+      // }
     // getDeliveryItems();
     return WillPopScope(
       onWillPop: () async {
@@ -213,8 +213,8 @@ class NewOrderRunningScreen extends StatelessWidget {
                                               // ),
                                               GestureDetector(
                                                 onTap: () async {
-                                                  await orderController
-                                                      .getLocation();
+                                                  // await orderController
+                                                  //     .getLocation();
                                                   await orderController
                                                       .launchMapViaAddress(
                                                           orderController

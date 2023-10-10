@@ -29,6 +29,8 @@ class AuthenticationManager extends GetxController with CacheManager {
   }
 
 
+
+
   checkLoginStatus() async {
     final token = await getToken();
     print("token $token");

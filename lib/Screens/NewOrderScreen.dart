@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../Constant/Colors.dart';
-import '../Controller/AskLocation.dart';
 import '../Controller/OrderController.dart';
-import '../Controller/order_controller_service.dart';
 import '../Design/DeliveryOrderDesign.dart';
 import '../Design/NewOrderDrawer.dart';
 import '../Design/toast.dart';
@@ -14,14 +12,12 @@ class NewOrderScreen extends StatelessWidget {
   NewOrderScreen({Key? key}) : super(key: key);
 
   var orderController = Get.put(OrderController());
-  // var orderController = Get.find<OrderControllerService>().orderController;
   var height = Get.height;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime currentBackPressTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-    Get.find<AskPermission>().grantLocation();
     orderController.refreshOrder();
     return WillPopScope(
       onWillPop: onWillPop,
@@ -146,7 +142,7 @@ class NewOrderScreen extends StatelessWidget {
                         )
                       : SizedBox())
                   : Container(
-                      // child: Text('Please Check If Your Internet Connection in enable then press refresh button at top', style: TextStyle(color: alterColor),),
+                      child: Text('Please Check If Your Internet Connection in enable then press refresh button at top', style: TextStyle(color: alterColor),),
                       )),
               Expanded(
                   child: Obx(() => !orderController.isOrderLoaded.value

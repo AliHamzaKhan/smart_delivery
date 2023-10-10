@@ -26,7 +26,6 @@ class NewOrderDrawer extends StatelessWidget {
             ),
             width: MediaQuery.of(context).size.width / 1.5,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-            // margin: const EdgeInsets.only(top: 40),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +55,6 @@ class NewOrderDrawer extends StatelessWidget {
                         ),
                       ),
                 SizedBox(height: 10),
-                // Text(authmanager.checkLoginStatus(), style: headStyle),
                 Text("${controller.driverName.value}", style: subStyle),
               ],
             ),
@@ -64,6 +62,9 @@ class NewOrderDrawer extends StatelessWidget {
           Divider(
             color: subBackgroundColor,
           ),
+
+
+
           Spacer(),
           ListTile(
             title: Text(
