@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:signature/signature.dart';
-import 'package:smart_delivery/Controller/AskLocation.dart';
 import '../../Constant/Colors.dart';
 import '../../Utils/DistanceCal.dart';
 import '../Controller/OrderController.dart';
@@ -117,33 +116,10 @@ class NewOrderRunningScreen extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          // Text(
-                                          //   orderController.getCurrentOrder().deliveryrefno,
-                                          //   style: TextStyle(
-                                          //       color: alterColor,
-                                          //       fontSize: height * 0.030,
-                                          //       fontWeight: FontWeight.bold),
-                                          // ),
-                                          // SizedBox(height: height * 0.005),
+
                                           getTableWidget('Address',AppDataParser().getStringData(orderController.getCurrentOrder().deliveryaddress!),
                                            textSize: 0.018),
-                                          // Text(
-                                          //   orderController
-                                          //       .getCurrentOrder()
-                                          //       .deliveryaddress!,
-                                          //   style: TextStyle(
-                                          //       color: textColor,
-                                          //       fontSize: height * 0.020),
-                                          // ),
 
-                                             // Text(
-                                            //   orderController
-                                            //       .getCurrentOrder()
-                                            //       .notes!,
-                                            //   style: TextStyle(
-                                            //       color: textColor,
-                                            //       fontSize: height * 0.018),
-                                            // ),
                                           SizedBox(height: height * 0.005),
                                           if (orderController.getCurrentOrder().timeFrom! != '' ||
                                               orderController.getCurrentOrder().timeTo! != '')
@@ -154,19 +130,10 @@ class NewOrderRunningScreen extends StatelessWidget {
 
                                                   Expanded(child: getTableWidget('From', orderController.getCurrentOrder().timeFrom!,textSize: 0.018)),
 
-                                                  // Text(orderController.getCurrentOrder().timeFrom!,
-                                                  //   style: TextStyle(
-                                                  //       color: textColor,
-                                                  //       fontSize: height * 0.015),
-                                                  // ),
+
                                                 if (orderController.getCurrentOrder().timeTo! != '')
                                                   Expanded(child: getTableWidget('To', orderController.getCurrentOrder().timeTo!,textSize: 0.018)),
-                                                  // Text(orderController.getCurrentOrder().timeTo!,
-                                                  //   style: TextStyle(
-                                                  //       color: textColor,
-                                                  //       fontSize:
-                                                  //           height * 0.015),
-                                                  // )
+
                                               ],
                                             ),
 
@@ -175,15 +142,9 @@ class NewOrderRunningScreen extends StatelessWidget {
                                           if (orderController.getCurrentOrder().tel! != '')
                                             getTableWidget('Tel',  orderController
                                                 .getCurrentOrder()
-                                                .tel!),
-                                            // Text(
-                                            //   orderController
-                                            //       .getCurrentOrder()
-                                            //       .tel!,
-                                            //   style: TextStyle(
-                                            //       color: textColor,
-                                            //       fontSize: height * 0.020),
-                                            // ),
+                                                .tel!,
+                                              textSize: 0.018, ),
+
                                           if (orderController.getCurrentOrder().notes! != '')
                                             getTableWidget('Notes', orderController.getCurrentOrder().notes!,textSize: 0.018, maxLines: 5),
 
@@ -241,10 +202,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                                               ),
                                             ],
                                           ),
-                                          // statusView(
-                                          //     deliveryId: orderController
-                                          //         .getCurrentOrder()
-                                          //         .statusid!),
+
                                         ],
                                       ),
                                     ),
@@ -338,18 +296,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                                                 file) async {
                                                   if (file !=
                                                       null) {
-                                                    // var convert = await file.readAsBytesSync();
-                                                    // var image = await orderController.base64String(convert);
-                                                    // orderController.addUpdateItem(
-                                                    //     imageData: image,
-                                                    //     itemId: orderController.deliveryItems[index].itemId!,
-                                                    //     deliveryId: orderController.getCurrentOrder()!.deliveryid
-                                                    // );
 
-                                                    // orderController.imageUpdate.add(ItemImageUpdate(
-                                                    //   itemid: orderController.deliveryItems[index].itemId!,
-                                                    //   imagedata: await orderController.base64String(convert)
-                                                    // ));
                                                     var convert = await file.readAsBytes();
                                                     var image = await orderController.base64String(convert);
 
@@ -357,15 +304,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                                                         deliveryId: orderController.currentOrder.value!.deliveryid!,
                                                         itemId: orderController.deliveryItems[index].itemId!,
                                                         image: 'data:image/png;base64,' + image.trim());
-                                                    // orderController.addImage(
-                                                    //     itemId: orderController.deliveryItems[index].itemId!,
-                                                    //     image: 'data:image/png;base64,' + image.trim());
-                                                    // orderController.itemsImageData.add(TempItem(
-                                                    //     key: orderController.deliveryItems[index].itemId!,
-                                                    //     value: file
-                                                    // ));
-                                                    // print(orderController.itemsImageData.length);
-                                                    // print(file);
+
                                                   }
                                                 },
                                                 onQuantitySelected:
@@ -394,9 +333,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                                 child: Text('Loading.....'),
                               ),
                             )
-                            // GetBuilder<OrderController>(builder: (controller) {
-                            //   return ;
-                            // })
+
                           ],
                         ),
                       )),
@@ -447,12 +384,6 @@ class NewOrderRunningScreen extends StatelessWidget {
     );
   }
 
-  // getDeliveryItems() async {
-  //   if (orderController.currentOrder.value != null) {
-  //     await orderController.getDeliveryItem(
-  //         deliveryid: orderController.currentOrder.value!.deliveryid!);
-  //   }
-  // }
 
   checkValue(value, context) {
     print(orderController.getCurrentOrder()!.statusid);
@@ -496,12 +427,18 @@ class NewOrderRunningScreen extends StatelessWidget {
                 ),
                 isExpanded: true,
                 items: <String>[
-                  "Shortage",
+                  'No Stock',
+                  'Wrong Stock',
+                  'Goods Damaged',
+                  'Wrong Outlet',
+                  'Arrived wrong location',
+                  'Others (Refer to message/email)',
+                  /*"Shortage",
                   "Request Access",
                   "Wrong Type",
                   "Wrong Size",
                   "Wrong Color",
-                  "Did not Order"
+                  "Did not Order"*/
                 ].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,

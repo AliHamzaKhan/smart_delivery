@@ -142,7 +142,7 @@ class NewOrderScreen extends StatelessWidget {
                         )
                       : SizedBox())
                   : Container(
-                      child: Text('Please Check If Your Internet Connection in enable then press refresh button at top', style: TextStyle(color: alterColor),),
+                      // child: Text('Please Check If Your Internet Connection in enable then press refresh button at top', style: TextStyle(color: alterColor),),
                       )),
               Expanded(
                   child: Obx(() => !orderController.isOrderLoaded.value
