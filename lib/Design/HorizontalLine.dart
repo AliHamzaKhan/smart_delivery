@@ -18,3 +18,18 @@ class HorizontelLine extends StatelessWidget {
     );
   }
 }
+
+class AppProgressBar extends StatelessWidget {
+  const AppProgressBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: CircularProgressIndicator(
+        color: alterColor,
+      ),
+    );
+  }
+}
+
+

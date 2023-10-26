@@ -23,7 +23,7 @@ class OrderController extends GetxController {
   var isViewFullDetailsOpen = true.obs;
   var todosMenu = "ToDo".obs;
   var deliveryStatus = "0 deliveries".obs;
-  var failedReasons = "Shortage".obs;
+  var failedReasons = "No Stock".obs;
   RxList<Rows> ordersList = <Rows>[].obs;
   RxList<Rows> todoList = <Rows>[].obs;
   MyApi? api;
@@ -96,7 +96,7 @@ class OrderController extends GetxController {
       var result = jsonDecode(response);
       appDebugPrint(result);
       DeliveryItem deliveryItem = DeliveryItem.fromJson(result);
-        deliveryItems.assignAll(deliveryItem.itemData!);
+      deliveryItems.assignAll(deliveryItem.itemData!);
       appDebugPrint(deliveryItem.itemData!.length);
       // update();
     } catch (e) {
@@ -118,7 +118,7 @@ class OrderController extends GetxController {
 
   postStartDeliveryStatus({deliveryId}) async {
     await MyApi().updateOrder(deliveryId: deliveryId, statusId: 9);
-    appToast(Get.context!, 'Delivery Started successfully');
+    appToast(Get.context!, 'Delivery Started successfully', seconds: 1);
   }
 
   List<int> rearrangeListWithDuplicates(List<int> list) {
@@ -142,6 +142,7 @@ class OrderController extends GetxController {
 
     return result;
   }
+
   bool hasDuplicates(List<int> list) {
     Set<int> seen = Set<int>();
     for (int number in list) {
@@ -152,6 +153,7 @@ class OrderController extends GetxController {
     }
     return false;
   }
+
   getOrders() async {
     try {
       isOrderLoaded(true);
@@ -165,19 +167,18 @@ class OrderController extends GetxController {
       for (int i = 0; i < ordersList.length; i++) {
         temp.add(ordersList[i].visitorderno!);
       }
-      if(hasDuplicates(temp)){
+      if (hasDuplicates(temp)) {
         var tempVisitOrders = rearrangeListWithDuplicates(temp);
         for (int i = 0; i < ordersList.length; i++) {
-          if(temp.length == ordersList.length){
+          if (temp.length == ordersList.length) {
             ordersList[i].visitorderno = tempVisitOrders[i];
-            appDebugPrint("${ordersList[i].visitorderno} --- ${ordersList[i].deliveryrefno}" );
+            appDebugPrint(
+                "${ordersList[i].visitorderno} --- ${ordersList[i].deliveryrefno}");
           }
-
         }
-      }else{
+      } else {
         appDebugPrint('no duplicate');
       }
-
 
       ordersList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
       filteredTodosList();
@@ -201,6 +202,7 @@ class OrderController extends GetxController {
       }
     });
     appDebugPrint("duplicate ${temp.length}");
+    return ordersList;
   }
 
   updateStatus({deliveryId, statusId, reason, inRunning = false}) async {
@@ -243,6 +245,10 @@ class OrderController extends GetxController {
     appDebugPrint('todoList ${todoList.length}');
     updateDeliveryDetails("${todoList.length} left to deliver ");
     update();
+  }
+
+  List<Rows> getTodoList() {
+    return ordersList.where((order) => order.statusid == 3).toList();
   }
 
   Map statuses = {
@@ -296,7 +302,22 @@ class OrderController extends GetxController {
     }
   }
 
-  nextOrder() {
+  nextOrder() async {
+
+    await refreshOrder();
+    var remainingList = getTodoList();
+    if(remainingList.isNotEmpty){
+      setCurrentOrder(
+        order: remainingList.first,
+      );
+      updateDeliveryDetails('${remainingList.length - 1} left to deliver');
+    }
+    else{
+      setCurrentOrder(order: Rows.fromJson({}));
+    }
+  }
+
+  next() {
     if (todoList.isNotEmpty) {
       if (todoList.length > 1) {
         for (var a in todoList) {
@@ -339,7 +360,6 @@ class OrderController extends GetxController {
       itemsImageData.clear();
       deliveryItems.clear();
       update();
-
     }
   }
 
@@ -357,7 +377,6 @@ class OrderController extends GetxController {
       apiToast(Get.context!, 'Images', "failed", seconds: 1);
     }
     AppLoader.dismiss();
-
   }
 
   uploadItemsImage({required deliveryId}) async {
@@ -376,8 +395,6 @@ class OrderController extends GetxController {
         } else {
           apiToast(Get.context!, 'Images', 'failed');
         }
-
-
       } catch (e) {
         appDebugPrint(e);
       } finally {
@@ -403,7 +420,6 @@ class OrderController extends GetxController {
         } else {
           apiToast(Get.context!, 'Quantity', 'failed');
         }
-
       } catch (e) {
         appDebugPrint(e);
       } finally {
@@ -483,7 +499,8 @@ class OrderController extends GetxController {
   launchMapViaAddress(String address) async {
     String encodedAddress = Uri.encodeComponent(address);
     var uri = Uri.parse("google.navigation:q=$encodedAddress&mode=d");
-    String googleMapUrl = "https://www.google.com/maps/search/?api=1&query=$encodedAddress";
+    String googleMapUrl =
+        "https://www.google.com/maps/search/?api=1&query=$encodedAddress";
     String appleMapUrl = "http://maps.apple.com/?q=$encodedAddress";
     if (Platform.isAndroid) {
       try {

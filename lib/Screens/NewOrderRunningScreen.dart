@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:signature/signature.dart';
+import 'package:smart_delivery/Utils/app_loading.dart';
 import '../../Constant/Colors.dart';
 import '../../Utils/DistanceCal.dart';
 import '../Controller/OrderController.dart';
@@ -22,19 +23,17 @@ class NewOrderRunningScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+
+    print(orderController.todoList.length);
+    print(orderController.currentOrder.value!.statusid!);
       // if(!permission.serviceEnabled.value){
       //   permission.getLocation();
       // }
     // getDeliveryItems();
     return WillPopScope(
       onWillPop: () async {
-        orderController.startDelivery(false);
-        orderController.itemsImageData.clear();
-        orderController.itemsQuantityData.clear();
-        orderController.deliveryItems.clear();
-        orderController.quantityUpdate.clear();
-        orderController.imageUpdate.clear();
-        orderController.refreshOrder();
+        goBack();
+
         return true;
       },
       child: Scaffold(
@@ -48,13 +47,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                   color: alterColor,
                 ),
                 onPressed: () async {
-                  orderController.startDelivery(false);
-                  orderController.itemsImageData.clear();
-                  orderController.itemsQuantityData.clear();
-                  orderController.deliveryItems.clear();
-                  orderController.quantityUpdate.clear();
-                  orderController.imageUpdate.clear();
-                  await orderController.refreshOrder();
+                 goBack();
                   Get.back();
                 }),
             title: Obx(
@@ -78,11 +71,13 @@ class NewOrderRunningScreen extends StatelessWidget {
                     ? Container(
                         alignment: Alignment.center,
                         child: Text(
-                          'No more deliveries available',
+                          'No Deliveries Left',
                           style: TextStyle(
                             color: alterColor,
-                            fontSize: height * 0.030,
+                            fontSize: height * 0.040,
+                            fontWeight: FontWeight.bold
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       )
                     : Container(
@@ -414,69 +409,78 @@ class NewOrderRunningScreen extends StatelessWidget {
           ],
         );
       case 6:
-        return Row(
+        return Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: DropdownButton<String>(
-                value: orderController.failedReasons.value,
-                dropdownColor: subBackgroundColor,
-                icon: Icon(
-                  Icons.arrow_drop_down_rounded,
-                  color: alterColor,
-                ),
-                isExpanded: true,
-                items: <String>[
-                  'No Stock',
-                  'Wrong Stock',
-                  'Goods Damaged',
-                  'Wrong Outlet',
-                  'Arrived wrong location',
-                  'Others (Refer to message/email)',
-                  /*"Shortage",
-                  "Request Access",
-                  "Wrong Type",
-                  "Wrong Size",
-                  "Wrong Color",
-                  "Did not Order"*/
-                ].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: TextStyle(
-                        color: alterColor,
-                      ),
+            SizedBox(height: 5,),
+            Text('Failed Reason', style: TextStyle(color: alterColor, fontWeight: FontWeight.bold),),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: DropdownButton<String>(
+                    value: orderController.failedReasons.value,
+                    dropdownColor: subBackgroundColor,
+                    icon: Icon(
+                      Icons.arrow_drop_down_rounded,
+                      color: alterColor,
                     ),
-                  );
-                }).toList(),
-                onChanged: (reason) {
-                  orderController.setFailedReasons(reason);
-                  print(reason);
-                },
-              ),
+                    hint: Text('Failed Reason', style: TextStyle(color: alterColor, fontWeight: FontWeight.bold),),
+                    isExpanded: true,
+                    items: <String>[
+                      'No Stock',
+                      'Wrong Stock',
+                      'Goods Damaged',
+                      'Wrong Outlet',
+                      'Arrived wrong location',
+                      'Others (Refer to message/email)',
+                      /*"Shortage",
+                      "Request Access",
+                      "Wrong Type",
+                      "Wrong Size",
+                      "Wrong Color",
+                      "Did not Order"*/
+                    ].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(
+                          value,
+                          style: TextStyle(
+                            color: alterColor,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (reason) {
+                      orderController.setFailedReasons(reason);
+                      print(reason);
+                    },
+                  ),
+                ),
+                SizedBox(width: height * 0.010),
+                OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                        side: BorderSide(width: 1.0, color: departedColor),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(height * 0.005))),
+                    onPressed: () async {
+                      await orderController.updateStatus(
+                          deliveryId: orderController.getCurrentOrder()!.deliveryid,
+                          statusId: 7,
+                          reason: orderController.failedReasons.value);
+                      // orderController.getCurrentOrder()!.statusid = 7;
+                      await orderController.nextOrder();
+                    },
+                    child: Text(
+                      "Departed",
+                      style: TextStyle(
+                          color: departedColor,
+                          fontSize: height * 0.020,
+                          fontWeight: FontWeight.bold),
+                    )),
+              ],
             ),
-            SizedBox(width: height * 0.010),
-            OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                    side: BorderSide(width: 1.0, color: departedColor),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(height * 0.005))),
-                onPressed: () async {
-                  await orderController.updateStatus(
-                      deliveryId: orderController.getCurrentOrder()!.deliveryid,
-                      statusId: 7,
-                      reason: orderController.failedReasons.value);
-                  // orderController.getCurrentOrder()!.statusid = 7;
-                  await orderController.nextOrder();
-                },
-                child: Text(
-                  "Departed",
-                  style: TextStyle(
-                      color: departedColor,
-                      fontSize: height * 0.020,
-                      fontWeight: FontWeight.bold),
-                )),
           ],
         );
       case 5:
@@ -558,13 +562,12 @@ class NewOrderRunningScreen extends StatelessWidget {
             ),
           ],
         );
-
       default:
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "All Orders  Completed",
+              "Checking For Deliveries.....",
               style: TextStyle(
                   color: alterColor,
                   fontSize: height * 0.022,
@@ -938,5 +941,15 @@ class NewOrderRunningScreen extends StatelessWidget {
         });
   }
 
-    
+  goBack() async{
+    AppLoader.showLoading(message: 'loading.....');
+    orderController.startDelivery(false);
+    orderController.itemsImageData.clear();
+    orderController.itemsQuantityData.clear();
+    orderController.deliveryItems.clear();
+    orderController.quantityUpdate.clear();
+    orderController.imageUpdate.clear();
+    orderController.refreshOrder();
+    AppLoader.dismiss();
+  }
 }

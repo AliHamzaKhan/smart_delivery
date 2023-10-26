@@ -11,8 +11,9 @@ apiToast(context,String? title,String?  message, {int? seconds}){
       duration: Duration(seconds: seconds ?? 2),
   ));
 }
-appToast(context,String message){
+appToast(context,String message, {seconds}){
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: alterColor,
-      content: Text(message)));
+      content: Text(message),
+    duration: Duration(seconds: seconds ?? 2),));
 }

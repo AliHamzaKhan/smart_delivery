@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import '../../Constant/Colors.dart';
 import '../Controller/OrderController.dart';
 import '../Design/DeliveryOrderDesign.dart';
+import '../Design/HorizontalLine.dart';
 import '../Design/NewOrderDrawer.dart';
+import '../Design/buttons.dart';
 import '../Design/toast.dart';
 import '../Model/Task.dart';
 import 'NewOrderRunningScreen.dart';
@@ -11,7 +13,7 @@ import 'NewOrderRunningScreen.dart';
 class NewOrderScreen extends StatelessWidget {
   NewOrderScreen({Key? key}) : super(key: key);
 
-  var orderController = Get.put(OrderController());
+  var orderController = Get.put(OrderController(), permanent: true);
   var height = Get.height;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime currentBackPressTime = DateTime.now();
@@ -105,40 +107,34 @@ class NewOrderScreen extends StatelessWidget {
                   ? (orderController.todoList.isNotEmpty
                       ? Padding(
                           padding:
-                              EdgeInsets.symmetric(horizontal: height * 0.050),
+                          EdgeInsets.symmetric(horizontal: height * 0.050),
                           child: orderController.startDelivery.value
-                              ? Center(
-                              child: CircularProgressIndicator(
-                                color: alterColor,
-                              ))
-                              : TextButton(
-                              onPressed: () async {
-                                await orderController.getTodo();
-                                Get.to(() => NewOrderRunningScreen(
-                                      orderController: orderController,
-                                    ));
-                              },
-                              style: TextButton.styleFrom(
-                                  backgroundColor: alterColor,
-                                  foregroundColor: alterColor,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          height * 0.010))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text("START",
-                                      style: TextStyle(
-                                          color: subBackgroundColor,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: height * 0.017)),
-                                  Icon(
-                                    Icons.fast_forward_outlined,
-                                    color: subBackgroundColor,
-                                    size: height * 0.025,
-                                  )
-                                ],
-                              )),
+                              ? AppProgressBar()
+                              :
+                          AppButton(
+                            onTap: () async{
+                              await orderController.getTodo();
+                                    Get.to(() => NewOrderRunningScreen(
+                                          orderController: orderController,
+                                        ));
+                            },
+                            child:  startButton(),
+                          )
+                          // TextButton(
+                          //     onPressed: () async {
+                          //       await orderController.getTodo();
+                          //       Get.to(() => NewOrderRunningScreen(
+                          //             orderController: orderController,
+                          //           ));
+                          //     },
+                          //     style: TextButton.styleFrom(
+                          //         backgroundColor: alterColor,
+                          //         foregroundColor: alterColor,
+                          //         shape: RoundedRectangleBorder(
+                          //             borderRadius: BorderRadius.circular(
+                          //                 height * 0.010))),
+                          //     child: startButton()
+                          // ),
                         )
                       : SizedBox())
                   : Container(
@@ -148,6 +144,7 @@ class NewOrderScreen extends StatelessWidget {
                   child: Obx(() => !orderController.isOrderLoaded.value
                       ? (orderController.todosMenu.value != "All"
                           ? ReorderableListView.builder(
+
                               scrollDirection: Axis.vertical,
                               itemCount: orderController.todoList.length,
                               itemBuilder: (context, index) {
@@ -159,6 +156,10 @@ class NewOrderScreen extends StatelessWidget {
                                 );
                               },
                               onReorder: (int oldIndex, int newIndex) {
+
+                                print('oldIndex $oldIndex : newIndex $newIndex');
+
+
                                 if (oldIndex < newIndex) {
                                   newIndex -= 1;
                                 }
@@ -166,6 +167,7 @@ class NewOrderScreen extends StatelessWidget {
                                     orderController.todoList.removeAt(oldIndex);
                                 orderController.todoList
                                     .insert(newIndex, movedItem);
+                                print('newIndex: ${newIndex + 1} : movedItem ${movedItem.deliveryrefno}');
                                 orderController.reOrderVisit(
                                     movedItem.deliveryid!, newIndex + 1);
                               })
@@ -178,7 +180,7 @@ class NewOrderScreen extends StatelessWidget {
                                   onTap: () {},
                                   orderController: orderController,
                                   isResetButton: orderController
-                                              .ordersList[index].statusid ==
+                                      .ordersList[index].statusid ==
                                           3
                                       ? false
                                       : true,
@@ -192,11 +194,7 @@ class NewOrderScreen extends StatelessWidget {
                                   },
                                 );
                               }))
-                      : Center(
-                          child: CircularProgressIndicator(
-                            color: alterColor,
-                          ),
-                        )))
+                      : AppProgressBar()))
             ],
           ),
         ),
@@ -235,6 +233,24 @@ class NewOrderScreen extends StatelessWidget {
       return Future.value(false);
     }
     return Future.value(true);
+  }
+
+  startButton() {
+    return  Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("START",
+            style: TextStyle(
+                color: subBackgroundColor,
+                fontWeight: FontWeight.bold,
+                fontSize: height * 0.017)),
+        Icon(
+          Icons.fast_forward_outlined,
+          color: subBackgroundColor,
+          size: height * 0.025,
+        )
+      ],
+    );
   }
 }
 
