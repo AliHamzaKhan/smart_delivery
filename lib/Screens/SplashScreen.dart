@@ -64,7 +64,7 @@ class SplashScreen extends StatelessWidget {
                 SizedBox(
                   height: Get.height * 0.5,
                   width: Get.width * 0.8,
-                  child: Image.asset('assets/icons/cct_app_icon.png', fit: BoxFit.cover,),
+                  child: Image.asset('assets/icons/cct_app_icon.png', fit: BoxFit.contain,),
                 ),
                 // SizedBox(height: 5),
                 // Text("Loading...", style: TextStyle(color: alterColor),),

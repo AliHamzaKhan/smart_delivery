@@ -104,22 +104,26 @@ class NewOrderScreen extends StatelessWidget {
           child: Column(
             children: [
               Obx(() => orderController.todosMenu.value == 'ToDo'
-                  ? (orderController.todoList.isNotEmpty
+                  ? (orderController.todoList.isNotEmpty ||
+                  orderController.getCurrentOrder().deliveryid != 0
                       ? Padding(
                           padding:
-                          EdgeInsets.symmetric(horizontal: height * 0.050),
+                              EdgeInsets.symmetric(horizontal: height * 0.050),
                           child: orderController.startDelivery.value
                               ? AppProgressBar()
-                              :
-                          AppButton(
-                            onTap: () async{
-                              await orderController.getTodo();
+                              : AppButton(
+                                  onTap: () async {
+                                    await orderController.getTodo();
                                     Get.to(() => NewOrderRunningScreen(
                                           orderController: orderController,
                                         ));
-                            },
-                            child:  startButton(),
-                          )
+                                  },
+                                  child: startButton(orderController.getCurrentOrder().deliveryid == 0
+                                      ? "START"
+                                      : (orderController.getCurrentOrder().statusid == 3
+                                          ? 'START'
+                                          : "Continue ${orderController.getCurrentOrder().deliveryrefno ?? ''}")),
+                                )
                           // TextButton(
                           //     onPressed: () async {
                           //       await orderController.getTodo();
@@ -135,7 +139,7 @@ class NewOrderScreen extends StatelessWidget {
                           //                 height * 0.010))),
                           //     child: startButton()
                           // ),
-                        )
+                          )
                       : SizedBox())
                   : Container(
                       // child: Text('Please Check If Your Internet Connection in enable then press refresh button at top', style: TextStyle(color: alterColor),),
@@ -144,21 +148,20 @@ class NewOrderScreen extends StatelessWidget {
                   child: Obx(() => !orderController.isOrderLoaded.value
                       ? (orderController.todosMenu.value != "All"
                           ? ReorderableListView.builder(
-
                               scrollDirection: Axis.vertical,
                               itemCount: orderController.todoList.length,
                               itemBuilder: (context, index) {
                                 return DeliveryOrderDesign(
-                                  key: Key("${orderController.todoList[index].visitorderno}"),
+                                  key: Key(
+                                      "${orderController.todoList[index].visitorderno}"),
                                   order: orderController.todoList[index],
                                   onTap: () {},
                                   orderController: orderController,
                                 );
                               },
                               onReorder: (int oldIndex, int newIndex) {
-
-                                print('oldIndex $oldIndex : newIndex $newIndex');
-
+                                print(
+                                    'oldIndex $oldIndex : newIndex $newIndex');
 
                                 if (oldIndex < newIndex) {
                                   newIndex -= 1;
@@ -167,7 +170,8 @@ class NewOrderScreen extends StatelessWidget {
                                     orderController.todoList.removeAt(oldIndex);
                                 orderController.todoList
                                     .insert(newIndex, movedItem);
-                                print('newIndex: ${newIndex + 1} : movedItem ${movedItem.deliveryrefno}');
+                                print(
+                                    'newIndex: ${newIndex + 1} : movedItem ${movedItem.deliveryrefno}');
                                 orderController.reOrderVisit(
                                     movedItem.deliveryid!, newIndex + 1);
                               })
@@ -175,22 +179,35 @@ class NewOrderScreen extends StatelessWidget {
                               scrollDirection: Axis.vertical,
                               itemCount: orderController.ordersList.length,
                               itemBuilder: (context, index) {
+                                var order = orderController.ordersList[index];
                                 return DeliveryOrderDesign(
-                                  order: orderController.ordersList[index],
+                                  order: order,
                                   onTap: () {},
                                   orderController: orderController,
-                                  isResetButton: orderController
-                                      .ordersList[index].statusid ==
-                                          3
-                                      ? false
-                                      : true,
+                                  isResetButton: order.statusid == 3 ? false : true,
                                   onResetClick: () async {
                                     await orderController.updateStatus(
                                         inRunning: true,
-                                        deliveryId: orderController
-                                            .ordersList[index].deliveryid,
-                                        statusId: 3);
-                                    orderController.refreshOrder();
+                                        deliveryId: order.deliveryid,
+                                        statusId: 3,
+                                        result: (value){
+                                          if(value != null){
+                                            if(value){
+                                              var a = order.deliveryrefno;
+                                              var b = orderController.getCurrentOrder().deliveryrefno;
+                                              print('matched ==  a : $a , b : $b , c : $value');
+                                              print('matched $b');
+                                              if(a == b){
+                                                print('matched id ');
+                                                orderController.setCurrentOrder(
+                                                    order: Rows.fromJson({})
+                                                );
+                                              }
+                                            }
+                                          }
+                                        }
+                                    );
+                                   await orderController.refreshOrder();
                                   },
                                 );
                               }))
@@ -208,17 +225,18 @@ class NewOrderScreen extends StatelessWidget {
                   topRight: Radius.circular(height * 0.030),
                 )),
             alignment: Alignment.center,
-            child:  Text(
-                    controller.deliveryStatus.value,
-                    style: TextStyle(
-                        color: subBackgroundColor,
-                        fontSize: height * 0.020,
-                        fontWeight: FontWeight.bold),
-                  ),
+            child: Text(
+              controller.deliveryStatus.value,
+              style: TextStyle(
+                  color: subBackgroundColor,
+                  fontSize: height * 0.020,
+                  fontWeight: FontWeight.bold),
+            ),
           );
         }),
         drawer: NewOrderDrawer(
           controller: orderController,
+          scaffoldKey: scaffoldKey,
         ),
       ),
     );
@@ -235,11 +253,11 @@ class NewOrderScreen extends StatelessWidget {
     return Future.value(true);
   }
 
-  startButton() {
-    return  Row(
+  startButton(text) {
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text("START",
+        Text(text,
             style: TextStyle(
                 color: subBackgroundColor,
                 fontWeight: FontWeight.bold,

@@ -267,3 +267,32 @@ uploadSignatureDialogue({orderController, deliveryId}) {
     ],
   );
 }
+
+showAlertMsg(context, {onClick}){
+  Widget cancelButton = TextButton(
+    child: Text("Cancel", style: TextStyle(color: textColor),),
+    onPressed:  () {
+      Get.back();
+    },
+  );
+  Widget continueButton = TextButton(
+    child: Text("Continue", style: TextStyle(color: alterColor, fontWeight:FontWeight.bold )),
+    onPressed:  onClick,
+  );
+
+  AlertDialog alert = AlertDialog(
+    title: Text("Reset Orders?"),
+    content: Text("Are you sure you want to reset all orders?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}

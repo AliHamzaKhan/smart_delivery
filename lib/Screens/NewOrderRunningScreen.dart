@@ -54,7 +54,7 @@ class NewOrderRunningScreen extends StatelessWidget {
               () => Text(
                 orderController.getCurrentOrder().deliveryid == 0
                     ? "Order"
-                    : orderController.getCurrentOrder().deliveryrefno,
+                    : orderController.getCurrentOrder().deliveryrefno ?? '',
                 style: TextStyle(
                     color: alterColor,
                     fontSize: height * 0.025,
@@ -68,18 +68,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                 height: Get.height,
                 child: Obx(() => orderController.getCurrentOrder().deliveryid ==
                         0
-                    ? Container(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'No Deliveries Left',
-                          style: TextStyle(
-                            color: alterColor,
-                            fontSize: height * 0.040,
-                            fontWeight: FontWeight.bold
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      )
+                    ? noDeliveriesLeft()
                     : Container(
                         height: Get.height,
                         child: Column(
@@ -951,5 +940,20 @@ class NewOrderRunningScreen extends StatelessWidget {
     orderController.imageUpdate.clear();
     orderController.refreshOrder();
     AppLoader.dismiss();
+  }
+
+Widget  noDeliveriesLeft() {
+    return Container(
+      alignment: Alignment.center,
+      child: Text(
+        'No Deliveries Left',
+        style: TextStyle(
+            color: alterColor,
+            fontSize: height * 0.040,
+            fontWeight: FontWeight.bold
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 }

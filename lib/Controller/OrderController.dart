@@ -33,7 +33,7 @@ class OrderController extends GetxController {
   late SignatureController signatureController;
   var driverName = ''.obs;
 
-  final currentOrder = Rxn<Rows>();
+  final currentOrder = Rows.fromJson({}).obs;
   var refreshTimer = 2.obs;
 
   final currentOrderItem = Rxn<DeliveryItem>();
@@ -114,7 +114,7 @@ class OrderController extends GetxController {
     // appDebugPrint("current order $currentOrder");
   }
 
-  getCurrentOrder() => currentOrder.value;
+  Rows getCurrentOrder() => currentOrder.value;
 
   postStartDeliveryStatus({deliveryId}) async {
     await MyApi().updateOrder(deliveryId: deliveryId, statusId: 9);
@@ -205,7 +205,7 @@ class OrderController extends GetxController {
     return ordersList;
   }
 
-  updateStatus({deliveryId, statusId, reason, inRunning = false}) async {
+  updateStatus({deliveryId, statusId, reason, inRunning = false, result}) async {
     if (inRunning) {
       isOrderLoaded(true);
     }
@@ -219,10 +219,13 @@ class OrderController extends GetxController {
       currentOrder.value?.statusid = statusId;
       appDebugPrint(data);
       if (data["status"] == "success") {
+        result(true);
         currentOrder.value?.deliveryid = deliveryId;
         currentOrder.value?.statusid = statusId;
         getCurrentOrder()!.statusid = statusId;
         update();
+      }else{
+        result(false);
       }
     } catch (e) {
       appDebugPrint(e);
@@ -274,19 +277,25 @@ class OrderController extends GetxController {
   }
 
   getTodo() async {
-    startDelivery(true);
-    todoList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
-    appDebugPrint('todoList ${todoList.length}');
-    setCurrentOrder(order: todoList[0]);
-    await postStartDeliveryStatus(deliveryId: currentOrder.value!.deliveryid);
-    startDelivery(false);
-    update();
+    if(getCurrentOrder().deliveryid != 0 && getCurrentOrder().statusid != 3){
+      startDelivery(true);
+      setCurrentOrder(order: getCurrentOrder());
+      startDelivery(false);
+    }else{
+      startDelivery(true);
+      todoList.sort((a, b) => a.visitorderno!.compareTo(b.visitorderno!));
+      appDebugPrint('todoList ${todoList.length}');
+      setCurrentOrder(order: todoList[0]);
+      await postStartDeliveryStatus(deliveryId: currentOrder.value.deliveryid);
+      startDelivery(false);
+      update();
+    }
+
   }
 
   reOrderVisit(int deliverId, int current) async {
     appDebugPrint('deliverId $deliverId');
     appDebugPrint('current $current');
-
     try {
       var response = await MyApi().reOrderList(
         deliveryid: deliverId,
@@ -303,7 +312,6 @@ class OrderController extends GetxController {
   }
 
   nextOrder() async {
-
     await refreshOrder();
     var remainingList = getTodoList();
     if(remainingList.isNotEmpty){
@@ -343,7 +351,7 @@ class OrderController extends GetxController {
         todoList.refresh();
 
         if (todoList.isEmpty) {
-          setCurrentOrder(order: Rows(deliveryid: 0));
+          setCurrentOrder(order: Rows.fromJson({}));
           itemsQuantityData.clear();
           itemsImageData.clear();
           deliveryItems.clear();
@@ -355,7 +363,7 @@ class OrderController extends GetxController {
       appDebugPrint(todoList.length);
     } else {
       appDebugPrint('no orders remaining');
-      setCurrentOrder(order: Rows(deliveryid: 0));
+      setCurrentOrder(order: Rows.fromJson({}));
       itemsQuantityData.clear();
       itemsImageData.clear();
       deliveryItems.clear();
@@ -522,6 +530,26 @@ class OrderController extends GetxController {
     }
   }
 
+  resetOrders() async{
+    var resetList = [];
+    setCurrentOrder(
+      order: Rows.fromJson({})
+    );
+    for(int i=0; i<ordersList.length; i++){
+      if(ordersList[i].statusid != 3){
+        resetList.add(ordersList[i].deliveryid);
+      }
+    }
+    print('reset_list : ${resetList.length}');
+    if(resetList.isNotEmpty){
+      await Future.forEach(resetList, (element) async {
+        await updateStatus(deliveryId: element, statusId: 3);
+      });
+    }
+    refreshOrder();
+
+  }
+
   logout() async {
     authmanager.logOut();
     ordersList.clear();
@@ -529,7 +557,7 @@ class OrderController extends GetxController {
     deliveryItems.clear();
     imageUpdate.clear();
     itemsImageData.clear();
-    currentOrder.value = null;
+    currentOrder.value = Rows.fromJson({});
     Get.offAll(() => LoginScreen());
   }
 
@@ -538,7 +566,8 @@ class OrderController extends GetxController {
   }
 
   void closeDrawer() {
-    scaffoldKey.currentState!.openEndDrawer();
+
+    scaffoldKey.currentState!.closeDrawer();
   }
 
   @override

@@ -4,11 +4,13 @@ import '../Constant/Colors.dart';
 import '../Controller/OrderController.dart';
 import '../Model/UserModel.dart';
 import '../Utils/widgetStyles.dart';
+import 'myDialogues.dart';
 
 class NewOrderDrawer extends StatelessWidget {
-  NewOrderDrawer({Key? key, required this.controller}) : super(key: key);
+  NewOrderDrawer({Key? key, required this.controller, this.scaffoldKey}) : super(key: key);
   UserModel? userModel;
   OrderController controller;
+  var scaffoldKey;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class NewOrderDrawer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 10),
                 userModel?.image == ""
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(8.0),
@@ -56,6 +59,8 @@ class NewOrderDrawer extends StatelessWidget {
                       ),
                 SizedBox(height: 10),
                 Text("${controller.driverName.value}", style: subStyle),
+                
+
               ],
             ),
           ),
@@ -63,7 +68,18 @@ class NewOrderDrawer extends StatelessWidget {
             color: subBackgroundColor,
           ),
 
-
+          (controller.todoList.isNotEmpty || controller.getCurrentOrder().deliveryrefno != 0) ?
+          ListTile(
+            onTap: (){
+              showAlertMsg(context, onClick: () async{
+                Get.back();
+               await controller.resetOrders();
+              });
+              scaffoldKey.currentState!.closeDrawer();
+            },
+            leading: Icon(Icons.undo, color: alterColor,),
+            title: Text('Reset', style: TextStyle(color: alterColor),),
+          ) : SizedBox(),
 
           Spacer(),
           ListTile(

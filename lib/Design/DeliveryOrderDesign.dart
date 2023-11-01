@@ -53,6 +53,13 @@ class DeliveryOrderDesign extends StatelessWidget {
                       SizedBox(width:height * 0.005),
                     ],
                   ),
+                  // Text(
+                  //   order!.deliveryid!.toString(),
+                  //   style: TextStyle(
+                  //       color: alterColor,
+                  //       fontSize: height * 0.022,
+                  //       fontWeight: FontWeight.bold),
+                  // ),
                   Row(
                     children: [
                       GestureDetector(
