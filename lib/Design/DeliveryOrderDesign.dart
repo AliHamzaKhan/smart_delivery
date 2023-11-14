@@ -1,11 +1,12 @@
 
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../Constant/Colors.dart';
 import '../Controller/OrderController.dart';
 import '../Model/Task.dart';
-import '../Utils/DistanceCal.dart';
+import '../Utils/app_utils.dart';
 import '../Utils/app_widget.dart';
 import '../Utils/dataParser.dart';
 
@@ -53,13 +54,15 @@ class DeliveryOrderDesign extends StatelessWidget {
                       SizedBox(width:height * 0.005),
                     ],
                   ),
-                  // Text(
-                  //   order!.deliveryid!.toString(),
-                  //   style: TextStyle(
-                  //       color: alterColor,
-                  //       fontSize: height * 0.022,
-                  //       fontWeight: FontWeight.bold),
-                  // ),
+
+                  if(kDebugMode)
+                  Text(
+                    order!.deliveryid!.toString() + "-" + order!.visitorderno.toString() ,
+                    style: TextStyle(
+                        color: alterColor,
+                        fontSize: height * 0.022,
+                        fontWeight: FontWeight.bold),
+                  ),
                   Row(
                     children: [
                       GestureDetector(

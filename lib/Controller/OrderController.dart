@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,6 +15,7 @@ import '../Model/DeliveryItem.dart';
 import '../Model/Task.dart';
 import '../Model/temp_item.dart';
 import '../Screens/LoginScreen.dart';
+import '../Utils/app_utils.dart';
 import '../main.dart';
 
 class OrderController extends GetxController {
@@ -48,7 +49,7 @@ class OrderController extends GetxController {
   List<ItemQuantityUpdate> quantityUpdate = [];
   List<ItemImageUpdate> imageUpdate = [];
 
-  var inAppReload = true;
+  var inAppReload = kDebugMode ? false : true;
 
   addQuantity({required int itemId, required int qty}) {
     if (quantityUpdate.isEmpty) {
@@ -293,13 +294,17 @@ class OrderController extends GetxController {
 
   }
 
-  reOrderVisit(int deliverId, int current) async {
+  reOrderVisit(int deliverId, int current,List<int> prvNext) async {
+
+
     appDebugPrint('deliverId $deliverId');
     appDebugPrint('current $current');
     try {
       var response = await MyApi().reOrderList(
         deliveryid: deliverId,
         visitorder: current,
+        nextdeliveryid: prvNext[1],
+        prvdeliveryid: prvNext[0],
       );
       appDebugPrint(response);
       if (response['status'] == 'success') {
@@ -595,5 +600,15 @@ class OrderController extends GetxController {
         getOrders();
       });
     }
+  }
+
+  List<int> reOrderVisitNo(int index){
+    var a = todoList.map((order) => order.deliveryid).toList();
+    var list = getNextAndPrevious(
+      index: index,
+      myList: a.cast<int>().toList(),
+    );
+    print("current index : $index ,Previous and next values: $list");
+    return list;
   }
 }

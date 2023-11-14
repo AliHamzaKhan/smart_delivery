@@ -5,7 +5,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:signature/signature.dart';
 import 'package:smart_delivery/Utils/app_loading.dart';
 import '../../Constant/Colors.dart';
-import '../../Utils/DistanceCal.dart';
+import '../../Utils/app_utils.dart';
 import '../Controller/OrderController.dart';
 import '../Design/ItemDesign.dart';
 import '../Design/table_header.dart';

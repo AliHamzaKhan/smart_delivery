@@ -160,20 +160,17 @@ class NewOrderScreen extends StatelessWidget {
                                 );
                               },
                               onReorder: (int oldIndex, int newIndex) {
-                                print(
-                                    'oldIndex $oldIndex : newIndex $newIndex');
+                                // print('oldIndex $oldIndex : newIndex $newIndex');
 
                                 if (oldIndex < newIndex) {
                                   newIndex -= 1;
                                 }
-                                final Rows movedItem =
-                                    orderController.todoList.removeAt(oldIndex);
-                                orderController.todoList
-                                    .insert(newIndex, movedItem);
-                                print(
-                                    'newIndex: ${newIndex + 1} : movedItem ${movedItem.deliveryrefno}');
-                                orderController.reOrderVisit(
-                                    movedItem.deliveryid!, newIndex + 1);
+                                final Rows movedItem = orderController.todoList.removeAt(oldIndex);
+
+                                orderController.todoList.insert(newIndex, movedItem);
+                               var prvNext = orderController.reOrderVisitNo(newIndex);
+                                print('newIndex: ${newIndex + 1} : movedItem ${movedItem.deliveryid}');
+                                orderController.reOrderVisit(movedItem.deliveryid!, newIndex + 1, prvNext); // todo
                               })
                           : ListView.builder(
                               scrollDirection: Axis.vertical,
