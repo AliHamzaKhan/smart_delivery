@@ -166,7 +166,6 @@ class NewOrderScreen extends StatelessWidget {
                                   newIndex -= 1;
                                 }
                                 final Rows movedItem = orderController.todoList.removeAt(oldIndex);
-
                                 orderController.todoList.insert(newIndex, movedItem);
                                var prvNext = orderController.reOrderVisitNo(newIndex);
                                 print('newIndex: ${newIndex + 1} : movedItem ${movedItem.deliveryid}');

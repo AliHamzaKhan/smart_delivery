@@ -59,7 +59,6 @@ class NewOrderDrawer extends StatelessWidget {
                       ),
                 SizedBox(height: 10),
                 Text("${controller.driverName.value}", style: subStyle),
-                
 
               ],
             ),

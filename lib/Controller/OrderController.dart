@@ -602,6 +602,7 @@ class OrderController extends GetxController {
     }
   }
 
+
   List<int> reOrderVisitNo(int index){
     var a = todoList.map((order) => order.deliveryid).toList();
     var list = getNextAndPrevious(

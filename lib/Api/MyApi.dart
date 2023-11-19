@@ -138,7 +138,6 @@ class MyApi {
 
   uploadItemQuantity({deliveryId,required List<ItemQuantityUpdate> qtyData}) async{
 
-
     var url = "${BASE_URL}method=updatedeliveryitem";
     List<Map<String, dynamic>> qtyDataJson = qtyData.map((e) => e.toJson()).toList();
     var formData = {

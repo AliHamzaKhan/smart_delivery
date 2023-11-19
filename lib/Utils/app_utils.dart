@@ -8,6 +8,7 @@ class DistanceCal{
   }
 }
 
+
 List<int> getNextAndPrevious({required List<int> myList,required int index}) {
   if (index >= 0 && index < myList.length) {
     int? nextIndex = index + 1 < myList.length ? index + 1 : null;

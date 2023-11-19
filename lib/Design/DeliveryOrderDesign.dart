@@ -54,7 +54,6 @@ class DeliveryOrderDesign extends StatelessWidget {
                       SizedBox(width:height * 0.005),
                     ],
                   ),
-
                   if(kDebugMode)
                   Text(
                     order!.deliveryid!.toString() + "-" + order!.visitorderno.toString() ,

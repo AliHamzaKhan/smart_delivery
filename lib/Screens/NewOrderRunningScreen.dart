@@ -33,7 +33,6 @@ class NewOrderRunningScreen extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         goBack();
-
         return true;
       },
       child: Scaffold(
