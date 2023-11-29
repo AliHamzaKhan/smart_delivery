@@ -10,11 +10,11 @@ import '../main.dart';
 
 class Api {
   // static String LOGIN_URL = "http://easyrouteplan.com/api/index.php?method=login&username=driver1&password=driver1";
-  static const String BASE_URL = "http://easyrouteplan.com/api/index.php?";
+  static const String BASE_URL = "https://thedessertempire.com/delivery-system/index.php?";
   static const String LOGIN_URL =
-      "http://easyrouteplan.com/api/index.php?method=login";
+      "https://thedessertempire.com/delivery-system/index.php?method=login";
   static const String DELIVERY_ORDERS =
-      "http://easyrouteplan.com/api/index.php?method=driverdelivery&username=driver2";
+      "https://thedessertempire.com/delivery-system/index.php?method=driverdelivery&username=driver2";
 
   Task? tasks;
 
@@ -22,7 +22,8 @@ class Api {
 
   Future<void> login({username1, password1, save}) async {
     authController.setLoading(false);
-    print("$username1 $password1 $save");
+    appDebugPrint("$username1 $password1 $save");
+    appDebugPrint("$BASE_URL");
     try {
       var response = await http.post(
         Uri.parse(
@@ -30,7 +31,7 @@ class Api {
       );
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body.toString());
-        print("data $data");
+        appDebugPrint("data $data");
         if (data["status_message"] == "user authenticated") {
           if (save) {
             await authmanager.login(username1);
@@ -51,9 +52,9 @@ class Api {
                 textAlign: TextAlign.center,
                 style: TextStyle(color: alterColor),
               )));
-          print("username/password incorrect");
+          appDebugPrint("username/password incorrect");
         }
-        print("login failed");
+        appDebugPrint("login failed");
       }
       authController.setLoading(true);
     } catch (e) {
@@ -66,7 +67,7 @@ class Api {
             textAlign: TextAlign.center,
             style: TextStyle(color: alterColor),
           )));
-      print("login failed due to ${e.toString()}");
+      appDebugPrint("login failed due to ${e.toString()}");
     } finally {
       authController.setLoading(true);
     }
