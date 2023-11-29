@@ -9,26 +9,29 @@ import '../Model/temp_item.dart';
 import '../main.dart';
 
 class MyApi {
-  static const String BASE_URL = "http://easyrouteplan.com/api/index.php?";
-  static const String IMAGE_BASE_URL = "http://easyrouteplan.com/api/";
+  static const String BASE_URL = "https://thedessertempire.com/delivery-system/index.php?";
+  static const String IMAGE_BASE_URL = "https://thedessertempire.com/delivery-system/";
   static const String LOGIN_URL =
-      "http://easyrouteplan.com/api/index.php?method=login";
+      "https://thedessertempire.com/delivery-system/index.php?method=login";
   static const String DELIVERY_ORDERS =
-      "http://easyrouteplan.com/api/index.php?method=driverdelivery&username=driver2";
+      "https://thedessertempire.com/delivery-system/index.php?method=driverdelivery&username=driver2";
 
   logIn(email, password) async {
+    appDebugPrint("$BASE_URL");
     var response = await http.post(Uri.parse(BASE_URL),
         body: {"method": "login", "username": email, "password": password});
     return response.body;
   }
 
   singup(email, password) async {
+    appDebugPrint("$BASE_URL");
     var response = await http.post(Uri.parse(BASE_URL),
         body: {"method": "login", "username": email, "password": password});
     return response.body;
   }
 
   getOrders() async {
+    appDebugPrint("$BASE_URL");
     var userName = await getAuthToken();
     appDebugPrint("userName $userName");
     var location = await getLocation() ?? LatLng(0, 0);
@@ -41,6 +44,7 @@ class MyApi {
   }
 
   getDeliveryItems(deliveryid) async {
+    appDebugPrint("$BASE_URL");
     var userName = await getAuthToken();
     appDebugPrint("userName $userName");
     var location = await getLocation() ?? LatLng(0, 0);
@@ -53,6 +57,7 @@ class MyApi {
   }
 
   updateOrder({deliveryId, statusId, reason}) async {
+    appDebugPrint("$BASE_URL");
     var location = await getLocation() ?? LatLng(0, 0);
     var url;
     if (reason == null) {
@@ -82,7 +87,7 @@ class MyApi {
   }
 
   uploadSignature({deliveryId, signature}) async {
-
+    appDebugPrint("$BASE_URL");
     appDebugPrint("signature");
 
     var form = Map<String, dynamic>();
@@ -99,7 +104,7 @@ class MyApi {
   }
 
   uploadItemPhoto({deliveryId, image, itemId}) async {
-
+    appDebugPrint("$BASE_URL");
     appDebugPrint("upload image");
 
     var form = Map<String, dynamic>();
@@ -119,7 +124,7 @@ class MyApi {
   uploadItemImage({deliveryId,required List<ItemImageUpdate> imageData}) async{
 
     var url = "${BASE_URL}method=uploaditemphoto";
-
+    appDebugPrint("$url");
     List<Map<String, dynamic>> qtyDataJson = imageData.map((e) => e.toJson()).toList();
     var formData = {
       'jdata': jsonEncode({
@@ -139,6 +144,7 @@ class MyApi {
   uploadItemQuantity({deliveryId,required List<ItemQuantityUpdate> qtyData}) async{
 
     var url = "${BASE_URL}method=updatedeliveryitem";
+    appDebugPrint(url);
     List<Map<String, dynamic>> qtyDataJson = qtyData.map((e) => e.toJson()).toList();
     var formData = {
       'jdata': jsonEncode({
