@@ -296,18 +296,18 @@ class OrderController extends GetxController {
 
   reOrderVisit(int deliverId, int current,List<int> prvNext) async {
 
-    appDebugPrint('deliverId $deliverId');
-    appDebugPrint('current $current');
+    appDebugPrint('deliverId $deliverId ');
+    appDebugPrint('current $current ');
 
 
-    int count = 0;
-    if(ordersList.length != todoList.length){
+    int count  =  0;
+    if(ordersList.length  !=  todoList.length){
       count = ordersList.length - todoList.length;
       count = count + current;
     }
 
     else{
-      count = current;
+      count  =  current;
     }
 
     try {
