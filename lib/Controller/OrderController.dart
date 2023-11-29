@@ -299,14 +299,17 @@ class OrderController extends GetxController {
     appDebugPrint('deliverId $deliverId');
     appDebugPrint('current $current');
 
+
     int count = 0;
     if(ordersList.length != todoList.length){
       count = ordersList.length - todoList.length;
       count = count + current;
     }
+
     else{
       count = current;
     }
+
     try {
       var response = await MyApi().reOrderList(
         deliveryid: deliverId,
