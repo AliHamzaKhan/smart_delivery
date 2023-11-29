@@ -296,15 +296,23 @@ class OrderController extends GetxController {
 
   reOrderVisit(int deliverId, int current,List<int> prvNext) async {
 
-
     appDebugPrint('deliverId $deliverId');
     appDebugPrint('current $current');
+
+    int count = 0;
+    if(ordersList.length != todoList.length){
+      count = ordersList.length - todoList.length;
+      count = count + current;
+    }
+    else{
+      count = current;
+    }
     try {
       var response = await MyApi().reOrderList(
         deliveryid: deliverId,
-        visitorder: current,
-        nextdeliveryid: prvNext[1],
-        prvdeliveryid: prvNext[0],
+        visitorder: count,
+        // nextdeliveryid: prvNext[1],
+        // prvdeliveryid: prvNext[0],
       );
       appDebugPrint(response);
       if (response['status'] == 'success') {
