@@ -71,10 +71,7 @@ class DeliveryOrderDesign extends StatelessWidget {
                         child: Container(
                           padding:
                               EdgeInsets.symmetric(horizontal: height * 0.010, vertical: height * 0.005),
-                          // decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(10),
-                          //    border: Border.all(color: getColor(order!.statusid))
-                          // ),
+
                           child: getStatusName(order!.statusid),
                         ),
                       ),
@@ -103,13 +100,7 @@ class DeliveryOrderDesign extends StatelessWidget {
               ),
 
               SizedBox(height: height * 0.010),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.end,
-              //   children: [
-              //
-              //     // checkValue(order!.statusid),
-              //   ],
-              // ),
+
               if(order!.tel != '')
                 getTableWidget('Tel', "${order!.tel}"),
 
@@ -167,134 +158,6 @@ class DeliveryOrderDesign extends StatelessWidget {
       ),
     );
   }
-
-  // checkValue(value)   {
-  //   switch (value) {
-  //     case 3:
-  //       return Row(
-  //         mainAxisAlignment: MainAxisAlignment.end,
-  //         children: [
-  //           TextButton(
-  //               onPressed: () async {
-  //                 order!.statusid = 8;
-  //               },
-  //               child: Container(
-  //                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-  //                 decoration: BoxDecoration(
-  //                     borderRadius: BorderRadius.circular(5),
-  //                     border: Border.all(
-  //                       color: Colors.green,
-  //                     )),
-  //                 child: Text(
-  //                   "Arrived",
-  //                   style: TextStyle(
-  //                       color: Colors.green,
-  //                       fontSize: 20,
-  //                       fontWeight: FontWeight.bold),
-  //                 ),
-  //               )),
-  //
-  //         ],
-  //       );
-  //     case 6:
-  //       return Row(
-  //         mainAxisAlignment: MainAxisAlignment.end,
-  //         children: [
-  //           TextButton(
-  //               onPressed: () async {
-  //                 order!.statusid = 7;
-  //               },
-  //               child: Text(
-  //                 "Departed",
-  //                 style: TextStyle(
-  //                     color: Colors.green.shade900,
-  //                     fontSize: 20,
-  //                     fontWeight: FontWeight.bold),
-  //               )),
-  //         ],
-  //       );
-  //     case 5:
-  //       return Row(
-  //         mainAxisAlignment: MainAxisAlignment.end,
-  //         children: [
-  //           SizedBox(height: 25),
-  //           TextButton(
-  //               onPressed: () async {
-  //                 order!.statusid = 7;
-  //
-  //               },
-  //               child: Text(
-  //                 "Departed",
-  //                 style: TextStyle(
-  //                     color: Colors.green.shade900,
-  //                     fontSize: 20,
-  //                     fontWeight: FontWeight.bold),
-  //               )),
-  //         ],
-  //       );
-  //     case 8:
-  //       return Row(
-  //         mainAxisAlignment: MainAxisAlignment.end,
-  //         children: [
-  //           TextButton(
-  //               onPressed: () async {
-  //                 order!.statusid = 5;
-  //
-  //               },
-  //               child: Container(
-  //                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-  //                 decoration: BoxDecoration(
-  //                     borderRadius: BorderRadius.circular(5),
-  //                     border: Border.all(
-  //                       color: Colors.green.shade900,
-  //                     )),
-  //                 child: Text(
-  //                   "Completed",
-  //                   style: TextStyle(
-  //                       color: Colors.green.shade900,
-  //                       fontSize: 20,
-  //                       fontWeight: FontWeight.bold),
-  //                 ),
-  //               )),
-  //           TextButton(
-  //               onPressed: () async {
-  //                 order!.statusid = 6;
-  //               },
-  //               child: Container(
-  //                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-  //                 decoration: BoxDecoration(
-  //                     borderRadius: BorderRadius.circular(5),
-  //                     border: Border.all(
-  //                       color: Colors.redAccent.shade700,
-  //                     )),
-  //                 child: Text(
-  //                   "Failed",
-  //                   style: TextStyle(
-  //                       color: Colors.redAccent.shade700,
-  //                       fontSize: 20,
-  //                       fontWeight: FontWeight.bold),
-  //                 ),
-  //               )),
-  //         ],
-  //       );
-  //     case 7:
-  //       return SizedBox();
-  //   }
-  // }
-
-  // getColor(status) {
-  //   switch (status) {
-  //     case 6:
-  //       return Colors.redAccent.shade700;
-  //     case 5:
-  //       return Colors.green.shade900;
-  //     case 3:
-  //       return alterColor;
-  //     default:
-  //       return Colors.green;
-  //   }
-  // }
-
   getStatusName(status) {
     switch (status) {
       case 6:

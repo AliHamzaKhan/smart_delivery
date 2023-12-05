@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../Constant/Colors.dart';
 
 tableHeader(){
@@ -29,7 +28,6 @@ tableHeader(){
           width: height * 0.050,
           height: height * 0.050,
           alignment: Alignment.center,
-          // child: Icon(Icons.image_outlined, color: textColor, size: 30,),
         )
       ],
     ),

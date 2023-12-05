@@ -1,7 +1,6 @@
 
 
 import 'package:flutter/material.dart';
-
 import '../Constant/Colors.dart';
 
 class HorizontelLine extends StatelessWidget {

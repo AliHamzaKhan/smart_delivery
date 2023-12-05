@@ -164,7 +164,6 @@ class MyApi {
 
   reOrderList({deliveryid, visitorder}) async{
     var url = "${BASE_URL}method=updatedeliveryinfo&deliveryid=$deliveryid&visitorder=$visitorder";
-    // var url = "${BASE_URL}method=updatedeliveryinfo&prvdeliveryid=$prvdeliveryid&nextdeliveryid=$nextdeliveryid&deliveryid=$deliveryid&visitorder=$visitorder";
     appDebugPrint(url);
     var response = await http.get(Uri.parse(url));
     return response.body;

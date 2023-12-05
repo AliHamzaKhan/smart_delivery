@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:get/get.dart';
-
 import '../Api/MyApi.dart';
 import '../Design/toast.dart';
 import '../Model/DeliveryItem.dart';
@@ -95,7 +93,6 @@ class DeliveryItemController extends GetxController {
     } else {
       apiToast(Get.context!, 'Images', "failed", seconds: 1);
     }
-    // apiToast(Get.context, 'Images', response["status"]);
   }
   uploadQuantityItems({required deliveryId}) async {
     if (quantityUpdate.isEmpty) {
@@ -114,31 +111,6 @@ class DeliveryItemController extends GetxController {
           apiToast(Get.context!, 'Quantity', 'failed');
         }
 
-        // List<Future> requestFutures = [];
-        // for (int i = 0; i < itemsQuantityData.length; i++) {
-        //   var requestFuture = MyApi().uploadItemQuantity(
-        //     deliveryId: deliveryId,
-        //     itemId: itemsQuantityData[i].key,
-        //     qty: itemsQuantityData[i].value,
-        //   );
-        //
-        //   requestFutures.add(requestFuture);
-        // }
-        // List<dynamic> responses = await Future.wait(requestFutures);
-        // List<String> statuses = [];
-        //
-        // for (var response in responses) {
-        //   print(response);
-        //   var data = jsonDecode(response);
-        //   print(data["status"]);
-        //   statuses.add(data["status"]);
-        //   if (statuses.contains('success')) {
-        //     apiToast(Get.context, 'Quantity', 'success');
-        //   } else {
-        //     apiToast(Get.context, 'Quantity', 'failed');
-        //   }
-        // }
-        // itemsQuantityData.clear();
       } catch (e) {
         print(e);
       } finally {

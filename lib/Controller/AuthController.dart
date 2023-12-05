@@ -1,7 +1,6 @@
 
 
 import 'package:get/get.dart';
-
 import '../Api/Api.dart';
 
 class AuthController extends GetxController implements GetxService{

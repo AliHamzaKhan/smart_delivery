@@ -69,7 +69,6 @@ class _CustomTextFieldState extends State<CustomTextField> {
               )),
         ),
 
-        // contentPadding: const EdgeInsets.only(top: 15),
         hintText: widget.hintText,
         hintStyle: TextStyle(color: textColor),
       ),

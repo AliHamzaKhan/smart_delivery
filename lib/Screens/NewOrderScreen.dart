@@ -124,25 +124,10 @@ class NewOrderScreen extends StatelessWidget {
                                           ? 'START'
                                           : "Continue ${orderController.getCurrentOrder().deliveryrefno ?? ''}")),
                                 )
-                          // TextButton(
-                          //     onPressed: () async {
-                          //       await orderController.getTodo();
-                          //       Get.to(() => NewOrderRunningScreen(
-                          //             orderController: orderController,
-                          //           ));
-                          //     },
-                          //     style: TextButton.styleFrom(
-                          //         backgroundColor: alterColor,
-                          //         foregroundColor: alterColor,
-                          //         shape: RoundedRectangleBorder(
-                          //             borderRadius: BorderRadius.circular(
-                          //                 height * 0.010))),
-                          //     child: startButton()
-                          // ),
+
                           )
                       : SizedBox())
                   : Container(
-                      // child: Text('Please Check If Your Internet Connection in enable then press refresh button at top', style: TextStyle(color: alterColor),),
                       )),
               Expanded(
                   child: Obx(() => !orderController.isOrderLoaded.value
@@ -160,7 +145,6 @@ class NewOrderScreen extends StatelessWidget {
                                 );
                               },
                               onReorder: (int oldIndex, int newIndex) {
-                                // print('oldIndex $oldIndex : newIndex $newIndex');
 
                                 if (oldIndex < newIndex) {
                                   newIndex -= 1;

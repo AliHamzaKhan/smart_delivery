@@ -9,7 +9,6 @@ import '../Screens/NewOrderScreen.dart';
 import '../main.dart';
 
 class Api {
-  // static String LOGIN_URL = "http://easyrouteplan.com/api/index.php?method=login&username=driver1&password=driver1";
   static const String BASE_URL = "https://thedessertempire.com/delivery-system/index.php?";
   static const String LOGIN_URL =
       "https://thedessertempire.com/delivery-system/index.php?method=login";
@@ -37,12 +36,10 @@ class Api {
             await authmanager.login(username1);
 
             Get.toNamed('/new_order_screen');
-            // Get.offAll(() => NewOrderScreen());
           }
           await authmanager.login(username1);
 
           Get.toNamed('/new_order_screen');
-          // Get.offAll(() => NewOrderScreen());
         } else {
           ScaffoldMessenger.of(Get.context!).showSnackBar(SnackBar(
               duration: Duration(seconds: 3),

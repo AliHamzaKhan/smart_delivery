@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -227,7 +226,6 @@ uploadSignatureDialogue({orderController, deliveryId}) {
         child: Signature(
           width: Get.width - 40,
           height: height * 0.4,
-          // controller: orderController.signatureController,
           controller: SignatureController(),
           backgroundColor: subBackgroundColor,
           dynamicPressureSupported: false,

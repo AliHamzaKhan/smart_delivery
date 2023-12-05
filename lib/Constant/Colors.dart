@@ -6,10 +6,6 @@ const primaryColor = Color(0xFF212832);
 const secondaryColor = Color(0xFFFEB200);
 const accentColor = Color(0xFF19202A);
 
-// Color appbackgroundColor = Color(0xFF212832);
-// Color alterColor = Color(0xFFFEB200);
-// Color subBackgroundColor = Color(0xFF19202A);
-// Color textColor = Color(0xff93a0af);
 
 Color appbackgroundColor = Color(0xFFFFFFFF);
 Color alterColor = Color(0xFFAC081C);

@@ -18,7 +18,6 @@ class NewOrderRunningScreen extends StatelessWidget {
       : super(key: key);
   OrderController orderController;
   var height = Get.height;
-  // AskPermission permission = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +25,7 @@ class NewOrderRunningScreen extends StatelessWidget {
 
     print(orderController.todoList.length);
     print(orderController.currentOrder.value!.statusid!);
-      // if(!permission.serviceEnabled.value){
-      //   permission.getLocation();
-      // }
-    // getDeliveryItems();
+
     return WillPopScope(
       onWillPop: () async {
         goBack();
@@ -144,21 +140,10 @@ class NewOrderRunningScreen extends StatelessWidget {
                                                   color: alterColor,
                                                   textSize: 0.018
                                               )),
-                                              // Text(
-                                              //   DistanceCal()
-                                              //           .kmToMm(orderController
-                                              //               .getCurrentOrder()
-                                              //               .distance!)
-                                              //           .toStringAsFixed(1) +
-                                              //       " Km",
-                                              //   style: TextStyle(
-                                              //       color: alterColor,
-                                              //       fontSize: height * 0.018),
-                                              // ),
+
                                               GestureDetector(
                                                 onTap: () async {
-                                                  // await orderController
-                                                  //     .getLocation();
+
                                                   await orderController
                                                       .launchMapViaAddress(
                                                           orderController
@@ -423,12 +408,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                       'Wrong Outlet',
                       'Arrived wrong location',
                       'Others (Refer to message/email)',
-                      /*"Shortage",
-                      "Request Access",
-                      "Wrong Type",
-                      "Wrong Size",
-                      "Wrong Color",
-                      "Did not Order"*/
+
                     ].map((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
@@ -457,7 +437,6 @@ class NewOrderRunningScreen extends StatelessWidget {
                           deliveryId: orderController.getCurrentOrder()!.deliveryid,
                           statusId: 7,
                           reason: orderController.failedReasons.value);
-                      // orderController.getCurrentOrder()!.statusid = 7;
                       await orderController.nextOrder();
                     },
                     child: Text(
@@ -485,7 +464,6 @@ class NewOrderRunningScreen extends StatelessWidget {
                   await orderController.updateStatus(
                       deliveryId: orderController.getCurrentOrder()!.deliveryid,
                       statusId: 7);
-                  // orderController.getCurrentOrder()!.statusid = 7;
                   await orderController.nextOrder();
                 },
                 child: Text(
@@ -510,7 +488,6 @@ class NewOrderRunningScreen extends StatelessWidget {
                 await orderController.updateStatus(
                     deliveryId: orderController.getCurrentOrder()!.deliveryid,
                     statusId: 5);
-                // orderController.getCurrentOrder()!.statusid = 5;
 
                 orderController.signatureController.clear();
                 await showDialogueApp(
@@ -535,10 +512,7 @@ class NewOrderRunningScreen extends StatelessWidget {
                 await orderController.updateStatus(
                     deliveryId: orderController.getCurrentOrder()!.deliveryid,
                     statusId: 6);
-                // await showDialogueApp(
-                //     context: context,
-                //     deliveryId: orderController.getCurrentOrder()!.deliveryid);
-                // orderController.getCurrentOrder()!.statusid = 6;
+
               },
               child: Text(
                 "Failed",

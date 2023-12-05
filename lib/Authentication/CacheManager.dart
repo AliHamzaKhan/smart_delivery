@@ -20,7 +20,6 @@ mixin CacheManager {
     await box.remove(CacheManagerKey.TOKEN.toString());
     await box.remove(CacheManagerKey.TIMER.toString());
     box.erase();
-   // Get.off(()=>LoginScreen());
   }
   Future<bool> saveTimer(int? time) async {
     final box = GetStorage();

@@ -28,7 +28,6 @@ class AskPermission extends GetxService {
         final position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.bestForNavigation,
         );
-
         currentLocation.value = LatLng(position.latitude, position.longitude);
         appDebugPrint(currentLocation.value);
         appDebugPrint(position);

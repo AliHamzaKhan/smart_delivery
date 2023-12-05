@@ -99,7 +99,6 @@ class OrderController extends GetxController {
       DeliveryItem deliveryItem = DeliveryItem.fromJson(result);
       deliveryItems.assignAll(deliveryItem.itemData!);
       appDebugPrint(deliveryItem.itemData!.length);
-      // update();
     } catch (e) {
       appDebugPrint(e);
     } finally {
@@ -112,7 +111,6 @@ class OrderController extends GetxController {
     update();
 
     await getDeliveryItem(deliveryid: currentOrder.value!.deliveryid!);
-    // appDebugPrint("current order $currentOrder");
   }
 
   Rows getCurrentOrder() => currentOrder.value;
@@ -314,8 +312,6 @@ class OrderController extends GetxController {
       var response = await MyApi().reOrderList(
         deliveryid: deliverId,
         visitorder: count,
-        // nextdeliveryid: prvNext[1],
-        // prvdeliveryid: prvNext[0],
       );
       appDebugPrint(response);
       if (response['status'] == 'success') {
@@ -512,7 +508,6 @@ class OrderController extends GetxController {
   exportSignature() async {
     final signature = await signatureController.toPngBytes();
     var a = await base64String(signature!);
-    // log(a);
     return a;
   }
 
@@ -523,9 +518,6 @@ class OrderController extends GetxController {
   launchMapViaAddress(String address) async {
     String encodedAddress = Uri.encodeComponent(address);
     var uri = Uri.parse("google.navigation:q=$encodedAddress&mode=d");
-    String googleMapUrl =
-        "https://www.google.com/maps/search/?api=1&query=$encodedAddress";
-    String appleMapUrl = "http://maps.apple.com/?q=$encodedAddress";
     if (Platform.isAndroid) {
       try {
         if (await canLaunchUrl(uri)) {
@@ -591,12 +583,7 @@ class OrderController extends GetxController {
     super.onInit();
     if (authmanager.isLogged.value) {
       driverName.value = await authmanager.checkLoginStatus();
-      // var timer = await authmanager.getTimer();
-      // if(timer != null){
-      //   refreshTimer.value = timer;
-      //   appDebugPrint('timer ${refreshTimer.value}');
-      //   appDebugPrint('timer ${timer}');
-      // }
+
     }
 
     getOrders();

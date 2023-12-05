@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,7 +29,6 @@ class _ItemDesignState extends State<ItemDesign> {
 
   @override
   Widget build(BuildContext context) {
-    // var qty = widget.item!.qty;
     print(MyApi.IMAGE_BASE_URL + widget.item!.photopath!);
     return Container(
       width: Get.width,
@@ -79,7 +77,6 @@ class _ItemDesignState extends State<ItemDesign> {
 
                 onTap: (){
                   setState(() {
-                    // widget.item!.qty =  widget.item!.qty! + 1 ;
                     widget. qty =   widget. qty + 1 ;
                     widget.onQuantitySelected(widget.qty);
                   });
@@ -87,8 +84,7 @@ class _ItemDesignState extends State<ItemDesign> {
                 },
                 behavior: HitTestBehavior.opaque,
                 child: Container(
-                  // width: Get.height * 0.015,
-                  // height: Get.height * 0.020,
+
                   padding: EdgeInsets.symmetric(
                     horizontal: height * 0.005
                   ),
@@ -128,7 +124,6 @@ class _ItemDesignState extends State<ItemDesign> {
                 onTap: (){
                   if(widget.qty > 0){
                     setState(() {
-                      // widget.item!.qty =  widget.item!.qty! - 1 ;
                       widget.qty = widget. qty - 1 ;
                       widget.onQuantitySelected(widget.qty);
                     });
@@ -138,8 +133,7 @@ class _ItemDesignState extends State<ItemDesign> {
                 },
                 behavior: HitTestBehavior.opaque,
                 child: Container(
-                  // width: Get.height * 0.015,
-                  // height: Get.height * 0.020,
+
                   margin: EdgeInsets.only(
                     right: height * 0.005
                   ),
@@ -163,27 +157,7 @@ class _ItemDesignState extends State<ItemDesign> {
               width: height * 0.050,
               height: height * 0.050,
               child : widget.image == null ?
-              // CachedNetworkImage(
-              //   imageUrl: MyApi.IMAGE_BASE_URL + widget.item!.photopath!,
-              //   imageBuilder: (context, imageProvider) => Container(
-              //     width: height * 0.050,
-              //     height: height * 0.050,
-              //     decoration: BoxDecoration(
-              //       image: DecorationImage(
-              //           image: imageProvider,
-              //           fit: BoxFit.cover,
-              //       ),
-              //     ),
-              //   ),
-              //   placeholder: (context, url) => Icon(
-              //     Icons.image,
-              //     size: height * 0.040,
-              //   ),
-              //   errorWidget: (context, url, error) =>  Icon(
-              //     Icons.image,
-              //     size: height * 0.040,
-              //   ),
-              // )
+
               ClipRRect(
                  borderRadius: BorderRadius.circular(height * 0.005),
                 child: Image.network(
@@ -210,25 +184,7 @@ class _ItemDesignState extends State<ItemDesign> {
                 ),
               ),
 
-            //   child: widget.image == null
-            //       ? (( widget.item!.photopath == '' || widget.item!.photopath == 'null' || widget.item!.photopath == null) ?
-            //   Icon(
-            //     Icons.image,
-            //     size: height * 0.040,
-            //   ) :
-            //   Image.network(MyApi.IMAGE_BASE_URL + widget.item!.photopath!,
-            //     width: height * 0.040,
-            //     height: height * 0.035,
-            //     fit: BoxFit.cover,))
-            //       : ClipRRect(
-            //     borderRadius: BorderRadius.circular(height * 0.005),
-            //         child: Image.file(
-            //     widget.image!,
-            //     width: height * 0.040,
-            //     height: height * 0.035,
-            //     fit: BoxFit.cover,
-            //   ),
-            //       ),
+
             ),
           )
         ],
